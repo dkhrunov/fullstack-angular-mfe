@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
+import { loadRemoteModule } from '@angular-architects/module-federation';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -16,12 +17,11 @@ import { AppComponent } from './app.component';
 				{
 					path: 'login',
 					loadChildren: () =>
-						import('login/Module').then((m) => m.RemoteEntryModule),
-				},
-				{
-					path: 'login',
-					loadChildren: () =>
-						import('login/Module').then((m) => m.RemoteEntryModule),
+						loadRemoteModule({
+							remoteEntry: 'http://localhost:4201/remoteEntry.js',
+							remoteName: 'login',
+							exposedModule: './Module',
+						}).then((m) => m.RemoteEntryModule),
 				},
 			],
 			{ initialNavigation: 'enabledBlocking' }
@@ -30,4 +30,5 @@ import { AppComponent } from './app.component';
 	providers: [],
 	bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}

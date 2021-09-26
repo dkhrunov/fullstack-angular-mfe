@@ -163,7 +163,6 @@
 					"options": {
 						"commands": [
 							"nx serve login",
-							"nx serve login",
 							"nx serve dashboard"
 						]
 					}
