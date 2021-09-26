@@ -1,35 +1,54 @@
 {
-  "npmScope": "nx-mfe",
-  "affected": {
-    "defaultBase": "master"
-  },
-  "implicitDependencies": {
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
-    },
-    ".eslintrc.json": "*"
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ]
-      }
-    }
-  },
-  "targetDependencies": {
-    "build": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
-  },
-  "projects": {}
+	"npmScope": "nx-mfe",
+	"affected": {
+		"defaultBase": "master"
+	},
+	"implicitDependencies": {
+		"package.json": {
+			"dependencies": "*",
+			"devDependencies": "*"
+		},
+		".eslintrc.json": "*"
+	},
+	"tasksRunnerOptions": {
+		"default": {
+			"runner": "@nrwl/workspace/tasks-runners/default",
+			"options": {
+				"cacheableOperations": ["build", "lint", "test", "e2e"]
+			}
+		}
+	},
+	"targetDependencies": {
+		"build": [
+			{
+				"target": "build",
+				"projects": "dependencies"
+			}
+		]
+	},
+	"projects": {
+		"api": {
+			"tags": []
+		},
+		"dashboard": {
+			"tags": []
+		},
+		"dashboard-e2e": {
+			"tags": [],
+			"implicitDependencies": ["dashboard"]
+		},
+		"login": {
+			"tags": []
+		},
+		"login-e2e": {
+			"tags": [],
+			"implicitDependencies": ["login"]
+		},
+		"login-form": {
+			"tags": []
+		},
+		"shared-data-access-user": {
+			"tags": []
+		}
+	}
 }
