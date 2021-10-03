@@ -476,7 +476,7 @@
 					"executor": "@nrwl/workspace:run-commands",
 					"options": {
 						"commands": [
-							"nx serve dashboard",
+							"nx serve shell",
 							"nx serve login",
 							"nx serve dashboard"
 						]
