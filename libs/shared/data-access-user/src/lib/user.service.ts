@@ -6,13 +6,14 @@ import { Router } from '@angular/router';
 	providedIn: 'root',
 })
 export class UserService {
-	private readonly _isUserLoggedIn = new BehaviorSubject(false);
+	private readonly _isUserLoggedIn = new BehaviorSubject(JSON.parse(localStorage.getItem('auth') ?? 'false'));
 
 	public get isUserLoggedIn$(): Observable<boolean> {
 		return this._isUserLoggedIn.asObservable();
 	}
 
 	constructor(private readonly _router: Router) {
+		this._isUserLoggedIn.subscribe(x => localStorage.setItem('auth', JSON.stringify(x)));
 	}
 
 	public login(username: string, password: string) {

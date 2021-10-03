@@ -1,7 +1,8 @@
 import { loadRemoteModule } from '@angular-architects/module-federation';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthorizedGuard } from './guards/authorized.guard';
+import { UnauthorizedGuard } from './guards/unauthorized.guard';
 
 const routes: Routes = [
 	{
@@ -12,6 +13,7 @@ const routes: Routes = [
 				remoteName: 'login',
 				exposedModule: './Module',
 			}).then((m) => m.RemoteEntryModule),
+		canActivate: [UnauthorizedGuard],
 	},
 	{
 		path: 'dashboard',
@@ -21,7 +23,7 @@ const routes: Routes = [
 				remoteName: 'dashboard',
 				exposedModule: './Module',
 			}).then((m) => m.RemoteEntryModule),
-		canActivate: [AuthGuard],
+		canActivate: [AuthorizedGuard],
 	},
 	{
 		path: '',
@@ -32,7 +34,7 @@ const routes: Routes = [
 	{
 		path: '**',
 		redirectTo: 'dashboard',
-	}
+	},
 ];
 
 @NgModule({
