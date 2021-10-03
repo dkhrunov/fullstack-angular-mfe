@@ -104,7 +104,7 @@ export class LoginFormComponent implements OnInit {
 	public readonly isLoggedIn$ = this._userService.isUserLoggedIn$;
 
 	constructor(
-		private _fb: FormBuilder,
+		private readonly _fb: FormBuilder,
 		private readonly _userService: UserService
 	) {
 	}
@@ -122,7 +122,7 @@ export class LoginFormComponent implements OnInit {
 
 		if (this.form.valid) {
 			const { username, password } = this.form.value;
-			this._userService.checkCredentials(username, password);
+			this._userService.login(username, password);
 		}
 	}
 
