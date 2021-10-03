@@ -27,9 +27,6 @@
 		]
 	},
 	"projects": {
-		"api": {
-			"tags": []
-		},
 		"dashboard": {
 			"tags": []
 		},
@@ -45,6 +42,9 @@
 			"implicitDependencies": ["login"]
 		},
 		"login-form": {
+			"tags": []
+		},
+		"server": {
 			"tags": []
 		},
 		"shared-data-access-user": {
