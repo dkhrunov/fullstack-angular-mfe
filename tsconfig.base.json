@@ -18,7 +18,8 @@
 			"@nx-mfe/login/form": ["libs/login/form/src/index.ts"],
 			"@nx-mfe/shared/data-access-user": [
 				"libs/shared/data-access-user/src/index.ts"
-			]
+			],
+			"@nx-mfe/ui": ["libs/ui/src/index.ts"]
 		},
 		"downlevelIteration": true,
 		"noImplicitAny": true,
