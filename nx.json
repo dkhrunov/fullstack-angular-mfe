@@ -27,19 +27,26 @@
 		]
 	},
 	"projects": {
-		"dashboard": {
+		"client-dashboard": {
 			"tags": []
 		},
-		"dashboard-e2e": {
+		"client-dashboard-e2e": {
 			"tags": [],
-			"implicitDependencies": ["dashboard"]
+			"implicitDependencies": ["client-dashboard"]
 		},
-		"login": {
+		"client-login": {
 			"tags": []
 		},
-		"login-e2e": {
+		"client-login-e2e": {
 			"tags": [],
-			"implicitDependencies": ["login"]
+			"implicitDependencies": ["client-login"]
+		},
+		"client-shell": {
+			"tags": []
+		},
+		"client-shell-e2e": {
+			"tags": [],
+			"implicitDependencies": ["client-shell"]
 		},
 		"login-form": {
 			"tags": []
@@ -49,13 +56,6 @@
 		},
 		"shared-data-access-user": {
 			"tags": []
-		},
-		"shell": {
-			"tags": []
-		},
-		"shell-e2e": {
-			"tags": [],
-			"implicitDependencies": ["shell"]
 		},
 		"ui": {
 			"tags": []
