@@ -26,7 +26,8 @@ module.exports = {
 			name: 'login',
 			filename: 'remoteEntry.js',
 			exposes: {
-				'./Module': 'apps/client/login/src/app/remote-entry/entry.module.ts',
+				'./Module':
+					'apps/client/login/src/app/remote-entry/entry.module.ts',
 			},
 			shared: {
 				'@angular/core': { singleton: true, strictVersion: true },
@@ -36,6 +37,7 @@ module.exports = {
 					strictVersion: true,
 				},
 				'@angular/router': { singleton: true, strictVersion: true },
+				'rxjs': { singleton: true, strictVersion: true },
 				...sharedMappings.getDescriptors(),
 			},
 		}),
