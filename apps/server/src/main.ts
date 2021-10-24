@@ -9,13 +9,16 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
+	const PORT = process.env.PORT || 3000;
+	const GLOBAL_PREFIX = process.env.GLOBAL_PREFIX || 'api';
+
 	const app = await NestFactory.create(AppModule);
-	const globalPrefix = 'api';
-	app.setGlobalPrefix(globalPrefix);
-	const port = process.env.PORT || 3333;
-	await app.listen(port, () => {
+
+	app.setGlobalPrefix(GLOBAL_PREFIX);
+
+	await app.listen(PORT, () => {
 		Logger.log(
-			'Listening at http://localhost:' + port + '/' + globalPrefix
+			'Listening at http://localhost:' + PORT + '/' + GLOBAL_PREFIX,
 		);
 	});
 }

@@ -1,5 +1,5 @@
 module.exports = {
-	displayName: 'login-form',
+	displayName: 'shared-data-access',
 	preset: '../../../jest.preset.js',
 	setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 	globals: {
@@ -8,7 +8,7 @@ module.exports = {
 			stringifyContentPathRegex: '\\.(html|svg)$',
 		},
 	},
-	coverageDirectory: '../../../coverage/libs/login/form',
+	coverageDirectory: '../../../coverage/libs/shared/data-access',
 	transform: {
 		'^.+\\.(ts|js|html)$': 'jest-preset-angular',
 	},

@@ -15,7 +15,10 @@
 		"skipDefaultLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
-			"@nx-mfe/login/form": ["libs/login/form/src/index.ts"],
+			"@nx-mfe/auth-login-form": ["libs/auth/login-form/src/index.ts"],
+			"@nx-mfe/shared/data-access": [
+				"libs/shared/data-access/src/index.ts"
+			],
 			"@nx-mfe/shared/data-access-user": [
 				"libs/shared/data-access-user/src/index.ts"
 			],
@@ -29,7 +32,7 @@
 		"strictBindCallApply": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
-		"strictPropertyInitialization": true,
+		"strictPropertyInitialization": false,
 		"typeRoots": ["node_modules/@types"],
 		"types": ["node", "jest"]
 	},

@@ -37,7 +37,11 @@ module.exports = {
 					strictVersion: true,
 				},
 				'@angular/router': { singleton: true, strictVersion: true },
-				'rxjs': { singleton: true, strictVersion: true },
+				rxjs: {
+					singleton: true,
+					strictVersion: true,
+					requiredVersion: '7.4.0',
+				},
 				...sharedMappings.getDescriptors(),
 			},
 		}),

@@ -1,8 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { LoginFormModule } from '@nx-mfe/auth-login-form';
+
 import { RemoteEntryComponent } from './entry.component';
-import { LoginFormModule } from '@nx-mfe/login/form';
 
 @NgModule({
 	declarations: [RemoteEntryComponent],

@@ -1,6 +1,31 @@
 {
 	"version": 2,
 	"projects": {
+		"auth-login-form": {
+			"projectType": "library",
+			"root": "libs/auth/login-form",
+			"sourceRoot": "libs/auth/login-form/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/auth/login-form"],
+					"options": {
+						"jestConfig": "libs/auth/login-form/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/auth/login-form/src/**/*.ts",
+							"libs/auth/login-form/src/**/*.html"
+						]
+					}
+				}
+			}
+		},
 		"client-dashboard": {
 			"projectType": "application",
 			"root": "apps/client/dashboard",
@@ -416,31 +441,6 @@
 				}
 			}
 		},
-		"login-form": {
-			"projectType": "library",
-			"root": "libs/login/form",
-			"sourceRoot": "libs/login/form/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/login/form"],
-					"options": {
-						"jestConfig": "libs/login/form/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/login/form/src/**/*.ts",
-							"libs/login/form/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
 		"server": {
 			"root": "apps/server",
 			"sourceRoot": "apps/server/src",
@@ -488,6 +488,31 @@
 					"options": {
 						"jestConfig": "apps/server/jest.config.js",
 						"passWithNoTests": true
+					}
+				}
+			}
+		},
+		"shared-data-access": {
+			"projectType": "library",
+			"root": "libs/shared/data-access",
+			"sourceRoot": "libs/shared/data-access/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/shared/data-access"],
+					"options": {
+						"jestConfig": "libs/shared/data-access/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/shared/data-access/src/**/*.ts",
+							"libs/shared/data-access/src/**/*.html"
+						]
 					}
 				}
 			}

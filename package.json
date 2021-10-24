@@ -3,9 +3,7 @@
 	"version": "0.0.0",
 	"license": "MIT",
 	"scripts": {
-		"start": "nx serve",
-		"build": "nx build",
-		"lint:affected": "nx affected:lint --parallel --maxParallel=5",
+		"lint:affected": "nx affected:lint --fix --parallel --maxParallel=5",
 		"test:affected": "nx affected:test --parallel --maxParallel=5",
 		"postinstall": "ngcc --properties es2015 browser module main"
 	},
@@ -20,13 +18,22 @@
 		"@angular/platform-browser": "^12.2.0",
 		"@angular/platform-browser-dynamic": "^12.2.0",
 		"@angular/router": "^12.2.0",
-		"@nestjs/common": "^7.0.0",
-		"@nestjs/core": "^7.0.0",
-		"@nestjs/platform-express": "^7.0.0",
+		"@nestjs/common": "^8.0.0",
+		"@nestjs/core": "^8.0.0",
+		"@nestjs/jwt": "^8.0.0",
+		"@nestjs/passport": "^8.0.1",
+		"@nestjs/platform-express": "^8.0.0",
+		"@nestjs/typeorm": "^8.0.2",
+		"bcrypt": "^5.0.1",
+		"class-validator": "^0.13.1",
 		"ng-zorro-antd": "^12.0.1",
+		"passport": "^0.5.0",
+		"passport-jwt": "^4.0.0",
+		"pg": "^8.7.1",
 		"reflect-metadata": "^0.1.13",
-		"rxjs": "~6.6.0",
+		"rxjs": "^7",
 		"tslib": "^2.0.0",
+		"typeorm": "^0.2.38",
 		"zone.js": "~0.11.4"
 	},
 	"devDependencies": {
@@ -36,8 +43,8 @@
 		"@angular-eslint/template-parser": "~12.3.0",
 		"@angular/compiler-cli": "^12.2.0",
 		"@angular/language-service": "^12.2.0",
-		"@nestjs/schematics": "^7.0.0",
-		"@nestjs/testing": "^7.0.0",
+		"@nestjs/schematics": "^8.0.0",
+		"@nestjs/testing": "^8.0.0",
 		"@nrwl/angular": "^12.9.0",
 		"@nrwl/cli": "12.9.0",
 		"@nrwl/cypress": "12.9.0",
@@ -48,21 +55,24 @@
 		"@nrwl/node": "12.9.0",
 		"@nrwl/tao": "12.9.0",
 		"@nrwl/workspace": "12.9.0",
+		"@types/bcrypt": "^5.0.0",
 		"@types/jest": "26.0.24",
 		"@types/node": "14.14.33",
+		"@types/passport-jwt": "^3.0.6",
 		"@typescript-eslint/eslint-plugin": "~4.28.3",
 		"@typescript-eslint/parser": "~4.28.3",
 		"cypress": "^8.3.0",
 		"eslint": "7.22.0",
 		"eslint-config-prettier": "8.1.0",
 		"eslint-plugin-cypress": "^2.10.3",
+		"eslint-plugin-simple-import-sort": "^7.0.0",
 		"husky": "4.3.8",
 		"jest": "27.0.3",
 		"jest-preset-angular": "9.0.7",
+		"lint-staged": "10.2.11",
 		"prettier": "^2.3.1",
 		"ts-jest": "27.0.3",
-		"typescript": "~4.3.5",
-		"lint-staged": "10.2.11"
+		"typescript": "~4.3.5"
 	},
 	"husky": {
 		"hooks": {
@@ -70,8 +80,7 @@
 		}
 	},
 	"lint-staged": {
-		"{apps,libs}/**/*.{ts,json,md,scss,html}": [
-			"yarn lint:affected --uncommitted --fix=true",
+		"{apps,libs}/**/*.{ts,js,json,scss,html}": [
 			"nx format:write --uncommitted"
 		]
 	}

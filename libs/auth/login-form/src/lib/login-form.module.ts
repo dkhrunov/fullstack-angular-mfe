@@ -1,13 +1,14 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { LoginFormComponent } from './login-form.component';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+
+import { AuthLoginFormComponent } from './login-form.component';
 
 @NgModule({
 	imports: [
@@ -20,7 +21,7 @@ import { NzAlertModule } from 'ng-zorro-antd/alert';
 		NzCheckboxModule,
 		NzAlertModule,
 	],
-	declarations: [LoginFormComponent],
-	exports: [LoginFormComponent],
+	declarations: [AuthLoginFormComponent],
+	exports: [AuthLoginFormComponent],
 })
 export class LoginFormModule {}

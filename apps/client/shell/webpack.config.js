@@ -23,10 +23,7 @@ module.exports = {
 	},
 	plugins: [
 		new ModuleFederationPlugin({
-			remotes: {
-				login: 'login@http://localhost:4201/remoteEntry.js',
-				dashboard: 'dashboard@http://localhost:4202/remoteEntry.js',
-			},
+			remotes: {},
 			shared: {
 				'@angular/core': { singleton: true, strictVersion: true },
 				'@angular/common': { singleton: true, strictVersion: true },
@@ -35,7 +32,11 @@ module.exports = {
 					strictVersion: true,
 				},
 				'@angular/router': { singleton: true, strictVersion: true },
-				'rxjs': { singleton: true, strictVersion: true },
+				rxjs: {
+					singleton: true,
+					strictVersion: true,
+					requiredVersion: '7.4.0',
+				},
 				...sharedMappings.getDescriptors(),
 			},
 		}),

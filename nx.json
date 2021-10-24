@@ -27,6 +27,9 @@
 		]
 	},
 	"projects": {
+		"auth-login-form": {
+			"tags": []
+		},
 		"client-dashboard": {
 			"tags": []
 		},
@@ -48,10 +51,10 @@
 			"tags": [],
 			"implicitDependencies": ["client-shell"]
 		},
-		"login-form": {
+		"server": {
 			"tags": []
 		},
-		"server": {
+		"shared-data-access": {
 			"tags": []
 		},
 		"shared-data-access-user": {
