@@ -5,14 +5,15 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { exception } from '@nx-mfe/rxjs';
 import {
 	AccessTokenDto,
 	CreateUserDto,
-	LoginUserDto,
+	CredentialsDto,
 	TokenPayload,
 } from '@nx-mfe/shared/data-access';
 import * as bcrypt from 'bcrypt';
-import { from, map, Observable, switchMap, tap } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -24,48 +25,45 @@ export class AuthService {
 		private readonly _userService: UserService,
 	) {}
 
-	public login(user: LoginUserDto): Observable<AccessTokenDto> {
-		return this._userService.findOneByEmail(user.email).pipe(
-			map((userEntity) => {
-				if (!userEntity) {
-					throw new UnauthorizedException({
-						message: 'Пользователь не найден',
-					});
-				}
-
-				return userEntity;
-			}),
+	public login(credentials: CredentialsDto): Observable<AccessTokenDto> {
+		return this._userService.findByEmail(credentials.email).pipe(
+			exception(
+				(userEntity) => !userEntity,
+				new UnauthorizedException({ message: 'Некоррекный пароль' }),
+			),
 			switchMap((userEntity) =>
-				from(bcrypt.compare(user.password, userEntity.password)).pipe(
-					map((passwordEquals) => {
-						if (!passwordEquals) {
-							throw new UnauthorizedException({
-								message: 'Некоррекный email или пароль',
-							});
-						}
-
-						return userEntity;
-					}),
-				),
+				this._comparePasswords(credentials, userEntity as UserEntity),
 			),
 			map((userEntity) => this._generateJwt(userEntity)),
 		);
 	}
 
 	public register(user: CreateUserDto): Observable<AccessTokenDto> {
-		return this._userService.findOneByEmail(user.email).pipe(
-			map((candidate) => {
-				if (candidate) {
-					throw new HttpException(
-						'Пользователь с таким email уже существует',
-						HttpStatus.CONFLICT,
-					);
-				}
-
-				return candidate;
-			}),
+		return this._userService.findByEmail(user.email).pipe(
+			exception(
+				(candidate) => Boolean(candidate),
+				new HttpException(
+					'Пользователь с таким email уже существует',
+					HttpStatus.CONFLICT,
+				),
+			),
 			switchMap(() => this._createUser(user)),
 			map((registeredUser) => this._generateJwt(registeredUser)),
+		);
+	}
+
+	private _comparePasswords(
+		credentials: CredentialsDto,
+		userEntity: UserEntity,
+	): Observable<UserEntity> {
+		return from(
+			bcrypt.compare(credentials.password, userEntity.password),
+		).pipe(
+			exception(
+				(passwordEquals) => !passwordEquals,
+				new UnauthorizedException({ message: 'Некоррекный пароль' }),
+			),
+			map(() => userEntity),
 		);
 	}
 
@@ -73,7 +71,6 @@ export class AuthService {
 		return from(
 			bcrypt.hash(user.password, Number(process.env.SALT_ROUNDS)),
 		).pipe(
-			tap(console.log),
 			map((hashedPassword) => ({ ...user, password: hashedPassword })),
 			switchMap((userWithHashedPassword) =>
 				this._userService.create(userWithHashedPassword),

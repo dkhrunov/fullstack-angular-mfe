@@ -20,11 +20,14 @@ export class UserService {
 			();
 	}
 
-	public findOneByEmail(email: string): Observable<UserEntity | undefined> {
+	public findByEmail(email: string): Observable<UserEntity | undefined> {
 		return from(this._userRepository.findOne({ where: { email } }));
 	}
 
 	public create(createUserDto: CreateUserDto): Observable<UserEntity> {
-		return from(this._userRepository.save(createUserDto));
+		const user = this._userRepository.create(createUserDto);
+
+		// TODO Add AutoMapper
+		return from(this._userRepository.save(user)).pipe();
 	}
 }

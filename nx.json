@@ -51,6 +51,9 @@
 			"tags": [],
 			"implicitDependencies": ["client-shell"]
 		},
+		"rxjs": {
+			"tags": []
+		},
 		"server": {
 			"tags": []
 		},

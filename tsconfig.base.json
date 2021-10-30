@@ -16,6 +16,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@nx-mfe/auth-login-form": ["libs/auth/login-form/src/index.ts"],
+			"@nx-mfe/rxjs": ["libs/rxjs/src/index.ts"],
 			"@nx-mfe/shared/data-access": [
 				"libs/shared/data-access/src/index.ts"
 			],

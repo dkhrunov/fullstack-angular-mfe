@@ -1,5 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { AccessTokenDto, LoginUserDto } from '@nx-mfe/shared/data-access';
+import {
+	AccessTokenDto,
+	CreateUserDto,
+	CredentialsDto,
+} from '@nx-mfe/shared/data-access';
 import { Observable } from 'rxjs';
 
 import { AuthService } from './auth.service';
@@ -10,15 +14,15 @@ export class AuthController {
 
 	@Post('/login')
 	public login(
-		@Body() credentials: LoginUserDto,
+		@Body() credentials: CredentialsDto,
 	): Observable<AccessTokenDto> {
 		return this._authService.login(credentials);
 	}
 
+	// TODO remove (test)
+	// @UseGuards(JwtAuthGuard)
 	@Post('/register')
-	public register(
-		@Body() credentials: LoginUserDto,
-	): Observable<AccessTokenDto> {
-		return this._authService.register(credentials);
+	public register(@Body() user: CreateUserDto): Observable<AccessTokenDto> {
+		return this._authService.register(user);
 	}
 }

@@ -15,13 +15,13 @@ import { JwtStrategy } from './jwt.strategy';
 			session: false,
 		}),
 		JwtModule.register({
-			secret: process.env.PRIVATE_KEY || 'SECRET_KEY',
-			signOptions: { expiresIn: '10h' },
+			secret: process.env.JWT_PRIVATE_KEY || 'SECRET_KEY',
+			signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
 		}),
 		UserModule,
 	],
 	controllers: [AuthController],
 	providers: [AuthService, JwtStrategy],
-	exports: [AuthService],
+	exports: [PassportModule, JwtModule],
 })
 export class AuthModule {}

@@ -5,9 +5,15 @@ export class UserEntity {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@Column()
+	@Column({
+		type: 'varchar',
+		nullable: false,
+	})
 	public email: string;
 
-	@Column()
+	@Column({
+		type: 'varchar',
+		nullable: false,
+	})
 	public password: string;
 }

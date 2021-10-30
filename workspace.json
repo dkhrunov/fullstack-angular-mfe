@@ -441,6 +441,31 @@
 				}
 			}
 		},
+		"rxjs": {
+			"projectType": "library",
+			"root": "libs/rxjs",
+			"sourceRoot": "libs/rxjs/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/rxjs"],
+					"options": {
+						"jestConfig": "libs/rxjs/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/rxjs/src/**/*.ts",
+							"libs/rxjs/src/**/*.html"
+						]
+					}
+				}
+			}
+		},
 		"server": {
 			"root": "apps/server",
 			"sourceRoot": "apps/server/src",
