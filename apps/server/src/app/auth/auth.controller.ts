@@ -1,10 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import {
-	AccessTokenDto,
+	AuthTokensDto,
 	CreateUserDto,
 	CredentialsDto,
 } from '@nx-mfe/shared/data-access';
-import { Observable } from 'rxjs';
+import { Response } from 'express';
+import { Observable, tap } from 'rxjs';
 
 import { AuthService } from './auth.service';
 
@@ -14,15 +15,25 @@ export class AuthController {
 
 	@Post('/login')
 	public login(
-		@Body() credentials: CredentialsDto,
-	): Observable<AccessTokenDto> {
+		@Body() credentials: CredentialsDto
+	): Observable<AuthTokensDto> {
 		return this._authService.login(credentials);
 	}
 
 	// TODO remove (test)
 	// @UseGuards(JwtAuthGuard)
 	@Post('/register')
-	public register(@Body() user: CreateUserDto): Observable<AccessTokenDto> {
-		return this._authService.register(user);
+	public register(
+		@Res({ passthrough: true }) response: Response,
+		@Body() user: CreateUserDto
+	): Observable<AuthTokensDto> {
+		return this._authService.register(user).pipe(
+			tap((tokens) =>
+				response.cookie('refreshToken', tokens.refreshToken, {
+					maxAge: 14 * 24 * 60 * 60 * 1000,
+					httpOnly: true,
+				})
+			)
+		);
 	}
 }

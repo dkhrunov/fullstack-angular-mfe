@@ -10,7 +10,7 @@ import { UserEntity } from './user.entity';
 export class UserService {
 	constructor(
 		@InjectRepository(UserEntity)
-		private readonly _userRepository: Repository<UserEntity>,
+		private readonly _userRepository: Repository<UserEntity>
 	) {}
 
 	public findOne(id: number): Observable<UserEntity | undefined> {

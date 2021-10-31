@@ -16,4 +16,17 @@ export class UserEntity {
 		nullable: false,
 	})
 	public password: string;
+
+	@Column({
+		type: 'boolean',
+		nullable: false,
+		default: false,
+	})
+	public isConfirmed: boolean;
+
+	@Column({
+		type: 'varchar',
+		nullable: true,
+	})
+	public confirmationLink: string;
 }

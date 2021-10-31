@@ -1,2 +1,2 @@
-export * from './access-token.dto';
+export * from './auth-tokens.dto';
 export * from './credentials.dto';

@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UserEntity } from '../user/user.entity';
-
 @Module({
 	imports: [
 		TypeOrmModule.forRoot({
@@ -12,8 +10,8 @@ import { UserEntity } from '../user/user.entity';
 			username: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
 			database: process.env.DB_NAME,
-			entities: [UserEntity],
 			synchronize: !JSON.parse(process.env.PRODUCTION || 'false'),
+			autoLoadEntities: true,
 		}),
 	],
 	exports: [TypeOrmModule],

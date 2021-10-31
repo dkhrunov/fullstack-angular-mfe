@@ -3,8 +3,9 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app/app.module';
 
@@ -14,11 +15,18 @@ async function bootstrap() {
 
 	const app = await NestFactory.create(AppModule);
 
+	app.enableCors();
 	app.setGlobalPrefix(GLOBAL_PREFIX);
+	app.useGlobalPipes(
+		new ValidationPipe({
+			transform: true,
+		})
+	);
+	app.use(cookieParser());
 
 	await app.listen(PORT, () => {
 		Logger.log(
-			'Listening at http://localhost:' + PORT + '/' + GLOBAL_PREFIX,
+			'Listening at http://localhost:' + PORT + '/' + GLOBAL_PREFIX
 		);
 	});
 }
