@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from '@nx-mfe/shared/data-access';
-import { from, Observable } from 'rxjs';
-import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { DeepPartial, Repository } from 'typeorm';
+import * as uuid from 'uuid';
 
 import { UserEntity } from './user.entity';
 
@@ -13,21 +13,22 @@ export class UserService {
 		private readonly _userRepository: Repository<UserEntity>
 	) {}
 
-	public findOne(id: number): Observable<UserEntity | undefined> {
-		return from(this._userRepository.findOne(id))
-			.pipe
-			// map(AUTOMAPPER)
-			();
+	public findOne(id: number): Promise<UserEntity | undefined> {
+		return this._userRepository.findOne(id);
 	}
 
-	public findByEmail(email: string): Observable<UserEntity | undefined> {
-		return from(this._userRepository.findOne({ where: { email } }));
+	public findByEmail(email: string): Promise<UserEntity | undefined> {
+		return this._userRepository.findOne({ where: { email } });
 	}
 
-	public create(createUserDto: CreateUserDto): Observable<UserEntity> {
-		const user = this._userRepository.create(createUserDto);
+	public async create(userData: DeepPartial<UserEntity>): Promise<UserEntity> {
+		if (userData.password) {
+			userData.password = await bcrypt.hash(userData.password, Number(process.env.SALT_ROUNDS));
+		}
+		userData.confirmationLink = uuid.v4();
+		const user = this._userRepository.create(userData);
 
 		// TODO Add AutoMapper
-		return from(this._userRepository.save(user)).pipe();
+		return this._userRepository.save(user);
 	}
 }

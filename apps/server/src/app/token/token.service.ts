@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthTokensDto } from '@nx-mfe/shared/data-access';
-import { from, map, Observable, switchMap } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import { TokenEntity } from './token.entity';
@@ -15,9 +14,7 @@ export class TokenService {
 		private readonly _jwtService: JwtService
 	) {}
 
-	public generateTokens<P extends string | Record<string, any>>(
-		payload: P
-	): AuthTokensDto {
+	public generateTokens<P extends string | Record<string, any>>(payload: P): AuthTokensDto {
 		const accessToken = this._jwtService.sign(payload);
 		const refreshToken = this._jwtService.sign(payload, {
 			secret: process.env.JWT_REFRESH_SECRET,
@@ -27,30 +24,14 @@ export class TokenService {
 		return new AuthTokensDto(accessToken, refreshToken);
 	}
 
-	public saveRefreshToken(
-		userId: number,
-		refreshToken: string
-	): Observable<TokenEntity> {
-		return from(
-			this._tokenRepository.findOne({ where: { user: userId } })
-		).pipe(
-			switchMap((token) => {
-				if (token) {
-					return from(
-						this._tokenRepository.update(token.id, { refreshToken })
-					).pipe(
-						map(
-							(updateResult) => updateResult.raw[0] as TokenEntity
-						)
-					);
-				}
+	public async saveRefreshToken(userId: number, refreshToken: string): Promise<TokenEntity> {
+		const token = await this._tokenRepository.findOne({ where: { user: userId } });
+		if (token) {
+			const updateResult = await this._tokenRepository.update(token.id, { refreshToken });
+			return updateResult.raw[0] as TokenEntity;
+		}
 
-				const createdToken = this._tokenRepository.create({
-					userId,
-					refreshToken,
-				});
-				return from(this._tokenRepository.save(createdToken));
-			})
-		);
+		const createdToken = this._tokenRepository.create({ userId, refreshToken });
+		return this._tokenRepository.save(createdToken);
 	}
 }

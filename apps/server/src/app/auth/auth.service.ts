@@ -1,22 +1,9 @@
-import {
-	ConflictException,
-	Injectable,
-	UnauthorizedException,
-} from '@nestjs/common';
-import { exception } from '@nx-mfe/rxjs';
-import {
-	AuthTokensDto,
-	CreateUserDto,
-	CredentialsDto,
-	JwtTokenPayload,
-} from '@nx-mfe/shared/data-access';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { AuthTokensDto, CredentialsDto, JwtTokenPayload, RegistrationUserDto } from '@nx-mfe/shared/data-access';
 import * as bcrypt from 'bcrypt';
-import { from, map, Observable, switchMap, tap } from 'rxjs';
-import * as uuid from 'uuid';
 
 import { MailService } from '../mail/mail.service';
 import { TokenService } from '../token/token.service';
-import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -27,85 +14,38 @@ export class AuthService {
 		private readonly _tokenService: TokenService
 	) {}
 
-	public login(credentials: CredentialsDto): Observable<AuthTokensDto> {
-		return this._userService.findByEmail(credentials.email).pipe(
-			exception(
-				(userEntity) => !userEntity,
-				new UnauthorizedException({ message: 'Некоррекный пароль' })
-			),
-			switchMap((userEntity) =>
-				this._comparePasswords(credentials, userEntity as UserEntity)
-			),
-			map((userEntity) => {
-				const payload = new JwtTokenPayload(userEntity);
-				return this._tokenService.generateTokens(payload);
-			})
-		);
+	public async login(credentials: CredentialsDto): Promise<AuthTokensDto> {
+		const userEntity = await this._userService.findByEmail(credentials.email);
+		if (!userEntity) {
+			throw new UnauthorizedException(`Пользователь с email - ${credentials.email} не найден`);
+		}
+
+		const isPasswordCorrect = await bcrypt.compare(credentials.password, userEntity.password);
+		if (!isPasswordCorrect) {
+			throw new UnauthorizedException('Некоррекный пароль');
+		}
+
+		const payload: JwtTokenPayload = { ...userEntity };
+		return this._tokenService.generateTokens(payload);
 	}
 
-	public register(user: CreateUserDto): Observable<AuthTokensDto> {
-		return this._userService.findByEmail(user.email).pipe(
-			exception(
-				(candidate) => Boolean(candidate),
-				new ConflictException(
-					'Пользователь с таким email уже существует'
-				)
-			),
-			switchMap(() => this._createUser(user)),
-			tap(({ email, confirmationLink }) =>
-				this._mailService.sendConfirmationMail(email, confirmationLink)
-			),
-			map((userEntity) => {
-				const payload: JwtTokenPayload = {
-					id: userEntity.id,
-					email: userEntity.email,
-					isConfirmed: userEntity.isConfirmed,
-				};
-				return {
-					user: userEntity,
-					tokens: this._tokenService.generateTokens(payload),
-				};
-			}),
-			tap(({ user, tokens }) =>
-				this._tokenService
-					.saveRefreshToken(user.id, tokens.refreshToken)
-					.subscribe()
-			),
-			map(({ tokens }) => tokens)
-		);
-	}
+	public async register(user: RegistrationUserDto): Promise<AuthTokensDto> {
+		const candidate = await this._userService.findByEmail(user.email);
+		if (candidate) {
+			throw new ConflictException(`Пользователь с данным email - ${user.email} уже существует`);
+		}
 
-	private _comparePasswords(
-		credentials: CredentialsDto,
-		userEntity: UserEntity
-	): Observable<UserEntity> {
-		return from(
-			bcrypt.compare(credentials.password, userEntity.password)
-		).pipe(
-			exception(
-				(passwordEquals) => !passwordEquals,
-				new UnauthorizedException({ message: 'Некоррекный пароль' })
-			),
-			map(() => userEntity)
-		);
-	}
+		const userEntity = await this._userService.create(user);
+		await this._mailService.sendConfirmationMail(userEntity.email, userEntity.confirmationLink);
 
-	// TODO: to userService
-	private _createUser(user: CreateUserDto): Observable<UserEntity> {
-		return from(
-			bcrypt.hash(user.password, Number(process.env.SALT_ROUNDS))
-		).pipe(
-			map(
-				(hashedPassword) =>
-					({
-						...user,
-						password: hashedPassword,
-						confirmationLink: uuid.v4(),
-					} as UserEntity)
-			),
-			switchMap((userWithHashedPassword) =>
-				this._userService.create(userWithHashedPassword)
-			)
-		);
+		const payload: JwtTokenPayload = {
+			id: userEntity.id,
+			email: userEntity.email,
+			isConfirmed: userEntity.isConfirmed,
+		};
+		const tokens = this._tokenService.generateTokens(payload);
+		await this._tokenService.saveRefreshToken(userEntity.id, tokens.refreshToken);
+
+		return tokens;
 	}
 }
