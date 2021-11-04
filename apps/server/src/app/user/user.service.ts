@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Repository, UpdateResult } from 'typeorm';
 import * as uuid from 'uuid';
 
 import { UserEntity } from './user.entity';
@@ -13,12 +13,16 @@ export class UserService {
 		private readonly _userRepository: Repository<UserEntity>
 	) {}
 
-	public findOne(id: number): Promise<UserEntity | undefined> {
+	public getById(id: number): Promise<UserEntity | undefined> {
 		return this._userRepository.findOne(id);
 	}
 
-	public findByEmail(email: string): Promise<UserEntity | undefined> {
+	public getByEmail(email: string): Promise<UserEntity | undefined> {
 		return this._userRepository.findOne({ where: { email } });
+	}
+
+	public getByConfirmationLink(confirmationLink: string): Promise<UserEntity | undefined> {
+		return this._userRepository.findOne({ where: { confirmationLink } });
 	}
 
 	public async create(userData: DeepPartial<UserEntity>): Promise<UserEntity> {
@@ -30,5 +34,9 @@ export class UserService {
 
 		// TODO Add AutoMapper
 		return this._userRepository.save(user);
+	}
+
+	public update(id: number, userData: DeepPartial<UserEntity>): Promise<UpdateResult> {
+		return this._userRepository.update(id, userData);
 	}
 }

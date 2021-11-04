@@ -15,17 +15,23 @@ export class TokenService {
 	) {}
 
 	public generateTokens<P extends string | Record<string, any>>(payload: P): AuthTokensDto {
-		const accessToken = this._jwtService.sign(payload);
+		const accessToken = this._jwtService.sign(payload, {
+			secret: process.env.JWT_ACCESS_SECRET,
+			expiresIn: Number(process.env.JWT_ACCESS_EXPIRES_IN),
+		});
+
 		const refreshToken = this._jwtService.sign(payload, {
 			secret: process.env.JWT_REFRESH_SECRET,
-			expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+			expiresIn: Number(process.env.JWT_REFRESH_EXPIRES_IN),
 		});
 
 		return new AuthTokensDto(accessToken, refreshToken);
 	}
 
+	// TODO: продумать очистку
 	public async saveRefreshToken(userId: number, refreshToken: string): Promise<TokenEntity> {
-		const token = await this._tokenRepository.findOne({ where: { user: userId } });
+		const token = await this._tokenRepository.findOne({ where: { userId } });
+
 		if (token) {
 			const updateResult = await this._tokenRepository.update(token.id, { refreshToken });
 			return updateResult.raw[0] as TokenEntity;

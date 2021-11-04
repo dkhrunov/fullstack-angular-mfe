@@ -18,10 +18,7 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": [
-							"libs/auth/login-form/src/**/*.ts",
-							"libs/auth/login-form/src/**/*.html"
-						]
+						"lintFilePatterns": ["libs/auth/login-form/src/**/*.ts", "libs/auth/login-form/src/**/*.html"]
 					}
 				}
 			}
@@ -42,10 +39,7 @@
 						"polyfills": "apps/client/dashboard/src/polyfills.ts",
 						"tsConfig": "apps/client/dashboard/tsconfig.app.json",
 						"inlineStyleLanguage": "scss",
-						"assets": [
-							"apps/client/dashboard/src/favicon.ico",
-							"apps/client/dashboard/src/assets"
-						],
+						"assets": ["apps/client/dashboard/src/favicon.ico", "apps/client/dashboard/src/assets"],
 						"styles": ["apps/client/dashboard/src/styles.scss"],
 						"scripts": [],
 						"customWebpackConfig": {
@@ -112,10 +106,7 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": [
-							"apps/client/dashboard/src/**/*.ts",
-							"apps/client/dashboard/src/**/*.html"
-						]
+						"lintFilePatterns": ["apps/client/dashboard/src/**/*.ts", "apps/client/dashboard/src/**/*.html"]
 					}
 				},
 				"test": {
@@ -149,9 +140,7 @@
 					"executor": "@nrwl/linter:eslint",
 					"outputs": ["{options.outputFile}"],
 					"options": {
-						"lintFilePatterns": [
-							"apps/client/dashboard-e2e/**/*.{js,ts}"
-						]
+						"lintFilePatterns": ["apps/client/dashboard-e2e/**/*.{js,ts}"]
 					}
 				}
 			}
@@ -181,10 +170,7 @@
 								"output": "/assets/"
 							}
 						],
-						"styles": [
-							"apps/client/login/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
-						],
+						"styles": ["apps/client/login/src/styles.scss", "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"],
 						"scripts": [],
 						"customWebpackConfig": {
 							"path": "apps/client/login/webpack.config.js"
@@ -250,10 +236,7 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": [
-							"apps/client/login/src/**/*.ts",
-							"apps/client/login/src/**/*.html"
-						]
+						"lintFilePatterns": ["apps/client/login/src/**/*.ts", "apps/client/login/src/**/*.html"]
 					}
 				},
 				"test": {
@@ -287,9 +270,7 @@
 					"executor": "@nrwl/linter:eslint",
 					"outputs": ["{options.outputFile}"],
 					"options": {
-						"lintFilePatterns": [
-							"apps/client/login-e2e/**/*.{js,ts}"
-						]
+						"lintFilePatterns": ["apps/client/login-e2e/**/*.{js,ts}"]
 					}
 				}
 			}
@@ -319,10 +300,7 @@
 								"output": "/assets/"
 							}
 						],
-						"styles": [
-							"apps/client/shell/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
-						],
+						"styles": ["apps/client/shell/src/styles.scss", "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"],
 						"scripts": [],
 						"customWebpackConfig": {
 							"path": "apps/client/shell/webpack.config.js"
@@ -386,10 +364,7 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": [
-							"apps/client/shell/src/**/*.ts",
-							"apps/client/shell/src/**/*.html"
-						]
+						"lintFilePatterns": ["apps/client/shell/src/**/*.ts", "apps/client/shell/src/**/*.html"]
 					}
 				},
 				"test": {
@@ -403,11 +378,7 @@
 				"serve-mfe": {
 					"executor": "@nrwl/workspace:run-commands",
 					"options": {
-						"commands": [
-							"nx serve client-shell",
-							"nx serve client-login",
-							"nx serve client-dashboard"
-						]
+						"commands": ["nx serve client-shell", "nx serve client-login", "nx serve client-dashboard"]
 					}
 				}
 			}
@@ -434,9 +405,7 @@
 					"executor": "@nrwl/linter:eslint",
 					"outputs": ["{options.outputFile}"],
 					"options": {
-						"lintFilePatterns": [
-							"apps/client/shell-e2e/**/*.{js,ts}"
-						]
+						"lintFilePatterns": ["apps/client/shell-e2e/**/*.{js,ts}"]
 					}
 				}
 			}
@@ -458,10 +427,7 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": [
-							"libs/rxjs/src/**/*.ts",
-							"libs/rxjs/src/**/*.html"
-						]
+						"lintFilePatterns": ["libs/rxjs/src/**/*.ts", "libs/rxjs/src/**/*.html"]
 					}
 				}
 			}
@@ -517,6 +483,28 @@
 				}
 			}
 		},
+		"server-mailer": {
+			"root": "libs/server/mailer",
+			"sourceRoot": "libs/server/mailer/src",
+			"projectType": "library",
+			"targets": {
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"outputs": ["{options.outputFile}"],
+					"options": {
+						"lintFilePatterns": ["libs/server/mailer/**/*.ts"]
+					}
+				},
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/server/mailer"],
+					"options": {
+						"jestConfig": "libs/server/mailer/jest.config.js",
+						"passWithNoTests": true
+					}
+				}
+			}
+		},
 		"shared-data-access": {
 			"projectType": "library",
 			"root": "libs/shared/data-access",
@@ -534,10 +522,7 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": [
-							"libs/shared/data-access/src/**/*.ts",
-							"libs/shared/data-access/src/**/*.html"
-						]
+						"lintFilePatterns": ["libs/shared/data-access/src/**/*.ts", "libs/shared/data-access/src/**/*.html"]
 					}
 				}
 			}
@@ -584,10 +569,7 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": [
-							"libs/ui/src/**/*.ts",
-							"libs/ui/src/**/*.html"
-						]
+						"lintFilePatterns": ["libs/ui/src/**/*.ts", "libs/ui/src/**/*.html"]
 					}
 				}
 			}

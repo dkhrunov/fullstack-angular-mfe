@@ -57,6 +57,9 @@
 		"server": {
 			"tags": []
 		},
+		"server-mailer": {
+			"tags": []
+		},
 		"shared-data-access": {
 			"tags": []
 		},

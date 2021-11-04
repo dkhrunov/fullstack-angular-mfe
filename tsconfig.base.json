@@ -17,12 +17,9 @@
 		"paths": {
 			"@nx-mfe/auth-login-form": ["libs/auth/login-form/src/index.ts"],
 			"@nx-mfe/rxjs": ["libs/rxjs/src/index.ts"],
-			"@nx-mfe/shared/data-access": [
-				"libs/shared/data-access/src/index.ts"
-			],
-			"@nx-mfe/shared/data-access-user": [
-				"libs/shared/data-access-user/src/index.ts"
-			],
+			"@nx-mfe/server/mailer": ["libs/server/mailer/src/index.ts"],
+			"@nx-mfe/shared/data-access": ["libs/shared/data-access/src/index.ts"],
+			"@nx-mfe/shared/data-access-user": ["libs/shared/data-access-user/src/index.ts"],
 			"@nx-mfe/ui": ["libs/ui/src/index.ts"]
 		},
 		"downlevelIteration": true,
