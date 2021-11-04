@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
-import { AuthTokensDto, CredentialsDto, RegistrationUserDto } from '@nx-mfe/shared/data-access';
-import { Response } from 'express';
+import { Body, Controller, Get, HttpCode, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthTokensDto, CredentialsDto, RegistrationCredentialsDto } from '@nx-mfe/shared/data-access';
+import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,7 @@ export class AuthController {
 		@Body() credentials: CredentialsDto
 	): Promise<AuthTokensDto> {
 		const tokens = await this._authService.login(credentials);
+
 		response.cookie('refreshToken', tokens.refreshToken, {
 			maxAge: Number(process.env.JWT_REFRESH_EXPIRES_IN),
 			httpOnly: true,
@@ -22,10 +24,8 @@ export class AuthController {
 		return tokens;
 	}
 
-	// TODO remove (test)
-	// @UseGuards(JwtAuthGuard)
 	@Post('/register')
-	public async register(@Body() registrationUserData: RegistrationUserDto): Promise<void> {
+	public async register(@Body() registrationUserData: RegistrationCredentialsDto): Promise<void> {
 		return await this._authService.register(registrationUserData);
 	}
 
@@ -34,5 +34,15 @@ export class AuthController {
 		await this._authService.confirmRegistration(link);
 
 		return res.redirect(String(process.env.CLIENT_URL));
+	}
+
+	@Post('/logout')
+	@UseGuards(JwtAuthGuard)
+	@HttpCode(200)
+	public async logout(@Req() request: Request, @Res() response: Response): Promise<void> {
+		await this._authService.logout(request.cookies.refreshToken);
+
+		response.clearCookie('refreshToken');
+		response.send();
 	}
 }

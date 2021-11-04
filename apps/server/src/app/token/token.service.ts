@@ -40,4 +40,8 @@ export class TokenService {
 		const createdToken = this._tokenRepository.create({ userId, refreshToken });
 		return this._tokenRepository.save(createdToken);
 	}
+
+	public async removeRefreshToken(refreshToken: string): Promise<void> {
+		await this._tokenRepository.delete({ refreshToken });
+	}
 }

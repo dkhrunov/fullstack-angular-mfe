@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { DeepPartial, Repository, UpdateResult } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
 import { UserEntity } from './user.entity';
@@ -36,7 +36,7 @@ export class UserService {
 		return this._userRepository.save(user);
 	}
 
-	public update(id: number, userData: DeepPartial<UserEntity>): Promise<UpdateResult> {
-		return this._userRepository.update(id, userData);
+	public async update(id: number, userData: DeepPartial<UserEntity>): Promise<void> {
+		await this._userRepository.update(id, userData);
 	}
 }
