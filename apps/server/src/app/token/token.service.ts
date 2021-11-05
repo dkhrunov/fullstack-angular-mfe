@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthTokensDto } from '@nx-mfe/shared/data-access';
 import { Repository } from 'typeorm';
@@ -28,7 +29,6 @@ export class TokenService {
 		return new AuthTokensDto(accessToken, refreshToken);
 	}
 
-	// TODO: продумать очистку
 	public async saveRefreshToken(userId: number, refreshToken: string): Promise<TokenEntity> {
 		const token = await this._tokenRepository.findOne({ where: { userId } });
 
@@ -41,7 +41,25 @@ export class TokenService {
 		return this._tokenRepository.save(createdToken);
 	}
 
-	public async removeRefreshToken(refreshToken: string): Promise<void> {
+	public async deleteRefreshToken(refreshToken: string): Promise<void> {
 		await this._tokenRepository.delete({ refreshToken });
+	}
+
+	@Cron(CronExpression.EVERY_WEEK, { timeZone: 'Europe/Moscow' })
+	protected async removeExpiresRefreshTokens(): Promise<void> {
+		const tokens = await this._tokenRepository.find();
+		const invalidTokens: TokenEntity[] = [];
+
+		tokens.forEach((token) => {
+			try {
+				this._jwtService.verify(token.refreshToken, { secret: process.env.JWT_REFRESH_SECRET });
+			} catch (error) {
+				invalidTokens.push(token);
+			}
+		});
+
+		if (invalidTokens.length > 0) {
+			await this._tokenRepository.remove(invalidTokens);
+		}
 	}
 }

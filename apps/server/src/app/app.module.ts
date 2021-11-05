@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nx-mfe/server/mailer';
 
@@ -32,6 +33,7 @@ import { UserModule } from './user/user.module';
 				},
 			},
 		}),
+		ScheduleModule.forRoot(),
 		AuthModule,
 		UserModule,
 		TokenModule,
