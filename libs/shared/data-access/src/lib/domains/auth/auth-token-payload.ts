@@ -1,4 +1,4 @@
-export class JwtTokenPayload {
+export class AuthTokenPayload {
 	public id: number;
 
 	public email: string;

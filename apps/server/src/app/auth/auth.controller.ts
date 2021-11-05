@@ -10,16 +10,9 @@ export class AuthController {
 	constructor(private readonly _authService: AuthService) {}
 
 	@Post('/login')
-	public async login(
-		@Res({ passthrough: true }) response: Response,
-		@Body() credentials: CredentialsDto
-	): Promise<AuthTokensDto> {
+	public async login(@Res({ passthrough: true }) res: Response, @Body() credentials: CredentialsDto): Promise<AuthTokensDto> {
 		const tokens = await this._authService.login(credentials);
-
-		response.cookie('refreshToken', tokens.refreshToken, {
-			maxAge: Number(process.env.JWT_REFRESH_EXPIRES_IN),
-			httpOnly: true,
-		});
+		this._setRefreshTokenInCookie(res, tokens.refreshToken);
 
 		return tokens;
 	}
@@ -30,7 +23,7 @@ export class AuthController {
 	}
 
 	@Get('/register/confirmation/:link')
-	public async registerConfirm(@Param('link') link: string, @Res() res: Response): Promise<void> {
+	public async confirmRegistration(@Param('link') link: string, @Res() res: Response): Promise<void> {
 		await this._authService.confirmRegistration(link);
 
 		return res.redirect(String(process.env.CLIENT_URL));
@@ -39,10 +32,27 @@ export class AuthController {
 	@Post('/logout')
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
-	public async logout(@Req() request: Request, @Res() response: Response): Promise<void> {
-		await this._authService.logout(request.cookies.refreshToken);
+	public async logout(@Req() req: Request, @Res() res: Response): Promise<Response> {
+		await this._authService.logout(req.cookies.refreshToken);
+		res.clearCookie('refreshToken');
 
-		response.clearCookie('refreshToken');
-		response.send();
+		return res.send();
+	}
+
+	@Get('/refresh')
+	@UseGuards(JwtAuthGuard)
+	@HttpCode(200)
+	public async refresh(@Req() req: Request, @Res() res: Response): Promise<Response<AuthTokensDto>> {
+		const tokens = await this._authService.refresh(req.cookies.refreshToken);
+		this._setRefreshTokenInCookie(res, tokens.refreshToken);
+
+		return res.json(tokens);
+	}
+
+	private _setRefreshTokenInCookie(res: Response, refreshToken: string): void {
+		res.cookie('refreshToken', refreshToken, {
+			maxAge: Number(process.env.JWT_REFRESH_EXPIRES_IN),
+			httpOnly: true,
+		});
 	}
 }

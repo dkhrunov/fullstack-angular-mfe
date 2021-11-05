@@ -483,6 +483,28 @@
 				}
 			}
 		},
+		"server-domains": {
+			"root": "libs/server/domains",
+			"sourceRoot": "libs/server/domains/src",
+			"projectType": "library",
+			"targets": {
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"outputs": ["{options.outputFile}"],
+					"options": {
+						"lintFilePatterns": ["libs/server/domains/**/*.ts"]
+					}
+				},
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/server/domains"],
+					"options": {
+						"jestConfig": "libs/server/domains/jest.config.js",
+						"passWithNoTests": true
+					}
+				}
+			}
+		},
 		"server-mailer": {
 			"root": "libs/server/mailer",
 			"sourceRoot": "libs/server/mailer/src",

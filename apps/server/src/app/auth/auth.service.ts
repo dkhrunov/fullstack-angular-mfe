@@ -1,9 +1,12 @@
-import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthTokensDto, CredentialsDto, JwtTokenPayload, RegistrationCredentialsDto } from '@nx-mfe/shared/data-access';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { RefreshToken } from '@nx-mfe/server/domains';
+import { AuthTokenPayload, AuthTokensDto, CredentialsDto, RegistrationCredentialsDto } from '@nx-mfe/shared/data-access';
 import * as bcrypt from 'bcrypt';
 
 import { MailService } from '../mail/mail.service';
 import { TokenService } from '../token/token.service';
+import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -11,7 +14,8 @@ export class AuthService {
 	constructor(
 		private readonly _userService: UserService,
 		private readonly _mailService: MailService,
-		private readonly _tokenService: TokenService
+		private readonly _tokenService: TokenService,
+		private readonly _jwtService: JwtService
 	) {}
 
 	public async login(credentials: CredentialsDto): Promise<AuthTokensDto> {
@@ -19,7 +23,6 @@ export class AuthService {
 		if (!user) {
 			throw new UnauthorizedException(`Пользователь ${credentials.email} не найден`);
 		}
-
 		if (!user.isConfirmed) {
 			throw new UnauthorizedException(`Пользователь ${credentials.email} не завершил регистрацию`);
 		}
@@ -29,12 +32,7 @@ export class AuthService {
 			throw new UnauthorizedException('Некоррекный пароль');
 		}
 
-		const payload: JwtTokenPayload = {
-			id: user.id,
-			email: user.email,
-			isConfirmed: user.isConfirmed,
-		};
-		const tokens = this._tokenService.generateTokens(payload);
+		const tokens = this._generateAuthTokens(user);
 		await this._tokenService.saveRefreshToken(user.id, tokens.refreshToken);
 
 		return tokens;
@@ -56,8 +54,8 @@ export class AuthService {
 
 	public async confirmRegistration(confirmationLink: string): Promise<void> {
 		const user = await this._userService.getByConfirmationLink(confirmationLink);
-
 		if (!user) {
+			// TODO: редирект на страницу с ошибкой на фронте.
 			throw new BadRequestException('Некорректная ссылка для подтверждения регистрации');
 		}
 
@@ -65,6 +63,44 @@ export class AuthService {
 	}
 
 	public async logout(refreshToken: string): Promise<void> {
+		if (!refreshToken) {
+			throw new UnauthorizedException();
+		}
+
 		await this._tokenService.deleteRefreshToken(refreshToken);
+	}
+
+	public async refresh(refreshToken: string): Promise<AuthTokensDto> {
+		if (!refreshToken) {
+			throw new UnauthorizedException();
+		}
+
+		const token = new RefreshToken(refreshToken, this._jwtService);
+
+		try {
+			token.verify();
+		} catch (error) {
+			throw new UnauthorizedException(error.message);
+		}
+
+		const user = await this._userService.getById(token.decode().id);
+		if (!user) {
+			throw new NotFoundException(`Пользователь не найден`);
+		}
+
+		const tokens = this._generateAuthTokens(user);
+		await this._tokenService.upsertRefreshToken(user.id, refreshToken, tokens.refreshToken);
+
+		return tokens;
+	}
+
+	private _generateAuthTokens(user: UserEntity): AuthTokensDto {
+		const payload: AuthTokenPayload = {
+			id: user.id,
+			email: user.email,
+			isConfirmed: user.isConfirmed,
+		};
+
+		return this._tokenService.generateTokens(payload);
 	}
 }

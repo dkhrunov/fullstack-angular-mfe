@@ -3,11 +3,11 @@ import { IsJWT, IsNotEmpty } from 'class-validator';
 export class AuthTokensDto {
 	@IsJWT()
 	@IsNotEmpty()
-	public accessToken: string;
+	public readonly accessToken: string;
 
 	@IsJWT()
 	@IsNotEmpty()
-	public refreshToken: string;
+	public readonly refreshToken: string;
 
 	constructor(accessToken: string, refreshToken: string) {
 		this.accessToken = accessToken;

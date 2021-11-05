@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PassportStrategy } from '@nestjs/passport';
-import { JwtTokenPayload } from '@nx-mfe/shared/data-access';
+import { AuthTokenPayload } from '@nx-mfe/shared/data-access';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
-	public async validate(payload: JwtTokenPayload): Promise<JwtTokenPayload> {
+	public async validate(payload: AuthTokenPayload): Promise<AuthTokenPayload> {
 		// TODO: проверка на отзыв токена
 		return {
 			id: payload.id,

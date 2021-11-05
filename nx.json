@@ -57,6 +57,9 @@
 		"server": {
 			"tags": []
 		},
+		"server-domains": {
+			"tags": []
+		},
 		"server-mailer": {
 			"tags": []
 		},

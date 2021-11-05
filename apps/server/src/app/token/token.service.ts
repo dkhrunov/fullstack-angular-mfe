@@ -15,7 +15,8 @@ export class TokenService {
 		private readonly _jwtService: JwtService
 	) {}
 
-	public generateTokens<P extends string | Record<string, any>>(payload: P): AuthTokensDto {
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	public generateTokens<P extends Object>(payload: P): AuthTokensDto {
 		const accessToken = this._jwtService.sign(payload, {
 			secret: process.env.JWT_ACCESS_SECRET,
 			expiresIn: Number(process.env.JWT_ACCESS_EXPIRES_IN),
@@ -29,14 +30,17 @@ export class TokenService {
 		return new AuthTokensDto(accessToken, refreshToken);
 	}
 
-	public async saveRefreshToken(userId: number, refreshToken: string): Promise<TokenEntity> {
-		const token = await this._tokenRepository.findOne({ where: { userId } });
-
+	public async upsertRefreshToken(userId: number, oldToken: string, newToken: string): Promise<TokenEntity> {
+		const token = await this._tokenRepository.findOne({ where: { refreshToken: oldToken } });
 		if (token) {
-			const updateResult = await this._tokenRepository.update(token.id, { refreshToken });
+			const updateResult = await this._tokenRepository.update(token.id, { refreshToken: newToken });
 			return updateResult.raw[0] as TokenEntity;
 		}
 
+		return await this.saveRefreshToken(userId, newToken);
+	}
+
+	public async saveRefreshToken(userId: number, refreshToken: string): Promise<TokenEntity> {
 		const createdToken = this._tokenRepository.create({ userId, refreshToken });
 		return this._tokenRepository.save(createdToken);
 	}

@@ -1,1 +1,1 @@
-export * from './jwt-token-payload';
+export * from './auth-token-payload';
