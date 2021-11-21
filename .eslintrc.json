@@ -9,7 +9,7 @@
 		"@typescript-eslint/no-inferrable-types": ["off"],
 		"@angular-eslint/no-inputs-metadata-property": ["off"],
 		"@angular-eslint/no-host-metadata-property": ["off"],
-		"max-len": ["error", 130],
+		"max-len": ["error", 80],
 		"@angular-eslint/no-input-rename": ["off"],
 		"@angular-eslint/component-class-suffix": ["off"],
 		"@angular-eslint/directive-class-suffix": ["off"],

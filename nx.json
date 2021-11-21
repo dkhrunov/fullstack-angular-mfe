@@ -30,6 +30,15 @@
 		"auth-login-form": {
 			"tags": []
 		},
+		"client-auth": {
+			"tags": []
+		},
+		"client-config": {
+			"tags": []
+		},
+		"client-core": {
+			"tags": []
+		},
 		"client-dashboard": {
 			"tags": []
 		},
@@ -51,7 +60,7 @@
 			"tags": [],
 			"implicitDependencies": ["client-shell"]
 		},
-		"rxjs": {
+		"client-token-manager": {
 			"tags": []
 		},
 		"server": {
@@ -64,12 +73,6 @@
 			"tags": []
 		},
 		"shared-data-access": {
-			"tags": []
-		},
-		"shared-data-access-user": {
-			"tags": []
-		},
-		"ui": {
 			"tags": []
 		}
 	}

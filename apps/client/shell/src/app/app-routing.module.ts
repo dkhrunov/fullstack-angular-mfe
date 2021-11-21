@@ -1,20 +1,31 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/module-federation';
-
-import { AuthorizedGuard } from './guards/authorized.guard';
-import { UnauthorizedGuard } from './guards/unauthorized.guard';
+import { AuthGuard, UnauthGuard } from '@nx-mfe/client-auth';
 
 const routes: Routes = [
 	{
-		path: 'login',
-		loadChildren: () =>
-			loadRemoteModule({
-				remoteEntry: 'http://localhost:4201/remoteEntry.js',
-				remoteName: 'login',
-				exposedModule: './Module',
-			}).then((m) => m.RemoteEntryModule),
-		canLoad: [UnauthorizedGuard],
+		path: 'auth',
+		children: [
+			{
+				path: 'login',
+				loadChildren: () =>
+					loadRemoteModule({
+						remoteEntry: 'http://localhost:4201/remoteEntry.js',
+						remoteName: 'login',
+						exposedModule: 'EntryModule',
+					}).then((m) => m.RemoteEntryModule),
+				canLoad: [UnauthGuard],
+				canActivate: [UnauthGuard],
+			},
+			// {
+			// 	path: 'register',
+			// },
+			{
+				path: '**',
+				redirectTo: '/dashboard',
+			},
+		],
 	},
 	{
 		path: 'dashboard',
@@ -22,19 +33,20 @@ const routes: Routes = [
 			loadRemoteModule({
 				remoteEntry: 'http://localhost:4202/remoteEntry.js',
 				remoteName: 'dashboard',
-				exposedModule: './Module',
+				exposedModule: 'EntryModule',
 			}).then((m) => m.RemoteEntryModule),
-		canLoad: [AuthorizedGuard],
+		canLoad: [AuthGuard],
+		canActivate: [AuthGuard],
 	},
 	{
 		path: '',
 		pathMatch: 'full',
-		redirectTo: 'dashboard',
+		redirectTo: '/dashboard',
 	},
 	// TODO: add 404 page
 	{
 		path: '**',
-		redirectTo: 'dashboard',
+		redirectTo: '/dashboard',
 	},
 ];
 

@@ -1,50 +1,5 @@
-const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
-const mf = require('@angular-architects/module-federation/webpack');
-const path = require('path');
+const createMfeWebpackConfig = require('../../../tools/webpack/create-mfe-webpack-config');
 
-const sharedMappings = new mf.SharedMappings();
-sharedMappings.register(path.join(__dirname, '../../../tsconfig.base.json'), [
-	'@nx-mfe/shared/data-access-user',
-]);
-
-module.exports = {
-	output: {
-		uniqueName: 'login',
-		publicPath: 'auto',
-	},
-	optimization: {
-		runtimeChunk: false,
-		minimize: false,
-	},
-	resolve: {
-		alias: {
-			...sharedMappings.getAliases(),
-		},
-	},
-	plugins: [
-		new ModuleFederationPlugin({
-			name: 'login',
-			filename: 'remoteEntry.js',
-			exposes: {
-				'./Module':
-					'apps/client/login/src/app/remote-entry/entry.module.ts',
-			},
-			shared: {
-				'@angular/core': { singleton: true, strictVersion: true },
-				'@angular/common': { singleton: true, strictVersion: true },
-				'@angular/common/http': {
-					singleton: true,
-					strictVersion: true,
-				},
-				'@angular/router': { singleton: true, strictVersion: true },
-				rxjs: {
-					singleton: true,
-					strictVersion: true,
-					requiredVersion: '7.4.0',
-				},
-				...sharedMappings.getDescriptors(),
-			},
-		}),
-		sharedMappings.getPlugin(),
-	],
-};
+module.exports = createMfeWebpackConfig('login', {
+	EntryModule: 'apps/client/login/src/app/remote-entry/entry.module.ts',
+});

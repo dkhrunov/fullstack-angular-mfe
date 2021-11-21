@@ -2,5 +2,5 @@
 	"singleQuote": true,
 	"arrowParens": "always",
 	"proseWrap": "preserve",
-	"printWidth": 130
+	"printWidth": 80
 }

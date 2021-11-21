@@ -18,7 +18,85 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": ["libs/auth/login-form/src/**/*.ts", "libs/auth/login-form/src/**/*.html"]
+						"lintFilePatterns": [
+							"libs/auth/login-form/src/**/*.ts",
+							"libs/auth/login-form/src/**/*.html"
+						]
+					}
+				}
+			}
+		},
+		"client-auth": {
+			"projectType": "library",
+			"root": "libs/client/auth",
+			"sourceRoot": "libs/client/auth/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/client/auth"],
+					"options": {
+						"jestConfig": "libs/client/auth/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/client/auth/src/**/*.ts",
+							"libs/client/auth/src/**/*.html"
+						]
+					}
+				}
+			}
+		},
+		"client-config": {
+			"projectType": "library",
+			"root": "libs/client/config",
+			"sourceRoot": "libs/client/config/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/client/config"],
+					"options": {
+						"jestConfig": "libs/client/config/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/client/config/src/**/*.ts",
+							"libs/client/config/src/**/*.html"
+						]
+					}
+				}
+			}
+		},
+		"client-core": {
+			"projectType": "library",
+			"root": "libs/client/core",
+			"sourceRoot": "libs/client/core/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/client/core"],
+					"options": {
+						"jestConfig": "libs/client/core/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/client/core/src/**/*.ts",
+							"libs/client/core/src/**/*.html"
+						]
 					}
 				}
 			}
@@ -39,8 +117,14 @@
 						"polyfills": "apps/client/dashboard/src/polyfills.ts",
 						"tsConfig": "apps/client/dashboard/tsconfig.app.json",
 						"inlineStyleLanguage": "scss",
-						"assets": ["apps/client/dashboard/src/favicon.ico", "apps/client/dashboard/src/assets"],
-						"styles": ["apps/client/dashboard/src/styles.scss"],
+						"assets": [
+							"apps/client/dashboard/src/favicon.ico",
+							"apps/client/dashboard/src/assets"
+						],
+						"styles": [
+							"apps/client/dashboard/src/styles.scss",
+							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css"
+						],
 						"scripts": [],
 						"customWebpackConfig": {
 							"path": "apps/client/dashboard/webpack.config.js"
@@ -106,7 +190,10 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": ["apps/client/dashboard/src/**/*.ts", "apps/client/dashboard/src/**/*.html"]
+						"lintFilePatterns": [
+							"apps/client/dashboard/src/**/*.ts",
+							"apps/client/dashboard/src/**/*.html"
+						]
 					}
 				},
 				"test": {
@@ -140,7 +227,9 @@
 					"executor": "@nrwl/linter:eslint",
 					"outputs": ["{options.outputFile}"],
 					"options": {
-						"lintFilePatterns": ["apps/client/dashboard-e2e/**/*.{js,ts}"]
+						"lintFilePatterns": [
+							"apps/client/dashboard-e2e/**/*.{js,ts}"
+						]
 					}
 				}
 			}
@@ -170,7 +259,10 @@
 								"output": "/assets/"
 							}
 						],
-						"styles": ["apps/client/login/src/styles.scss", "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"],
+						"styles": [
+							"apps/client/login/src/styles.scss",
+							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css"
+						],
 						"scripts": [],
 						"customWebpackConfig": {
 							"path": "apps/client/login/webpack.config.js"
@@ -236,7 +328,10 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": ["apps/client/login/src/**/*.ts", "apps/client/login/src/**/*.html"]
+						"lintFilePatterns": [
+							"apps/client/login/src/**/*.ts",
+							"apps/client/login/src/**/*.html"
+						]
 					}
 				},
 				"test": {
@@ -270,7 +365,9 @@
 					"executor": "@nrwl/linter:eslint",
 					"outputs": ["{options.outputFile}"],
 					"options": {
-						"lintFilePatterns": ["apps/client/login-e2e/**/*.{js,ts}"]
+						"lintFilePatterns": [
+							"apps/client/login-e2e/**/*.{js,ts}"
+						]
 					}
 				}
 			}
@@ -300,7 +397,10 @@
 								"output": "/assets/"
 							}
 						],
-						"styles": ["apps/client/shell/src/styles.scss", "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"],
+						"styles": [
+							"apps/client/shell/src/styles.scss",
+							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css"
+						],
 						"scripts": [],
 						"customWebpackConfig": {
 							"path": "apps/client/shell/webpack.config.js"
@@ -364,7 +464,10 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": ["apps/client/shell/src/**/*.ts", "apps/client/shell/src/**/*.html"]
+						"lintFilePatterns": [
+							"apps/client/shell/src/**/*.ts",
+							"apps/client/shell/src/**/*.html"
+						]
 					}
 				},
 				"test": {
@@ -378,7 +481,11 @@
 				"serve-mfe": {
 					"executor": "@nrwl/workspace:run-commands",
 					"options": {
-						"commands": ["nx serve client-shell", "nx serve client-login", "nx serve client-dashboard"]
+						"commands": [
+							"nx serve client-shell",
+							"nx serve client-login",
+							"nx serve client-dashboard"
+						]
 					}
 				}
 			}
@@ -405,29 +512,34 @@
 					"executor": "@nrwl/linter:eslint",
 					"outputs": ["{options.outputFile}"],
 					"options": {
-						"lintFilePatterns": ["apps/client/shell-e2e/**/*.{js,ts}"]
+						"lintFilePatterns": [
+							"apps/client/shell-e2e/**/*.{js,ts}"
+						]
 					}
 				}
 			}
 		},
-		"rxjs": {
+		"client-token-manager": {
 			"projectType": "library",
-			"root": "libs/rxjs",
-			"sourceRoot": "libs/rxjs/src",
+			"root": "libs/client/token-manager",
+			"sourceRoot": "libs/client/token-manager/src",
 			"prefix": "nx-mfe",
 			"targets": {
 				"test": {
 					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/rxjs"],
+					"outputs": ["coverage/libs/client/token-manager"],
 					"options": {
-						"jestConfig": "libs/rxjs/jest.config.js",
+						"jestConfig": "libs/client/token-manager/jest.config.js",
 						"passWithNoTests": true
 					}
 				},
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": ["libs/rxjs/src/**/*.ts", "libs/rxjs/src/**/*.html"]
+						"lintFilePatterns": [
+							"libs/client/token-manager/src/**/*.ts",
+							"libs/client/token-manager/src/**/*.html"
+						]
 					}
 				}
 			}
@@ -544,54 +656,10 @@
 				"lint": {
 					"executor": "@nrwl/linter:eslint",
 					"options": {
-						"lintFilePatterns": ["libs/shared/data-access/src/**/*.ts", "libs/shared/data-access/src/**/*.html"]
-					}
-				}
-			}
-		},
-		"shared-data-access-user": {
-			"projectType": "library",
-			"root": "libs/shared/data-access-user",
-			"sourceRoot": "libs/shared/data-access-user/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/shared/data-access-user"],
-					"options": {
-						"jestConfig": "libs/shared/data-access-user/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
 						"lintFilePatterns": [
-							"libs/shared/data-access-user/src/**/*.ts",
-							"libs/shared/data-access-user/src/**/*.html"
+							"libs/shared/data-access/src/**/*.ts",
+							"libs/shared/data-access/src/**/*.html"
 						]
-					}
-				}
-			}
-		},
-		"ui": {
-			"projectType": "library",
-			"root": "libs/ui",
-			"sourceRoot": "libs/ui/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/ui"],
-					"options": {
-						"jestConfig": "libs/ui/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": ["libs/ui/src/**/*.ts", "libs/ui/src/**/*.html"]
 					}
 				}
 			}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '@nx-mfe/shared/data-access-user';
+import { AuthService } from '@nx-mfe/client-auth';
+import { of } from 'rxjs';
 
 @Component({
 	selector: 'nx-mfe-login-form',
@@ -9,16 +10,16 @@ import { UserService } from '@nx-mfe/shared/data-access-user';
 })
 export class AuthLoginFormComponent implements OnInit {
 	public form!: FormGroup;
-	public readonly isLoggedIn$ = this._userService.isUserLoggedIn$;
+	public readonly isLoggedIn$ = of(false);
 
 	constructor(
 		private readonly _fb: FormBuilder,
-		private readonly _userService: UserService,
+		private readonly _authService: AuthService
 	) {}
 
 	public ngOnInit(): void {
 		this.form = this._fb.group({
-			username: [null, [Validators.required]],
+			email: [null, [Validators.required]],
 			password: [null, [Validators.required]],
 			remember: [false],
 		});
@@ -28,8 +29,8 @@ export class AuthLoginFormComponent implements OnInit {
 		this._validate();
 
 		if (this.form.valid) {
-			const { username, password } = this.form.value;
-			this._userService.login(username, password);
+			const { email, password } = this.form.value;
+			this._authService.login({ email, password }).subscribe();
 		}
 	}
 
