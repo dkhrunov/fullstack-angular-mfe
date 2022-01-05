@@ -27,11 +27,22 @@
 		]
 	},
 	"projects": {
-		"auth-login-form": {
+		"client-app-shell": {
 			"tags": []
+		},
+		"client-app-shell-e2e": {
+			"tags": [],
+			"implicitDependencies": ["client-app-shell"]
 		},
 		"client-auth": {
 			"tags": []
+		},
+		"client-auth-shell": {
+			"tags": []
+		},
+		"client-auth-shell-e2e": {
+			"tags": [],
+			"implicitDependencies": ["client-auth-shell"]
 		},
 		"client-config": {
 			"tags": []
@@ -52,13 +63,6 @@
 		"client-login-e2e": {
 			"tags": [],
 			"implicitDependencies": ["client-login"]
-		},
-		"client-shell": {
-			"tags": []
-		},
-		"client-shell-e2e": {
-			"tags": [],
-			"implicitDependencies": ["client-shell"]
 		},
 		"client-token-manager": {
 			"tags": []

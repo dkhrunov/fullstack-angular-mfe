@@ -51,7 +51,7 @@ export class CookieBuilder implements ICookieBuilder {
 	}
 
 	/**
-	 * Cрок действия куки в секундах с момента установки.
+	 * Срок действия куки в секундах с момента установки.
 	 * @param seconds Время в секундах.
 	 */
 	public maxAge(seconds: number): CookieBuilder {

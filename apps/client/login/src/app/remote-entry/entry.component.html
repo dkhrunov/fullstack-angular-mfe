@@ -1,0 +1,43 @@
+<nz-alert
+	*ngIf="(isLoggedIn$ | async) && loginForm.submitted"
+	nzType="success"
+	nzMessage="User successfully logged in"
+	nzShowIcon
+></nz-alert>
+
+<nz-alert
+	*ngIf="!(isLoggedIn$ | async) && loginForm.submitted"
+	nzType="error"
+	nzMessage="You input incorrect data, please try again"
+	nzShowIcon
+></nz-alert>
+
+<form #loginForm="ngForm" nz-form class="login-form" [formGroup]="form" (ngSubmit)="login()">
+	<nz-form-item>
+		<nz-form-control nzErrorTip="Please input your username!">
+			<nz-input-group nzPrefixIcon="user">
+				<input type="text" nz-input formControlName="email" placeholder="Email" />
+			</nz-input-group>
+		</nz-form-control>
+	</nz-form-item>
+	<nz-form-item>
+		<nz-form-control nzErrorTip="Please input your Password!">
+			<nz-input-group nzPrefixIcon="lock">
+				<input type="password" nz-input formControlName="password" placeholder="Password" />
+			</nz-input-group>
+		</nz-form-control>
+	</nz-form-item>
+	<div nz-row class="login-form-margin">
+		<div nz-col [nzSpan]="12">
+			<label nz-checkbox formControlName="remember">
+				<span>Remember me</span>
+			</label>
+		</div>
+		<div nz-col [nzSpan]="12">
+			<a class="login-form-forgot">Forgot password</a>
+		</div>
+	</div>
+	<button nz-button nzBlock class="login-form-margin" nzType="primary">Log in</button>
+	Or
+	<a>register now!</a>
+</form>

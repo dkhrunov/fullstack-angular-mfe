@@ -5,11 +5,11 @@ const { share } = require('@angular-architects/module-federation/webpack');
 const sharedMappings = new mf.SharedMappings();
 
 sharedMappings.register(path.join(__dirname, '../../tsconfig.base.json'), [
-	'@nx-mfe/shared/data-access-user',
-	'@nx-mfe/client-core',
-	'@nx-mfe/client-config',
 	'@nx-mfe/client-auth',
+	'@nx-mfe/client-config',
+	'@nx-mfe/client-core',
 	'@nx-mfe/client-token-manager',
+	'@nx-mfe/shared/data-access-user',
 ]);
 
 module.exports = {

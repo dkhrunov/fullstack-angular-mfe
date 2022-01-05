@@ -8,12 +8,15 @@ import {
 	CredentialsDto,
 	RegistrationCredentialsDto,
 } from '@nx-mfe/shared/data-access';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthService {
+	private readonly _isLoggedIn$ = new BehaviorSubject<boolean>(this.isLoggedIn);
+	public readonly isLoggedIn$ = this._isLoggedIn$.asObservable();
+
 	public get isLoggedIn(): boolean {
 		return (
 			this._authTokenManagerService.isValidAccessToken() ||
@@ -30,24 +33,20 @@ export class AuthService {
 
 	public login(credentials: CredentialsDto): Observable<AuthTokensDto> {
 		return this._httpClient
-			.post<AuthTokensDto>(
-				this._config.apiUrl + '/auth/login',
-				credentials,
-				{ withCredentials: true }
-			)
+			.post<AuthTokensDto>(this._config.apiUrl + '/auth/login', credentials, {
+				withCredentials: true,
+			})
 			.pipe(
 				tap((authTokens) => {
 					this._authTokenManagerService.setAuthTokens(authTokens);
 					this._router.navigate(['/']);
+					this._isLoggedIn$.next(this.isLoggedIn);
 				})
 			);
 	}
 
 	public register(credentials: RegistrationCredentialsDto): Observable<void> {
-		return this._httpClient.post<void>(
-			this._config.apiUrl + '/auth/register',
-			credentials
-		);
+		return this._httpClient.post<void>(this._config.apiUrl + '/auth/register', credentials);
 	}
 
 	public logout(): Observable<void> {
@@ -59,6 +58,7 @@ export class AuthService {
 				tap(() => {
 					this._authTokenManagerService.deleteAuthTokens();
 					this._router.navigate(['/auth/login']);
+					this._isLoggedIn$.next(this.isLoggedIn);
 				})
 			);
 	}
@@ -69,9 +69,10 @@ export class AuthService {
 				withCredentials: true,
 			})
 			.pipe(
-				tap((authTokens) =>
-					this._authTokenManagerService.setAuthTokens(authTokens)
-				)
+				tap((authTokens) => {
+					this._authTokenManagerService.setAuthTokens(authTokens);
+					this._isLoggedIn$.next(this.isLoggedIn);
+				})
 			);
 	}
 }
