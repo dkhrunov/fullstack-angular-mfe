@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 /**
- * Создать корневой модуль app.module.ts для микрофронта
+ * Заменить контент корневого модуля app.module.ts для микрофронта
  * @param mfe Название микрофронта
  */
-export function createRemoteMfeAppModule(mfe: string) {
+export function replaceRemoteMfeAppModule(mfe: string): void {
 	const appModulePath = path.normalize(
 		path.resolve(process.cwd(), 'apps/client', mfe, 'src/app/app.module.ts')
 	);

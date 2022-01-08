@@ -5,7 +5,7 @@ import * as path from 'path';
 /**
  * Получить файл конфигурации монорепозитория workspace.json или angular.json
  */
-export function getWorkspaceJson() {
+export function getWorkspaceJson(): any {
 	const workspaceJsonPath = fs.existsSync(path.resolve(process.cwd(), 'workspace.json'))
 		? path.resolve(process.cwd(), 'workspace.json')
 		: path.resolve(process.cwd(), 'angular.json');

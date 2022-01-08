@@ -23,7 +23,7 @@ export class MfeRegistry {
 
 	/**
 	 * Получить порт на котором крутиться микрофронт
-	 * @param mfe микрофронт
+	 * @param mfe Микрофронт
 	 */
 	public getMfePort(mfe: string): number {
 		if (!this._mfesConfig[`client-${mfe}`]) {

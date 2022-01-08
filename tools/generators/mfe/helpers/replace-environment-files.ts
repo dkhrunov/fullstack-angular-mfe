@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 /**
- * Создать файл environment.prod.ts и environment.ts с базовыми параметрами
+ * Заменить контент файла environment.prod.ts и environment.ts
  * @param mfe Название микрофронта
  */
-export function createEnvironmentFiles(mfe: string) {
+export function replaceEnvironmentFiles(mfe: string): void {
 	const environmentDirPath = path.normalize(
 		path.resolve(process.cwd(), 'apps/client', mfe, 'src/environments')
 	);

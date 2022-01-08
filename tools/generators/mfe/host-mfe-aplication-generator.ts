@@ -1,12 +1,17 @@
 import { applicationGenerator } from '@nrwl/angular/generators';
 import { formatFiles, installPackagesTask, Tree } from '@nrwl/devkit';
 
-import { createEnvironmentFiles, createHostMfeWebpackConfig, getAvailableMfePort } from './helpers';
+import {
+	addSupportNgZorroAntd,
+	getAvailableMfePort,
+	replaceEnvironmentFiles,
+	replaceHostMfeWebpackConfig,
+} from './helpers';
 import { Schema } from './schema';
 
 /**
  * Nx Generator для создания хостового микрофронта
- * @param tree Виртуальная файловая система
+ * @param tree Виртуальная файловая система (AST)
  * @param schema Схема параметров генератора
  */
 export async function hostMfeApplicationGenerator(tree: Tree, schema: Partial<Schema>) {
@@ -25,10 +30,12 @@ export async function hostMfeApplicationGenerator(tree: Tree, schema: Partial<Sc
 	await applicationGenerator(tree, schema);
 	await formatFiles(tree);
 
+	addSupportNgZorroAntd(tree, schema.name!);
+
 	return () => {
 		installPackagesTask(tree);
 
-		createEnvironmentFiles(schema.name!);
-		createHostMfeWebpackConfig(schema.name!);
+		replaceEnvironmentFiles(schema.name!);
+		replaceHostMfeWebpackConfig(schema.name!);
 	};
 }
