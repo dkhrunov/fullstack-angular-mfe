@@ -1,7 +1,10 @@
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const sharedLibs = require('./shared-libs');
+const config = require('../../config.json');
 
 module.exports = function (name, exposes) {
+	name = name.replace(/-/g, '_');
+
 	return {
 		output: {
 			uniqueName: name,
@@ -17,8 +20,8 @@ module.exports = function (name, exposes) {
 		plugins: [
 			new ModuleFederationPlugin({
 				name,
-				filename: 'remoteEntry.js',
 				exposes,
+				filename: config.remoteEntryFileName,
 				shared: sharedLibs.getShared(),
 			}),
 			sharedLibs.getPlugin(),

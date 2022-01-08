@@ -13,9 +13,7 @@ export class ClientConfigModule {
 	 *
 	 * @param config объект конфигурации приложения
 	 */
-	public static forRoot(
-		config: IConfig
-	): ModuleWithProviders<ClientConfigModule> {
+	public static forRoot(config: IConfig): ModuleWithProviders<ClientConfigModule> {
 		return {
 			ngModule: ClientConfigModule,
 			providers: [

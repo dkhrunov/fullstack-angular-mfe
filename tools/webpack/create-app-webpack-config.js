@@ -2,6 +2,8 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const sharedLibs = require('./shared-libs');
 
 module.exports = function (name) {
+	name = name.replace(/-/g, '_');
+
 	return {
 		output: {
 			uniqueName: name,

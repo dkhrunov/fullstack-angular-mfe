@@ -7,10 +7,7 @@ import { AuthService } from '../services';
 	providedIn: 'root',
 })
 export class UnauthGuard implements CanLoad, CanActivate {
-	constructor(
-		private readonly _router: Router,
-		private readonly _authService: AuthService
-	) {}
+	constructor(private readonly _router: Router, private readonly _authService: AuthService) {}
 
 	public canLoad(): boolean | UrlTree {
 		return this._guarantee();

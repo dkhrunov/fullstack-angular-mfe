@@ -1,10 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import {
-	ClientTokenManagerModule,
-	ETokenStorageType,
-} from '@nx-mfe/client/token-manager';
+import { ClientTokenManagerModule, ETokenStorageType } from '@nx-mfe/client/token-manager';
 
 import { AuthInterceptor } from './interceptors';
 

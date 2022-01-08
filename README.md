@@ -31,6 +31,12 @@ Below are our core plugins:
 
 There are also many [community plugins](https://nx.dev/community) you could add.
 
+## Generate an MFE application
+
+Run `nx workspace-generator mfe my-mfe` to generate an MFE application.
+
+> You can select that type of MFE you want to create - host or remote
+
 ## Generate an application
 
 Run `nx g @nrwl/react:app my-app` to generate an application.

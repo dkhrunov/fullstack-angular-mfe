@@ -11,9 +11,7 @@ export class TokenCookiesStorage extends TokenStorage {
 	public get(key: string): string | null {
 		const matches = document.cookie.match(
 			new RegExp(
-				'(?:^|; )' +
-					key.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
-					'=([^;]*)'
+				'(?:^|; )' + key.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
 			)
 		);
 
@@ -26,16 +24,12 @@ export class TokenCookiesStorage extends TokenStorage {
 	 * @param token Токен.
 	 */
 	public set(key: string, token: string): void {
-		const cookie =
-			encodeURIComponent(key) + '=' + encodeURIComponent(token);
+		const cookie = encodeURIComponent(key) + '=' + encodeURIComponent(token);
 		const expireIn = JwtDecoder.decode(token).exp;
 
 		const tenYearsInMilliseconds = 10 * 365 * 24 * 60 * 60 * 1000;
 		const infiniteToken = Date.now() + tenYearsInMilliseconds;
-		const tokenExpireIn =
-			expireIn === -1
-				? new Date(infiniteToken)
-				: new Date(expireIn * 1000);
+		const tokenExpireIn = expireIn === -1 ? new Date(infiniteToken) : new Date(expireIn * 1000);
 
 		document.cookie = CookieBuilder.instantiate(cookie)
 			.expires(tokenExpireIn)
@@ -52,9 +46,6 @@ export class TokenCookiesStorage extends TokenStorage {
 	public delete(key: string): void {
 		const cookie = encodeURIComponent(key) + '=';
 
-		document.cookie = CookieBuilder.instantiate(cookie)
-			.path('/')
-			.expires(new Date(0))
-			.build();
+		document.cookie = CookieBuilder.instantiate(cookie).path('/').expires(new Date(0)).build();
 	}
 }

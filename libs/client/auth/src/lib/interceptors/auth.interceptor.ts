@@ -7,15 +7,7 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthTokenManagerService } from '@nx-mfe/client/token-manager';
-import {
-	catchError,
-	finalize,
-	Observable,
-	Subject,
-	switchMap,
-	tap,
-	throwError,
-} from 'rxjs';
+import { catchError, finalize, Observable, Subject, switchMap, tap, throwError } from 'rxjs';
 
 import { AuthService } from '../services';
 
@@ -49,9 +41,7 @@ export class AuthInterceptor implements HttpInterceptor {
 		);
 	}
 
-	private _addAuthHeader(
-		request: HttpRequest<unknown>
-	): HttpRequest<unknown> {
+	private _addAuthHeader(request: HttpRequest<unknown>): HttpRequest<unknown> {
 		const accessToken = this._authTokenManagerService.getAccessToken();
 
 		return request.clone({

@@ -1,11 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import {
-	ClientConfigModule,
-	ConfigToken,
-	IConfig,
-} from '@nx-mfe/client/config';
-import { ClientAuthModule } from '@nx-mfe/client-auth';
+import { ClientAuthModule } from '@nx-mfe/client/auth';
+import { ClientConfigModule, ConfigToken, IConfig } from '@nx-mfe/client/config';
 
 @NgModule({
 	imports: [CommonModule, ClientAuthModule, ClientConfigModule],
@@ -21,9 +17,7 @@ export class ClientCoreModule {
 	 *
 	 * @param config объкет конфигурации приложения
 	 */
-	public static forApp(
-		config: IConfig
-	): ModuleWithProviders<ClientCoreModule> {
+	public static forApp(config: IConfig): ModuleWithProviders<ClientCoreModule> {
 		return {
 			ngModule: ClientCoreModule,
 			providers: [

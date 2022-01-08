@@ -14,9 +14,7 @@ export class TokenStorageFactory {
 			case ETokenStorageType.SessionStorage:
 				return new TokenSessionStorage();
 			default:
-				throw new Error(
-					`Error: this storage strategy type - ${type} not supported`
-				);
+				throw new Error(`Error: this storage strategy type - ${type} not supported`);
 		}
 	}
 }

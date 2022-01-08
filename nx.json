@@ -27,22 +27,15 @@
 		]
 	},
 	"projects": {
-		"client-app-shell": {
-			"tags": []
-		},
-		"client-app-shell-e2e": {
-			"tags": [],
-			"implicitDependencies": ["client-app-shell"]
-		},
 		"client-auth": {
 			"tags": []
 		},
-		"client-auth-shell": {
+		"client-auth-mfe": {
 			"tags": []
 		},
-		"client-auth-shell-e2e": {
+		"client-auth-mfe-e2e": {
 			"tags": [],
-			"implicitDependencies": ["client-auth-shell"]
+			"implicitDependencies": ["client-auth-mfe"]
 		},
 		"client-config": {
 			"tags": []
@@ -50,19 +43,22 @@
 		"client-core": {
 			"tags": []
 		},
-		"client-dashboard": {
+		"client-dashboard-mfe": {
 			"tags": []
 		},
-		"client-dashboard-e2e": {
+		"client-dashboard-mfe-e2e": {
 			"tags": [],
-			"implicitDependencies": ["client-dashboard"]
+			"implicitDependencies": ["client-dashboard-mfe"]
 		},
-		"client-login": {
+		"client-mfe": {
 			"tags": []
 		},
-		"client-login-e2e": {
+		"client-shell-app": {
+			"tags": []
+		},
+		"client-shell-app-e2e": {
 			"tags": [],
-			"implicitDependencies": ["client-login"]
+			"implicitDependencies": ["client-shell-app"]
 		},
 		"client-token-manager": {
 			"tags": []

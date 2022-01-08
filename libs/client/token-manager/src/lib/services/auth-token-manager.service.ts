@@ -8,10 +8,7 @@ import { TokenManagerService } from './token-manager.service';
 @Injectable({
 	providedIn: 'root',
 })
-export class AuthTokenManagerService
-	extends TokenManagerService
-	implements IAuthTokenManager
-{
+export class AuthTokenManagerService extends TokenManagerService implements IAuthTokenManager {
 	constructor(protected readonly _tokenStorage: TokenStorage) {
 		super(_tokenStorage);
 	}
