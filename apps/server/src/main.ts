@@ -28,9 +28,7 @@ async function bootstrap() {
 	app.use(cookieParser());
 
 	await app.listen(PORT, () => {
-		Logger.log(
-			'Listening at http://localhost:' + PORT + '/' + GLOBAL_PREFIX
-		);
+		Logger.log('Listening at http://localhost:' + PORT + '/' + GLOBAL_PREFIX);
 	});
 }
 

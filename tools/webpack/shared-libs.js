@@ -14,7 +14,9 @@ function getSharedLibs() {
 		return null;
 	}
 
-	return Object.keys(tsConfig.compilerOptions.paths).filter((libName) => libName.match(CLIENT_LIB_REGEXP));
+	return Object.keys(tsConfig.compilerOptions.paths).filter((libName) =>
+		libName.match(CLIENT_LIB_REGEXP)
+	);
 }
 
 const sharedMappings = new mf.SharedMappings();
