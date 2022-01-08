@@ -9,6 +9,11 @@ import {
 } from './helpers';
 import { Schema } from './schema';
 
+/**
+ * Nx Generator для создания микрофронта
+ * @param tree Виртуальная файловая система
+ * @param schema Схема параметров генератора
+ */
 export async function remoteMfeApplicationGenerator(tree: Tree, schema: Partial<Schema>) {
 	const availablePort = getAvailableMfePort();
 
@@ -28,8 +33,8 @@ export async function remoteMfeApplicationGenerator(tree: Tree, schema: Partial<
 	return () => {
 		installPackagesTask(tree);
 
-		createEnvironmentFiles(schema);
-		createRemoteMfeWebpackConfig(schema);
-		createRemoteMfeAppModule(schema);
+		createEnvironmentFiles(schema.name!);
+		createRemoteMfeWebpackConfig(schema.name!);
+		createRemoteMfeAppModule(schema.name!);
 	};
 }

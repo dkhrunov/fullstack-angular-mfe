@@ -1,10 +1,8 @@
-# NxMfe
+# Fullstack Nest.js and Angular MFE application
 
 This project was generated using [Nx](https://nx.dev).
 
 <p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
-
-🔎 **Smart, Extensible Build Framework**
 
 ## Adding capabilities to your workspace
 
@@ -31,13 +29,15 @@ There are also many [community plugins](https://nx.dev/community) you could add.
 
 ## Generate an MFE application
 
+**This project has custom nx generator to automate the creation of MFE applications.**
+
 Run `nx workspace-generator mfe my-mfe` to generate an MFE application.
 
 > You can select that type of MFE you want to create - host or remote
 
 ## Generate an application
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+Run `nx g @nrwl/angular:app my-app` to generate an application.
 
 > You can use any of the plugins above to generate applications as well.
 
@@ -45,19 +45,27 @@ When using Nx, you can create multiple applications and libraries in the same wo
 
 ## Generate a library
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+Run `nx g @nrwl/angular:lib my-lib` to generate a library.
 
 > You can also use any of the plugins above to generate libraries as well.
 
-Libraries are shareable across libraries and applications. They can be imported from `@nx-mfe/mylib`.
+Libraries are shareable across libraries and applications. They can be imported from `@nx-mfe/my-lib`.
+
+## Development host app
+
+Run `nx serve client-shell-app` for a dev host app. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+
+## Development MFE app
+
+Run `nx serve client-auth-mfe` for a dev MFE. Navigate to http://localhost and the port specified in workspace.json or angular.json. The app will automatically reload if you change any of the source files.
 
 ## Development server
 
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+Run `nx serve server` for a dev server. Navigate to http://localhost:3000/. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
+Run `nx g @nrwl/angular:component my-component --project=my-app` to generate a new component.
 
 ## Build
 
@@ -82,15 +90,3 @@ Run `nx dep-graph` to see a diagram of the dependencies of your projects.
 ## Further help
 
 Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.

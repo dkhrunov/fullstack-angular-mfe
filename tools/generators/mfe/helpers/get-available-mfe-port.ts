@@ -1,6 +1,9 @@
 import { MFE_PROJECT_REGEXP } from '../../../mfe/mfe-project-regexp';
 import { getWorkspaceJson } from './get-workspace-json';
 
+/**
+ * Получить доступный порт для микрофронта
+ */
 export function getAvailableMfePort(): number {
 	const workspaceJson = getWorkspaceJson();
 

@@ -4,6 +4,11 @@ import { formatFiles, installPackagesTask, Tree } from '@nrwl/devkit';
 import { createEnvironmentFiles, createHostMfeWebpackConfig, getAvailableMfePort } from './helpers';
 import { Schema } from './schema';
 
+/**
+ * Nx Generator для создания хостового микрофронта
+ * @param tree Виртуальная файловая система
+ * @param schema Схема параметров генератора
+ */
 export async function hostMfeApplicationGenerator(tree: Tree, schema: Partial<Schema>) {
 	const availablePort = getAvailableMfePort();
 
@@ -23,7 +28,7 @@ export async function hostMfeApplicationGenerator(tree: Tree, schema: Partial<Sc
 	return () => {
 		installPackagesTask(tree);
 
-		createEnvironmentFiles(schema);
-		createHostMfeWebpackConfig(schema);
+		createEnvironmentFiles(schema.name!);
+		createHostMfeWebpackConfig(schema.name!);
 	};
 }

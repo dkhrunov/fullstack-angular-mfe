@@ -1,12 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { Schema } from '../schema';
-
-// TODO в подобные функции передавать только name и написать JSDoc
-export function createEnvironmentFiles(schema: Partial<Schema>) {
+/**
+ * Создать файл environment.prod.ts и environment.ts с базовыми параметрами
+ * @param mfe Название микрофронта
+ */
+export function createEnvironmentFiles(mfe: string) {
 	const environmentDirPath = path.normalize(
-		path.resolve(process.cwd(), 'apps/client', schema.name!, 'src/environments')
+		path.resolve(process.cwd(), 'apps/client', mfe, 'src/environments')
 	);
 
 	const environmentProdPattern = fs.readFileSync(
