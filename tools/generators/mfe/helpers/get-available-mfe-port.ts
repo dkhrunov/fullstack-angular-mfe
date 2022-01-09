@@ -1,18 +1,18 @@
-import { MFE_PROJECT_REGEXP } from '../../../mfe/mfe-project-regexp';
-import { getWorkspaceJson } from './get-workspace-json';
+import { getProjects, Tree } from '@nrwl/devkit';
 
 /**
  * Получить доступный порт для микрофронта
  */
-export function getAvailableMfePort(): number {
-	const workspaceJson = getWorkspaceJson();
+export function getAvailableMfePort(tree: Tree): number {
+	let availablePort = 4199;
 
-	return (
-		Object.keys(workspaceJson.projects)
-			.filter((projectName) => projectName.match(MFE_PROJECT_REGEXP))
-			.reduce((lastPort, mfeName) => {
-				const mfePort = workspaceJson.projects[mfeName].targets?.serve?.options?.port;
-				return lastPort < mfePort ? mfePort : lastPort;
-			}, 0) + 1
-	);
+	getProjects(tree).forEach((project) => {
+		const port = project.targets?.serve?.options?.port;
+
+		if (port) {
+			availablePort = port > availablePort ? port : availablePort;
+		}
+	});
+
+	return availablePort + 1;
 }

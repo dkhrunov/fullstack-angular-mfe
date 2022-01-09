@@ -31,7 +31,7 @@
 			"tags": []
 		},
 		"client-auth-mfe": {
-			"tags": []
+			"tags": ["remote-mfe"]
 		},
 		"client-auth-mfe-e2e": {
 			"tags": [],
@@ -44,7 +44,7 @@
 			"tags": []
 		},
 		"client-dashboard-mfe": {
-			"tags": []
+			"tags": ["remote-mfe"]
 		},
 		"client-dashboard-mfe-e2e": {
 			"tags": [],
@@ -54,7 +54,7 @@
 			"tags": []
 		},
 		"client-shell-app": {
-			"tags": []
+			"tags": ["host-mfe"]
 		},
 		"client-shell-app-e2e": {
 			"tags": [],

@@ -1,6 +1,7 @@
 import { applicationGenerator } from '@nrwl/angular/generators';
 import { formatFiles, installPackagesTask, Tree } from '@nrwl/devkit';
 
+import { REMOTE_MFE_TAG } from '../../mfe';
 import {
 	addSupportNgZorroAntd,
 	getAvailableMfePort,
@@ -17,7 +18,8 @@ import { Schema } from './schema';
  * @param schema Схема параметров генератора
  */
 export async function remoteMfeApplicationGenerator(tree: Tree, schema: Partial<Schema>) {
-	const availablePort = getAvailableMfePort();
+	const availablePort = getAvailableMfePort(tree);
+	// const hostApp = schema.host ?? 'client-shell-app';
 
 	schema = {
 		...schema,
@@ -25,7 +27,8 @@ export async function remoteMfeApplicationGenerator(tree: Tree, schema: Partial<
 		mfe: true,
 		mfeType: schema.type,
 		port: availablePort,
-		tags: schema.tags?.length ? schema.tags + ', mfe' : 'mfe',
+		// host: schema.host ?? 'client-shell-app',
+		tags: schema.tags?.length ? schema.tags + `, ${REMOTE_MFE_TAG}` : REMOTE_MFE_TAG,
 		directory: 'client',
 	};
 
@@ -33,6 +36,7 @@ export async function remoteMfeApplicationGenerator(tree: Tree, schema: Partial<
 	await formatFiles(tree);
 
 	addSupportNgZorroAntd(tree, schema.name!);
+	// linkRemoteWithHost(tree, schema.name!, hostApp);
 
 	return () => {
 		installPackagesTask(tree);

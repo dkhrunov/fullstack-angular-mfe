@@ -454,7 +454,9 @@
 						}
 					},
 					"defaultConfiguration": "development",
-					"options": {}
+					"options": {
+						"port": 4200
+					}
 				},
 				"extract-i18n": {
 					"executor": "@angular-devkit/build-angular:extract-i18n",

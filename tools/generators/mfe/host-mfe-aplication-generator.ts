@@ -1,6 +1,7 @@
 import { applicationGenerator } from '@nrwl/angular/generators';
 import { formatFiles, installPackagesTask, Tree } from '@nrwl/devkit';
 
+import { HOST_MFE_TAG } from '../../mfe';
 import {
 	addSupportNgZorroAntd,
 	getAvailableMfePort,
@@ -15,7 +16,7 @@ import { Schema } from './schema';
  * @param schema Схема параметров генератора
  */
 export async function hostMfeApplicationGenerator(tree: Tree, schema: Partial<Schema>) {
-	const availablePort = getAvailableMfePort();
+	const availablePort = getAvailableMfePort(tree);
 
 	schema = {
 		...schema,
@@ -23,7 +24,7 @@ export async function hostMfeApplicationGenerator(tree: Tree, schema: Partial<Sc
 		mfe: true,
 		mfeType: schema.type,
 		port: availablePort,
-		tags: schema.tags?.length ? schema.tags + ', app' : 'app',
+		tags: schema.tags?.length ? schema.tags + `, ${HOST_MFE_TAG}` : HOST_MFE_TAG,
 		directory: 'client',
 	};
 
