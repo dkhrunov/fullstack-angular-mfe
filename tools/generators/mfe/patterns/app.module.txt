@@ -22,7 +22,7 @@ import { AppComponent } from './app.component';
 			],
 			{ initialNavigation: 'enabledBlocking' }
 		),
-		ClientCoreModule.forApp(environment),
+		ClientCoreModule.forRoot(environment),
 	],
 	bootstrap: [AppComponent],
 })

@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 		BrowserModule,
 		BrowserAnimationsModule,
 		AppRoutingModule,
-		ClientCoreModule.forApp(environment),
+		ClientCoreModule.forRoot(environment),
 	],
 	providers: [],
 	bootstrap: [AppComponent],

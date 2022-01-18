@@ -15,7 +15,7 @@ import { AppRoutingModule } from './app-routing.module';
 		BrowserAnimationsModule,
 		HttpClientModule,
 		AppRoutingModule,
-		ClientCoreModule.forApp(environment),
+		ClientCoreModule.forRoot(environment),
 	],
 	bootstrap: [AppComponent],
 })

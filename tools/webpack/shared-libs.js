@@ -29,6 +29,7 @@ module.exports = {
 			'@angular/core': {
 				singleton: true,
 				strictVersion: true,
+				requiredVersion: 'auto',
 			},
 			'@angular/common': {
 				singleton: true,
@@ -38,10 +39,12 @@ module.exports = {
 			'@angular/common/http': {
 				singleton: true,
 				strictVersion: true,
+				requiredVersion: 'auto',
 			},
 			'@angular/router': {
 				singleton: true,
 				strictVersion: true,
+				requiredVersion: 'auto',
 			},
 			rxjs: {
 				singleton: true,

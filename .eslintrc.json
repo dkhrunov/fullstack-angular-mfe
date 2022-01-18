@@ -40,6 +40,14 @@
 						"allow": [],
 						"depConstraints": [
 							{
+								"sourceTag": "cleint",
+								"bannedExternalImports": ["@nestjs*"]
+							},
+							{
+								"sourceTag": "server",
+								"bannedExternalImports": ["@angular*"]
+							},
+							{
 								"sourceTag": "*",
 								"onlyDependOnLibsWithTags": ["*"]
 							}
