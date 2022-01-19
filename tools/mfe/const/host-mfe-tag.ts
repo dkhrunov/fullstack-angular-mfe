@@ -1,1 +1,1 @@
-export const HOST_MFE_TAG = 'host-mfe';
+export const HOST_MFE_TAG = 'mfe:host';

@@ -28,52 +28,52 @@
 	},
 	"projects": {
 		"client-auth": {
-			"tags": ["client"]
+			"tags": ["scope:client"]
 		},
 		"client-auth-mfe": {
-			"tags": ["client", "remote-mfe"]
+			"tags": ["scope:client", "mfe:remoter"]
 		},
 		"client-auth-mfe-e2e": {
-			"tags": ["client"],
+			"tags": ["scope:client"],
 			"implicitDependencies": ["client-auth-mfe"]
 		},
 		"client-config": {
-			"tags": ["client"]
+			"tags": ["scope:client"]
 		},
 		"client-core": {
-			"tags": ["client"]
+			"tags": ["scope:client"]
 		},
 		"client-dashboard-mfe": {
-			"tags": ["client", "remote-mfe"]
+			"tags": ["scope:client", "mfe:remoter"]
 		},
 		"client-dashboard-mfe-e2e": {
-			"tags": ["client"],
+			"tags": ["scope:client"],
 			"implicitDependencies": ["client-dashboard-mfe"]
 		},
 		"client-mfe": {
-			"tags": ["client"]
+			"tags": ["scope:client"]
 		},
 		"client-shell-app": {
-			"tags": ["client", "host-mfe"]
+			"tags": ["scope:client", "mfe:host"]
 		},
 		"client-shell-app-e2e": {
-			"tags": ["client"],
+			"tags": ["scope:client"],
 			"implicitDependencies": ["client-shell-app"]
 		},
 		"client-token-manager": {
-			"tags": ["client"]
+			"tags": ["scope:client"]
 		},
 		"server": {
-			"tags": ["server"]
+			"tags": ["scope:server"]
 		},
 		"server-domains": {
-			"tags": ["server"]
+			"tags": ["scope:server"]
 		},
 		"server-mailer": {
-			"tags": ["server"]
+			"tags": ["scope:server"]
 		},
 		"shared-data-access": {
-			"tags": ["server"]
+			"tags": ["scope:shared"]
 		}
 	}
 }

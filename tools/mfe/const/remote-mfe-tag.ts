@@ -1,1 +1,1 @@
-export const REMOTE_MFE_TAG = 'remote-mfe';
+export const REMOTE_MFE_TAG = 'mfe:remote';

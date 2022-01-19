@@ -32,9 +32,7 @@ export class AuthService {
 	public async login(credentials: CredentialsDto): Promise<AuthTokensDto> {
 		const user = await this._userService.getByEmail(credentials.email);
 		if (!user) {
-			throw new UnauthorizedException(
-				`Пользователь ${credentials.email} не найден`
-			);
+			throw new UnauthorizedException(`Пользователь ${credentials.email} не найден`);
 		}
 		if (!user.isConfirmed) {
 			throw new UnauthorizedException(
@@ -42,10 +40,7 @@ export class AuthService {
 			);
 		}
 
-		const isPasswordCorrect = await bcrypt.compare(
-			credentials.password,
-			user.password
-		);
+		const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
 		if (!isPasswordCorrect) {
 			throw new UnauthorizedException('Некоррекный пароль');
 		}
@@ -56,9 +51,7 @@ export class AuthService {
 		return tokens;
 	}
 
-	public async register(
-		credentials: RegistrationCredentialsDto
-	): Promise<void> {
+	public async register(credentials: RegistrationCredentialsDto): Promise<void> {
 		const candidate = await this._userService.getByEmail(credentials.email);
 		if (candidate) {
 			throw new ConflictException(
@@ -75,14 +68,10 @@ export class AuthService {
 	}
 
 	public async confirmRegistration(confirmationLink: string): Promise<void> {
-		const user = await this._userService.getByConfirmationLink(
-			confirmationLink
-		);
+		const user = await this._userService.getByConfirmationLink(confirmationLink);
 		if (!user) {
 			// TODO: редирект на страницу с ошибкой на фронте.
-			throw new BadRequestException(
-				'Некорректная ссылка для подтверждения регистрации'
-			);
+			throw new BadRequestException('Некорректная ссылка для подтверждения регистрации');
 		}
 
 		await this._userService.update(user.id, { isConfirmed: true });
@@ -115,11 +104,7 @@ export class AuthService {
 		}
 
 		const tokens = this._generateAuthTokens(user);
-		await this._tokenService.upsertRefreshToken(
-			user.id,
-			refreshToken,
-			tokens.refreshToken
-		);
+		await this._tokenService.upsertRefreshToken(user.id, refreshToken, tokens.refreshToken);
 
 		return tokens;
 	}
