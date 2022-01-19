@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '@nx-mfe/client/auth';
 import { startWith, Subject, takeUntil, tap } from 'rxjs';
 
-const INITIAL_VALUE_REMEMBER_ME = true;
+const INITIAL_VALUE_REMEMBER_ME = false;
 
 @Component({
 	selector: 'nx-mfe-login',

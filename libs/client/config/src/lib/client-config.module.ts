@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
+import { CONFIG_TOKEN } from './injection-tokens';
 import { IConfig } from './interfaces';
-import { ConfigToken } from './tokens';
 
 @NgModule({
 	imports: [CommonModule],
@@ -18,7 +18,7 @@ export class ClientConfigModule {
 			ngModule: ClientConfigModule,
 			providers: [
 				{
-					provide: ConfigToken,
+					provide: CONFIG_TOKEN,
 					useValue: config,
 				},
 			],

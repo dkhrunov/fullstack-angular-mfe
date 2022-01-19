@@ -1,8 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ConfigToken, IConfig } from '@nx-mfe/client/config';
-import { AuthTokenManagerService, ETokenStorageType } from '@nx-mfe/client/token-manager';
+import { CONFIG_TOKEN, IConfig } from '@nx-mfe/client/config';
+import {
+	AuthTokenManagerService,
+	ETokenStorageType,
+	TokenStorageManagerService,
+} from '@nx-mfe/client/token-manager';
 import {
 	AuthTokensDto,
 	CredentialsDto,
@@ -29,11 +33,12 @@ export class AuthService {
 		private readonly _httpClient: HttpClient,
 		private readonly _router: Router,
 		private readonly _authTokenManagerService: AuthTokenManagerService,
-		@Inject(ConfigToken) private readonly _config: IConfig
+		private readonly _tokenStorageManager: TokenStorageManagerService,
+		@Inject(CONFIG_TOKEN) private readonly _config: IConfig
 	) {}
 
 	public rememberMe(value: boolean): void {
-		AuthTokenManagerService.setTokenStorage(
+		this._tokenStorageManager.setTokenStorage(
 			value ? ETokenStorageType.Cookies : ETokenStorageType.SessionStorage
 		);
 	}
