@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfigToken, IConfig } from '@nx-mfe/client/config';
-import { AuthTokenManagerService } from '@nx-mfe/client/token-manager';
+import { AuthTokenManagerService, ETokenStorageType } from '@nx-mfe/client/token-manager';
 import {
 	AuthTokensDto,
 	CredentialsDto,
@@ -17,6 +17,7 @@ export class AuthService {
 	private readonly _isLoggedIn$ = new BehaviorSubject<boolean>(this.isLoggedIn);
 	public readonly isLoggedIn$ = this._isLoggedIn$.asObservable();
 
+	// TODO разделить сервис для получения данных и сервис для хранения состояния
 	public get isLoggedIn(): boolean {
 		return (
 			this._authTokenManagerService.isValidAccessToken() ||
@@ -30,6 +31,12 @@ export class AuthService {
 		private readonly _authTokenManagerService: AuthTokenManagerService,
 		@Inject(ConfigToken) private readonly _config: IConfig
 	) {}
+
+	public rememberMe(value: boolean): void {
+		AuthTokenManagerService.setTokenStorage(
+			value ? ETokenStorageType.Cookies : ETokenStorageType.SessionStorage
+		);
+	}
 
 	public login(credentials: CredentialsDto): Observable<AuthTokensDto> {
 		return this._httpClient

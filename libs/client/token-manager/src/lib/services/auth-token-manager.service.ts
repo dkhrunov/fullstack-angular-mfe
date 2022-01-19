@@ -2,17 +2,12 @@ import { Injectable } from '@angular/core';
 
 import { AuthTokensTypes } from '../enums';
 import { IAuthTokenManager, IAuthTokens } from '../interfaces';
-import { TokenStorage } from '../token-storage';
 import { TokenManagerService } from './token-manager.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthTokenManagerService extends TokenManagerService implements IAuthTokenManager {
-	constructor(protected readonly _tokenStorage: TokenStorage) {
-		super(_tokenStorage);
-	}
-
 	public getAccessToken(): string | null {
 		return this.getToken(AuthTokensTypes.accessToken);
 	}

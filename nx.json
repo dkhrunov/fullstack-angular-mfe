@@ -74,6 +74,9 @@
 		},
 		"shared-data-access": {
 			"tags": ["scope:shared"]
+		},
+		"shared-utils": {
+			"tags": ["scope:shared"]
 		}
 	}
 }

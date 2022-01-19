@@ -24,7 +24,8 @@
 			"@nx-mfe/client/token-manager": ["libs/client/token-manager/src/index.ts"],
 			"@nx-mfe/server/domains": ["libs/server/domains/src/index.ts"],
 			"@nx-mfe/server/mailer": ["libs/server/mailer/src/index.ts"],
-			"@nx-mfe/shared/data-access": ["libs/shared/data-access/src/index.ts"]
+			"@nx-mfe/shared/data-access": ["libs/shared/data-access/src/index.ts"],
+			"@nx-mfe/shared/utils": ["libs/shared/utils/src/index.ts"]
 		},
 		"downlevelIteration": true,
 		"noImplicitAny": true,

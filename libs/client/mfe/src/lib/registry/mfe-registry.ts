@@ -1,5 +1,5 @@
 import * as workspaceConfig from '../../../../../../angular.json';
-import { MFE_PROJECT_REGEXP } from '../../../../../../tools/mfe/mfe-project-regexp';
+import { MFE_PROJECT_REGEXP } from '../../../../../../tools/mfe';
 import { IWorkspaceConfig } from '../interfaces';
 
 export class MfeRegistry {

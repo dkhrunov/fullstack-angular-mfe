@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '@nx-mfe/client/auth';
-import { Observable } from 'rxjs';
+import { startWith, Subject, takeUntil, tap } from 'rxjs';
+
+const INITIAL_VALUE_REMEMBER_ME = true;
 
 @Component({
 	selector: 'nx-mfe-login',
@@ -9,20 +11,19 @@ import { Observable } from 'rxjs';
 	styleUrls: ['./login.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements OnInit {
-	public form!: FormGroup;
-	public readonly isLoggedIn$: Observable<boolean>;
+export class LoginComponent implements OnDestroy {
+	public readonly form = this._createForm();
+	public readonly isLoggedIn$ = this._authService.isLoggedIn$;
+
+	private readonly _destroy$ = new Subject<void>();
 
 	constructor(private readonly _fb: FormBuilder, private readonly _authService: AuthService) {
-		this.isLoggedIn$ = this._authService.isLoggedIn$;
+		this._listenRememberMeChanges();
 	}
 
-	public ngOnInit(): void {
-		this.form = this._fb.group({
-			email: [null, [Validators.required]],
-			password: [null, [Validators.required]],
-			remember: [false],
-		});
+	public ngOnDestroy(): void {
+		this._destroy$.next();
+		this._destroy$.complete();
 	}
 
 	public login(): void {
@@ -30,8 +31,17 @@ export class LoginComponent implements OnInit {
 
 		if (this.form.valid) {
 			const { email, password } = this.form.value;
+
 			this._authService.login({ email, password }).subscribe();
 		}
+	}
+
+	private _createForm(): FormGroup {
+		return this._fb.group({
+			email: [null, [Validators.required]],
+			password: [null, [Validators.required]],
+			rememberMe: [INITIAL_VALUE_REMEMBER_ME],
+		});
 	}
 
 	private _validate(): void {
@@ -41,5 +51,16 @@ export class LoginComponent implements OnInit {
 				this.form.controls[i].updateValueAndValidity();
 			}
 		}
+	}
+
+	private _listenRememberMeChanges(): void {
+		this.form
+			.get('rememberMe')
+			?.valueChanges.pipe(
+				takeUntil(this._destroy$),
+				startWith(INITIAL_VALUE_REMEMBER_ME),
+				tap((value: boolean) => this._authService.rememberMe(value))
+			)
+			.subscribe();
 	}
 }
