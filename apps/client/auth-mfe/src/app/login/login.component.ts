@@ -38,8 +38,8 @@ export class LoginComponent implements OnDestroy {
 
 	private _createForm(): FormGroup {
 		return this._fb.group({
-			email: [null, [Validators.required]],
-			password: [null, [Validators.required]],
+			email: [null, [Validators.required, Validators.email]],
+			password: [null, [Validators.required, Validators.minLength(5)]],
 			rememberMe: [INITIAL_VALUE_REMEMBER_ME],
 		});
 	}

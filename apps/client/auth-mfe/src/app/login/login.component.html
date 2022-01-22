@@ -14,18 +14,35 @@
 
 <form #loginForm="ngForm" nz-form class="login-form" [formGroup]="form" (ngSubmit)="login()">
 	<nz-form-item>
-		<nz-form-control nzErrorTip="Please input your username!">
+		<nz-form-control nzHasFeedback [nzErrorTip]="emailErrorTpl">
 			<nz-input-group nzPrefixIcon="user">
 				<input type="text" nz-input formControlName="email" placeholder="Email" />
 			</nz-input-group>
 		</nz-form-control>
+		<ng-template #emailErrorTpl let-control>
+			<ng-container *ngIf="control.hasError('required')"
+				>Please input your E-mail!</ng-container
+			>
+			<ng-container *ngIf="control.hasError('email')"
+				>The input is not valid E-mail!</ng-container
+			>
+		</ng-template>
 	</nz-form-item>
 	<nz-form-item>
-		<nz-form-control nzErrorTip="Please input your Password!">
+		<nz-form-control nzHasFeedback [nzErrorTip]="passwordErrorTpl">
 			<nz-input-group nzPrefixIcon="lock">
 				<input type="password" nz-input formControlName="password" placeholder="Password" />
 			</nz-input-group>
 		</nz-form-control>
+		<ng-template #passwordErrorTpl let-control>
+			<ng-container *ngIf="control.hasError('required')"
+				>Please input your Password!</ng-container
+			>
+			<ng-container *ngIf="control.hasError('minlength')"
+				>Password should contain at least
+				{{ control.errors.minlength.requiredLength }} characters</ng-container
+			>
+		</ng-template>
 	</nz-form-item>
 	<div nz-row class="login-form-margin">
 		<div nz-col [nzSpan]="12">
