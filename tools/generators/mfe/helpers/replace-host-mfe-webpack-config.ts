@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { PATTERN_REGEXP } from '../patterns/pattern-regexp';
+import { replacePatterns } from '../../../pattern-engine';
 
 /**
  * Заменить контент webpack.config для хостового микрофронта
@@ -11,11 +11,10 @@ export function replaceHostMfeWebpackConfig(mfe: string): void {
 	const webpackConfigPath = path.normalize(
 		path.resolve(process.cwd(), 'apps/client', mfe, 'webpack.config.js')
 	);
-	const webpackConfigPattern = fs.readFileSync(
-		path.resolve(__dirname, '../patterns/host-webpack.config.txt')
-	);
+	const webpackConfigPattern = fs
+		.readFileSync(path.resolve(__dirname, '../patterns/host-webpack.config.txt'))
+		.toString();
 
-	// replace по regexp заменят все подходящие значения
-	const content = webpackConfigPattern.toString().replace(PATTERN_REGEXP, mfe);
+	const content = replacePatterns(webpackConfigPattern, [mfe]);
 	fs.writeFileSync(webpackConfigPath, content);
 }
