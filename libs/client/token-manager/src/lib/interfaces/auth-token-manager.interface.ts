@@ -1,4 +1,4 @@
-import { IAuthTokens } from './auth-tokens';
+import { IAuthTokens } from './auth-tokens.interface';
 
 export interface IAuthTokenManager {
 	/**

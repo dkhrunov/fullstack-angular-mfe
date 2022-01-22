@@ -5,7 +5,7 @@
 //
 // import { UnauthorizedGuard } from './unauthorized.guard';
 //
-// describe(UnauthGuard, () => {
+// describe(UnAuthGuard, () => {
 // 	let guard: UnauthorizedGuard;
 // 	let userService: UserService;
 // 	let router: Router;

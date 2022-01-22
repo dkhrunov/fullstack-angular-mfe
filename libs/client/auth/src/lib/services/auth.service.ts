@@ -3,9 +3,9 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONFIG_TOKEN, IConfig } from '@nx-mfe/client/config';
 import {
-	AuthTokenManagerService,
+	AuthTokenManager,
+	AuthTokenStorageStrategy,
 	ETokenStorageType,
-	TokenStorageManagerService,
 } from '@nx-mfe/client/token-manager';
 import {
 	AuthTokensDto,
@@ -18,27 +18,27 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 	providedIn: 'root',
 })
 export class AuthService {
-	private readonly _isLoggedIn$ = new BehaviorSubject<boolean>(this.isLoggedIn);
+	// TODO разделить сервис для получения данных и сервис для хранения состояния
+	private readonly _isLoggedIn$ = new BehaviorSubject<boolean>(this._isLoggedIn);
 	public readonly isLoggedIn$ = this._isLoggedIn$.asObservable();
 
-	// TODO разделить сервис для получения данных и сервис для хранения состояния
-	public get isLoggedIn(): boolean {
+	private get _isLoggedIn(): boolean {
 		return (
-			this._authTokenManagerService.isValidAccessToken() ||
-			this._authTokenManagerService.isValidRefreshToken()
+			this._authTokenManager.isValidAccessToken() ||
+			this._authTokenManager.isValidRefreshToken()
 		);
 	}
 
 	constructor(
 		private readonly _httpClient: HttpClient,
 		private readonly _router: Router,
-		private readonly _authTokenManagerService: AuthTokenManagerService,
-		private readonly _tokenStorageManager: TokenStorageManagerService,
+		private readonly _authTokenManager: AuthTokenManager,
+		private readonly _authTokenStorageStrategy: AuthTokenStorageStrategy,
 		@Inject(CONFIG_TOKEN) private readonly _config: IConfig
 	) {}
 
 	public rememberMe(value: boolean): void {
-		this._tokenStorageManager.setTokenStorage(
+		this._authTokenStorageStrategy.setStrategy(
 			value ? ETokenStorageType.Cookies : ETokenStorageType.SessionStorage
 		);
 	}
@@ -50,9 +50,9 @@ export class AuthService {
 			})
 			.pipe(
 				tap((authTokens) => {
-					this._authTokenManagerService.setAuthTokens(authTokens);
+					this._authTokenManager.setAuthTokens(authTokens);
 					this._router.navigate(['/']);
-					this._isLoggedIn$.next(this.isLoggedIn);
+					this._isLoggedIn$.next(this._isLoggedIn);
 				})
 			);
 	}
@@ -68,9 +68,9 @@ export class AuthService {
 			})
 			.pipe(
 				tap(() => {
-					this._authTokenManagerService.deleteAuthTokens();
+					this._authTokenManager.deleteAuthTokens();
 					this._router.navigate(['/auth/login']);
-					this._isLoggedIn$.next(this.isLoggedIn);
+					this._isLoggedIn$.next(this._isLoggedIn);
 				})
 			);
 	}
@@ -82,8 +82,8 @@ export class AuthService {
 			})
 			.pipe(
 				tap((authTokens) => {
-					this._authTokenManagerService.setAuthTokens(authTokens);
-					this._isLoggedIn$.next(this.isLoggedIn);
+					this._authTokenManager.setAuthTokens(authTokens);
+					this._isLoggedIn$.next(this._isLoggedIn);
 				})
 			);
 	}

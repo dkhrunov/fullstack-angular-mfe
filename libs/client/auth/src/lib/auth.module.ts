@@ -1,12 +1,11 @@
-import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { ClientTokenManagerModule } from '@nx-mfe/client/token-manager';
+import { TokenManagerModule } from '@nx-mfe/client/token-manager';
 
 import { AuthInterceptor } from './interceptors';
 
 @NgModule({
-	imports: [CommonModule, HttpClientModule, ClientTokenManagerModule],
+	imports: [HttpClientModule, TokenManagerModule.forRoot()],
 	providers: [
 		{
 			provide: HTTP_INTERCEPTORS,
@@ -15,4 +14,4 @@ import { AuthInterceptor } from './interceptors';
 		},
 	],
 })
-export class ClientAuthModule {}
+export class AuthModule {}

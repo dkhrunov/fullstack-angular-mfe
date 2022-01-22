@@ -1,12 +1,11 @@
-import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { ClientAuthModule } from '@nx-mfe/client/auth';
-import { ClientConfigModule, CONFIG_TOKEN, IConfig } from '@nx-mfe/client/config';
+import { AuthModule } from '@nx-mfe/client/auth';
+import { CONFIG_TOKEN, ConfigModule, IConfig } from '@nx-mfe/client/config';
 
 @NgModule({
-	imports: [CommonModule, ClientAuthModule, ClientConfigModule],
+	imports: [AuthModule, ConfigModule],
 })
-export class ClientCoreModule {
+export class CoreModule {
 	/**
 	 * Используется в app.module.ts файлах в приложениях и микрофронтах для определения ядра приложения.
 	 *
@@ -19,9 +18,9 @@ export class ClientCoreModule {
 	 *
 	 * @param config объкет конфигурации приложения
 	 */
-	public static forRoot(config: IConfig): ModuleWithProviders<ClientCoreModule> {
+	public static forRoot(config: IConfig): ModuleWithProviders<CoreModule> {
 		return {
-			ngModule: ClientCoreModule,
+			ngModule: CoreModule,
 			providers: [
 				{
 					provide: CONFIG_TOKEN,

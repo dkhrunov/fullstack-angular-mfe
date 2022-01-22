@@ -1,27 +1,35 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 
-import { ITokenManager } from '../interfaces';
-import { TokenStorageManagerService } from './token-storage-manager.service';
+import { TOKEN_STORAGE_STRATEGY_TOKEN } from '../injection-tokens';
+import { ITokenManager, ITokenStorageStrategy } from '../interfaces';
+import { TokenStorage } from '../token-storage';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class TokenManagerService implements ITokenManager {
-	constructor(private readonly _tokenStorageManager: TokenStorageManagerService) {}
+export class TokenManager implements ITokenManager {
+	constructor(
+		@Inject(TOKEN_STORAGE_STRATEGY_TOKEN)
+		private readonly _tokenStorageStrategy: ITokenStorageStrategy
+	) {}
+
+	private get _tokenStorage(): TokenStorage {
+		return this._tokenStorageStrategy.strategy;
+	}
 
 	public getToken(tokenName: string): string | null {
-		return this._tokenStorageManager.tokenStorage.get(tokenName);
+		return this._tokenStorage.get(tokenName);
 	}
 
 	public setToken(tokenName: string, token: string): void {
-		this._tokenStorageManager.tokenStorage.set(tokenName, token);
+		this._tokenStorage.set(tokenName, token);
 	}
 
 	public deleteToken(tokenName: string): void {
-		this._tokenStorageManager.tokenStorage.delete(tokenName);
+		this._tokenStorage.delete(tokenName);
 	}
 
 	public isValidToken(tokenName: string): boolean {
-		return this._tokenStorageManager.tokenStorage.isValid(tokenName);
+		return this._tokenStorage.isValid(tokenName);
 	}
 }

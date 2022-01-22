@@ -6,7 +6,7 @@ import {
 	HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthTokenManagerService } from '@nx-mfe/client/token-manager';
+import { AuthTokenManager } from '@nx-mfe/client/token-manager';
 import { catchError, finalize, Observable, Subject, switchMap, tap, throwError } from 'rxjs';
 
 import { AuthService } from '../services';
@@ -19,7 +19,7 @@ export class AuthInterceptor implements HttpInterceptor {
 	public readonly tokenRefreshed$ = this._tokenRefreshed$.asObservable();
 
 	constructor(
-		private readonly _authTokenManagerService: AuthTokenManagerService,
+		private readonly _authTokenManager: AuthTokenManager,
 		private readonly _authService: AuthService
 	) {}
 
@@ -42,7 +42,7 @@ export class AuthInterceptor implements HttpInterceptor {
 	}
 
 	private _addAuthHeader(request: HttpRequest<unknown>): HttpRequest<unknown> {
-		const accessToken = this._authTokenManagerService.getAccessToken();
+		const accessToken = this._authTokenManager.getAccessToken();
 
 		return request.clone({
 			setHeaders: {

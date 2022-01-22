@@ -7,7 +7,7 @@ import { AuthService } from '../services';
 @Injectable({
 	providedIn: 'root',
 })
-export class AuthGuard implements CanLoad, CanActivate {
+export class UnAuthGuard implements CanLoad, CanActivate {
 	constructor(private readonly _router: Router, private readonly _authService: AuthService) {}
 
 	public canLoad(): Observable<true | UrlTree> {
@@ -21,7 +21,7 @@ export class AuthGuard implements CanLoad, CanActivate {
 	private _guarantee(): Observable<true | UrlTree> {
 		return this._authService.isLoggedIn$.pipe(
 			take(1),
-			map((x) => (!x ? this._router.createUrlTree(['/auth/login']) : x))
+			map((x) => (x ? this._router.createUrlTree(['/']) : true))
 		);
 	}
 }

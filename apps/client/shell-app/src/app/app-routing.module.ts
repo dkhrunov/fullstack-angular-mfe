@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard, UnauthGuard } from '@nx-mfe/client/auth';
+import { AuthGuard, UnAuthGuard } from '@nx-mfe/client/auth';
 import { loadMfe } from '@nx-mfe/client/mfe';
 
 const routes: Routes = [
@@ -10,14 +10,14 @@ const routes: Routes = [
 			{
 				path: 'login',
 				loadChildren: () => loadMfe('auth-mfe/login'),
-				canLoad: [UnauthGuard],
-				canActivate: [UnauthGuard],
+				canLoad: [UnAuthGuard],
+				canActivate: [UnAuthGuard],
 			},
 			{
 				path: 'register',
 				loadChildren: () => loadMfe('auth-mfe/register'),
-				canLoad: [UnauthGuard],
-				canActivate: [UnauthGuard],
+				canLoad: [UnAuthGuard],
+				canActivate: [UnAuthGuard],
 			},
 			{
 				path: '**',

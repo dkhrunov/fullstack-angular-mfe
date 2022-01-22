@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ClientCoreModule } from '@nx-mfe/client/core';
+import { CoreModule } from '@nx-mfe/client/core';
 
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 		BrowserModule,
 		BrowserAnimationsModule,
 		AppRoutingModule,
-		ClientCoreModule.forRoot(environment),
+		CoreModule.forRoot(environment),
 	],
 	providers: [],
 	bootstrap: [AppComponent],
