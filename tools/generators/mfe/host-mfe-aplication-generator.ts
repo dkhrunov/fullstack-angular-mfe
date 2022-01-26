@@ -3,7 +3,8 @@ import { formatFiles, installPackagesTask, Tree } from '@nrwl/devkit';
 
 import { HOST_MFE_TAG } from '../../mfe';
 import {
-	addSupportNgZorroAntd,
+	addGlobalAssets,
+	addNgZorroAntd,
 	getAvailableMfePort,
 	replaceEnvironmentFiles,
 	replaceHostMfeWebpackConfig,
@@ -31,7 +32,8 @@ export async function hostMfeApplicationGenerator(tree: Tree, schema: Partial<Sc
 	await applicationGenerator(tree, schema);
 	await formatFiles(tree);
 
-	addSupportNgZorroAntd(tree, schema.name!);
+	addNgZorroAntd(tree, schema.name!);
+	addGlobalAssets(tree, schema.name!);
 
 	return () => {
 		installPackagesTask(tree);

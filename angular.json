@@ -49,11 +49,17 @@
 								"glob": "**/*",
 								"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
 								"output": "/assets/"
+							},
+							{
+								"glob": "**/*",
+								"input": "./libs/client/assets/",
+								"output": "/assets/"
 							}
 						],
 						"styles": [
 							"apps/client/auth-mfe/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css"
+							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
+							"libs/client/assets/styles/styles.scss"
 						],
 						"scripts": [],
 						"customWebpackConfig": {
@@ -235,11 +241,17 @@
 								"glob": "**/*",
 								"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
 								"output": "/assets/"
+							},
+							{
+								"glob": "**/*",
+								"input": "./libs/client/assets/",
+								"output": "/assets/"
 							}
 						],
 						"styles": [
 							"apps/client/dashboard-mfe/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css"
+							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
+							"libs/client/assets/styles/styles.scss"
 						],
 						"scripts": [],
 						"customWebpackConfig": {
@@ -396,11 +408,17 @@
 								"glob": "**/*",
 								"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
 								"output": "/assets/"
+							},
+							{
+								"glob": "**/*",
+								"input": "./libs/client/assets/",
+								"output": "/assets/"
 							}
 						],
 						"styles": [
 							"apps/client/shell-app/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css"
+							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
+							"libs/client/assets/styles/styles.scss"
 						],
 						"scripts": [],
 						"customWebpackConfig": {

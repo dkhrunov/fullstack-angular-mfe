@@ -5,7 +5,7 @@ import { getProjects, Tree, updateProjectConfiguration } from '@nrwl/devkit';
  * @param tree Виртуальная файловая система (AST)
  * @param mfe Название микрофронта
  */
-export function addSupportNgZorroAntd(tree: Tree, mfe: string): void {
+export function addNgZorroAntd(tree: Tree, mfe: string): void {
 	const projectName = `client-${mfe}`;
 	const projectConfig = getProjects(tree).get(projectName);
 

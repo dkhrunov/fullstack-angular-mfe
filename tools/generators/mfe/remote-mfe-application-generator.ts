@@ -3,7 +3,8 @@ import { formatFiles, installPackagesTask, Tree } from '@nrwl/devkit';
 
 import { REMOTE_MFE_TAG } from '../../mfe';
 import {
-	addSupportNgZorroAntd,
+	addGlobalAssets,
+	addNgZorroAntd,
 	getAvailableMfePort,
 	replaceEnvironmentFiles,
 	replaceRemoteEntryModule,
@@ -35,7 +36,8 @@ export async function remoteMfeApplicationGenerator(tree: Tree, schema: Partial<
 	await applicationGenerator(tree, schema);
 	await formatFiles(tree);
 
-	addSupportNgZorroAntd(tree, schema.name!);
+	addNgZorroAntd(tree, schema.name!);
+	addGlobalAssets(tree, schema.name!);
 	// linkRemoteWithHost(tree, schema.name!, hostApp);
 
 	return () => {

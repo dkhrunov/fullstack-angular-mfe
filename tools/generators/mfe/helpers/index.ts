@@ -1,4 +1,5 @@
-export * from './add-support-ng-zorro-antd';
+export * from './add-global-assets';
+export * from './add-ng-zorro-antd';
 export * from './get-available-mfe-port';
 export * from './link-remote-with-host';
 export * from './replace-environment-files';
