@@ -360,6 +360,31 @@
 				}
 			}
 		},
+		"client-forms": {
+			"projectType": "library",
+			"root": "libs/client/forms",
+			"sourceRoot": "libs/client/forms/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/client/forms"],
+					"options": {
+						"jestConfig": "libs/client/forms/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/client/forms/src/**/*.ts",
+							"libs/client/forms/src/**/*.html"
+						]
+					}
+				}
+			}
+		},
 		"client-mfe": {
 			"projectType": "library",
 			"root": "libs/client/mfe",

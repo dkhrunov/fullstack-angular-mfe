@@ -3,16 +3,30 @@ nz-alert {
 	width: 320px;
 }
 
-.login-form {
+form {
 	width: 320px;
-	margin-top: 40px;
-	padding-top: 2rem;
+	margin-top: 5rem;
 }
 
-.login-form-margin {
-	margin-bottom: 16px;
+.remember-me {
+	flex: 1;
+	margin: 1.25rem 0 0.5rem;
 }
 
 .login-form-forgot {
 	float: right;
+}
+
+.submit-button {
+	margin-bottom: 0.5rem;
+}
+
+nz-input-group::ng-deep {
+	input.password-input + span[type='suffix'] {
+		cursor: pointer;
+		user-select: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
 }

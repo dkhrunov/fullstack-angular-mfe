@@ -1,0 +1,19 @@
+form {
+	width: 320px;
+	margin-top: 5rem;
+}
+
+.submit-button {
+	margin-top: 1.25rem;
+	margin-bottom: 0.5rem;
+}
+
+nz-input-group::ng-deep {
+	input.password-input + span[type='suffix'] {
+		cursor: pointer;
+		user-select: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+}

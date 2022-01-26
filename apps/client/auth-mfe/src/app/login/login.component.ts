@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '@nx-mfe/client/auth';
-import { startWith, Subject, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, finalize, startWith, Subject, takeUntil, tap } from 'rxjs';
 
 const INITIAL_VALUE_REMEMBER_ME = false;
 
@@ -12,8 +12,12 @@ const INITIAL_VALUE_REMEMBER_ME = false;
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnDestroy {
+	public passwordVisible = false;
 	public readonly form = this._createForm();
 	public readonly isLoggedIn$ = this._authService.isLoggedIn$;
+
+	private readonly _isLoading$ = new BehaviorSubject<boolean>(false);
+	public readonly isLoading$ = this._isLoading$.asObservable();
 
 	private readonly _destroy$ = new Subject<void>();
 
@@ -30,9 +34,14 @@ export class LoginComponent implements OnDestroy {
 		this._validate();
 
 		if (this.form.valid) {
+			this._isLoading$.next(true);
+
 			const { email, password } = this.form.value;
 
-			this._authService.login({ email, password }).subscribe();
+			this._authService
+				.login({ email, password })
+				.pipe(finalize(() => this._isLoading$.next(false)))
+				.subscribe();
 		}
 	}
 

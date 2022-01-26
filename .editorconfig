@@ -6,9 +6,35 @@ charset = utf-8
 indent_style = tab
 indent_size = tab
 tab_width = 4
+ij_typescript_array_initializer_right_brace_on_new_line = true
+ij_typescript_array_initializer_new_line_after_left_brace = true
 insert_final_newline = true
 trim_trailing_whitespace = true
+ij_any_array_initializer_new_line_after_left_brace = true
+ij_any_array_initializer_wrap = split_into_lines
+ij_any_array_initializer_right_brace_on_new_line = true
+ij_typescript_function_expression_brace_style = end_of_line
+ij_any_spaces_around_equality_operators = true
+ij_typescript_use_double_quotes = false
+ij_typescript_force_quote_style = true
+ij_javascript_use_double_quotes = false
+ij_javascript_force_quote_style = true
+ij_any_method_parameters_wrap = split_into_lines
+ij_any_method_call_chain_wrap = split_into_lines
+ij_typescript_imports_wrap = split_into_lines
+ij_any_extends_list_wrap = split_into_lines
+ij_any_ternary_operation_wrap = split_into_lines
+ij_any_ternary_operation_signs_on_next_line = true
+ij_css_enforce_quotes_on_format = true
+ij_css_use_double_quotes = false
+ij_scss_use_double_quotes = false
+ij_continuation_indent_size = 4
 
 [*.md]
 max_line_length = off
 trim_trailing_whitespace = false
+
+[*.json]
+indent_style = tab
+indent_size = tab
+tab_width = 4

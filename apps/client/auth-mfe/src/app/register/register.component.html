@@ -1,1 +1,105 @@
-<p>register works!</p>
+<h1 nz-typography>Registration</h1>
+
+<form nz-form [formGroup]="form" (ngSubmit)="submitForm()">
+	<nz-form-item>
+		<nz-form-label [nzSpan]="24" nzFor="email" nzRequired>E-mail</nz-form-label>
+		<nz-form-control nzHasFeedback [nzErrorTip]="emailErrorTpl">
+			<nz-input-group nzPrefixIcon="mail">
+				<input
+					nz-input
+					id="email"
+					type="email"
+					formControlName="email"
+					placeholder="Input your e-mail"
+				/>
+			</nz-input-group>
+		</nz-form-control>
+		<ng-template #emailErrorTpl let-control>
+			<ng-container *ngIf="control.hasError('email')">
+				The input is not valid E-mail!
+			</ng-container>
+			<ng-container *ngIf="control.hasError('required')">
+				Please input your E-mail!
+			</ng-container>
+		</ng-template>
+	</nz-form-item>
+
+	<nz-form-item>
+		<nz-form-label [nzSpan]="24" nzFor="password" nzRequired>Password</nz-form-label>
+		<nz-form-control [nzErrorTip]="passwordErrorTpl">
+			<nz-input-group nzPrefixIcon="lock" [nzSuffix]="togglePasswordVisibilityTpl">
+				<input
+					nz-input
+					formControlName="password"
+					id="password"
+					class="password-input"
+					placeholder="Create a password"
+					[type]="passwordVisible ? 'text' : 'password'"
+					(ngModelChange)="validateConfirmPassword()"
+				/>
+				<ng-template #togglePasswordVisibilityTpl>
+					<i
+						nz-icon
+						[nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+						(click)="passwordVisible = !passwordVisible"
+					></i>
+				</ng-template>
+			</nz-input-group>
+		</nz-form-control>
+		<ng-template #passwordErrorTpl let-control>
+			<ng-container *ngIf="control.hasError('required')">
+				Please input your Password!
+			</ng-container>
+			<ng-container *ngIf="control.hasError('minlength')">
+				Password should contain at least
+				{{ control.errors.minlength.requiredLength }} characters
+			</ng-container>
+		</ng-template>
+	</nz-form-item>
+
+	<nz-form-item>
+		<nz-form-label [nzSpan]="24" nzFor="confirm" nzRequired>Confirm Password</nz-form-label>
+		<nz-form-control [nzErrorTip]="confirmPasswordErrorTpl">
+			<nz-input-group nzPrefixIcon="lock" [nzSuffix]="togglePasswordVisibilityTpl">
+				<input
+					nz-input
+					id="confirm"
+					formControlName="confirm"
+					class="password-input"
+					placeholder="Confirm your password"
+					[type]="passwordVisible ? 'text' : 'password'"
+				/>
+				<ng-template #togglePasswordVisibilityTpl>
+					<i
+						nz-icon
+						[nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+						(click)="passwordVisible = !passwordVisible"
+					></i>
+				</ng-template>
+			</nz-input-group>
+		</nz-form-control>
+		<ng-template #confirmPasswordErrorTpl let-control>
+			<ng-container *ngIf="control.hasError('required')">
+				Please confirm your password!
+			</ng-container>
+			<ng-container *ngIf="control.hasError('confirm')">
+				Password is inconsistent!
+			</ng-container>
+		</ng-template>
+	</nz-form-item>
+
+	<nz-form-item>
+		<nz-form-control>
+			<button
+				nzBlock
+				nz-button
+				class="submit-button"
+				nzType="primary"
+				[nzLoading]="isLoading$ | async"
+			>
+				Register
+			</button>
+			<span>Already have an account? <a [routerLink]="['../login']">Log in</a></span>
+		</nz-form-control>
+	</nz-form-item>
+</form>

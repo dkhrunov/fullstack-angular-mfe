@@ -50,6 +50,9 @@
 			"tags": ["scope:client"],
 			"implicitDependencies": ["client-dashboard-mfe"]
 		},
+		"client-forms": {
+			"tags": ["scope:client"]
+		},
 		"client-mfe": {
 			"tags": ["scope:client"]
 		},
