@@ -1,13 +1,4 @@
-import {
-	Body,
-	Controller,
-	Get,
-	HttpCode,
-	Param,
-	Post,
-	Req,
-	Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Req, Res } from '@nestjs/common';
 import {
 	AuthTokensDto,
 	CredentialsDto,
@@ -33,9 +24,7 @@ export class AuthController {
 	}
 
 	@Post('/register')
-	public async register(
-		@Body() credentials: RegistrationCredentialsDto
-	): Promise<void> {
+	public async register(@Body() credentials: RegistrationCredentialsDto): Promise<void> {
 		return await this._authService.register(credentials);
 	}
 
@@ -51,10 +40,7 @@ export class AuthController {
 
 	@Post('/logout')
 	@HttpCode(200)
-	public async logout(
-		@Req() req: Request,
-		@Res() res: Response
-	): Promise<Response> {
+	public async logout(@Req() req: Request, @Res() res: Response): Promise<Response> {
 		await this._authService.logout(req.cookies.refreshToken);
 		res.clearCookie('refreshToken');
 
@@ -67,18 +53,13 @@ export class AuthController {
 		@Req() req: Request,
 		@Res() res: Response
 	): Promise<Response<AuthTokensDto>> {
-		const tokens = await this._authService.refresh(
-			req.cookies.refreshToken
-		);
+		const tokens = await this._authService.refresh(req.cookies.refreshToken);
 		this._setRefreshTokenInCookie(res, tokens.refreshToken);
 
 		return res.json(tokens);
 	}
 
-	private _setRefreshTokenInCookie(
-		res: Response,
-		refreshToken: string
-	): void {
+	private _setRefreshTokenInCookie(res: Response, refreshToken: string): void {
 		res.cookie('refreshToken', refreshToken, {
 			maxAge: Number(process.env.JWT_REFRESH_EXPIRES_IN) * 1000,
 			httpOnly: true,

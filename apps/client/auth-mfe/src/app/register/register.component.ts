@@ -1,59 +1,40 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '@nx-mfe/client/auth';
+import { FormGroup, Validators } from '@angular/forms';
+import { PASSWORD_REGEXP } from '@nx-mfe/client/auth';
+import { Form, IfFormValid } from '@nx-mfe/client/common';
 import { CustomValidators } from '@nx-mfe/client/forms';
-import { BehaviorSubject, finalize } from 'rxjs';
+import { RegistrationCredentials } from '@nx-mfe/shared/data-access';
+
+import { AuthFacadeService } from '../services/auth-facade.service';
 
 @Component({
 	selector: 'nx-mfe-register',
 	templateUrl: './register.component.html',
 	styleUrls: ['./register.component.scss'],
+	providers: [AuthFacadeService],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-	public passwordVisible = false;
+	@Form({
+		email: [[Validators.required, Validators.email]],
+		password: [
+			[Validators.required, Validators.minLength(6), Validators.pattern(PASSWORD_REGEXP)],
+		],
+		confirm: [[Validators.required, CustomValidators.confirm('password')]],
+	})
 	public readonly form: FormGroup;
 
-	private readonly _isLoading$ = new BehaviorSubject<boolean>(false);
-	public readonly isLoading$ = this._isLoading$.asObservable();
+	public passwordVisible = false;
 
-	constructor(private fb: FormBuilder, private readonly _authService: AuthService) {
-		this.form = this._createForm();
-	}
+	constructor(public readonly authFacade: AuthFacadeService) {}
 
+	@IfFormValid('form')
 	public submitForm(): void {
-		this._validate();
-
-		if (this.form.valid) {
-			this._isLoading$.next(true);
-
-			const { email, password } = this.form.value;
-
-			this._authService
-				.register({ email, password })
-				.pipe(finalize(() => this._isLoading$.next(false)))
-				.subscribe();
-		}
+		const credentials = new RegistrationCredentials(this.form.value);
+		this.authFacade.register(credentials);
 	}
 
 	public validateConfirmPassword(): void {
 		setTimeout(() => this.form.controls.confirm.updateValueAndValidity());
-	}
-
-	private _createForm(): FormGroup {
-		return this.fb.group({
-			email: ['', [Validators.required, Validators.email]],
-			password: ['', [Validators.required]],
-			confirm: ['', [Validators.required, CustomValidators.confirm('password')]],
-		});
-	}
-
-	private _validate(): void {
-		for (const i in this.form.controls) {
-			if (Object.prototype.hasOwnProperty.call(this.form.controls, i)) {
-				this.form.controls[i].markAsDirty();
-				this.form.controls[i].updateValueAndValidity();
-			}
-		}
 	}
 }

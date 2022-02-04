@@ -2,16 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONFIG_TOKEN, IConfig } from '@nx-mfe/client/config';
-import {
-	AuthTokenManager,
-	AuthTokenStorageStrategy,
-	ETokenStorageType,
-} from '@nx-mfe/client/token-manager';
-import {
-	AuthTokensDto,
-	CredentialsDto,
-	RegistrationCredentialsDto,
-} from '@nx-mfe/shared/data-access';
+import { AuthTokenManager } from '@nx-mfe/client/token-manager';
+import { AuthTokensDto, Credentials, RegistrationCredentials } from '@nx-mfe/shared/data-access';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
@@ -33,17 +25,10 @@ export class AuthService {
 		private readonly _httpClient: HttpClient,
 		private readonly _router: Router,
 		private readonly _authTokenManager: AuthTokenManager,
-		private readonly _authTokenStorageStrategy: AuthTokenStorageStrategy,
 		@Inject(CONFIG_TOKEN) private readonly _config: IConfig
 	) {}
 
-	public rememberMe(value: boolean): void {
-		this._authTokenStorageStrategy.setStrategy(
-			value ? ETokenStorageType.Cookies : ETokenStorageType.SessionStorage
-		);
-	}
-
-	public login(credentials: CredentialsDto): Observable<AuthTokensDto> {
+	public login(credentials: Credentials): Observable<AuthTokensDto> {
 		return this._httpClient
 			.post<AuthTokensDto>(this._config.apiUrl + '/auth/login', credentials, {
 				withCredentials: true,
@@ -57,7 +42,7 @@ export class AuthService {
 			);
 	}
 
-	public register(credentials: RegistrationCredentialsDto): Observable<void> {
+	public register(credentials: RegistrationCredentials): Observable<void> {
 		return this._httpClient.post<void>(this._config.apiUrl + '/auth/register', credentials);
 	}
 

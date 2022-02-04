@@ -18,6 +18,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@nx-mfe/client/auth": ["libs/client/auth/src/index.ts"],
+			"@nx-mfe/client/common": ["libs/client/common/src/index.ts"],
 			"@nx-mfe/client/config": ["libs/client/config/src/index.ts"],
 			"@nx-mfe/client/core": ["libs/client/core/src/index.ts"],
 			"@nx-mfe/client/forms": ["libs/client/forms/src/index.ts"],

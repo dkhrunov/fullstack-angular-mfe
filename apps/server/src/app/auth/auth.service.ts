@@ -32,17 +32,19 @@ export class AuthService {
 	public async login(credentials: CredentialsDto): Promise<AuthTokensDto> {
 		const user = await this._userService.getByEmail(credentials.email);
 		if (!user) {
-			throw new UnauthorizedException(`Пользователь ${credentials.email} не найден`);
-		}
-		if (!user.isConfirmed) {
-			throw new UnauthorizedException(
-				`Пользователь ${credentials.email} не завершил регистрацию`
-			);
+			throw new UnauthorizedException('Некорректная почта или пароль');
 		}
 
-		const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
+		const isPasswordCorrect = await bcrypt.compare(
+			Buffer.from(credentials.password, 'base64').toString(),
+			user.password
+		);
 		if (!isPasswordCorrect) {
-			throw new UnauthorizedException('Некоррекный пароль');
+			throw new UnauthorizedException('Некорректная почта или пароль');
+		}
+
+		if (!user.isConfirmed) {
+			throw new UnauthorizedException('Требуется сначала подтвердить почту');
 		}
 
 		const tokens = this._generateAuthTokens(user);
@@ -54,9 +56,7 @@ export class AuthService {
 	public async register(credentials: RegistrationCredentialsDto): Promise<void> {
 		const candidate = await this._userService.getByEmail(credentials.email);
 		if (candidate) {
-			throw new ConflictException(
-				`Пользователь с данным email - ${credentials.email} уже существует`
-			);
+			throw new ConflictException(`Пользователь с данным email уже зарегистрирован`);
 		}
 
 		const user = await this._userService.create(credentials);
@@ -110,12 +110,7 @@ export class AuthService {
 	}
 
 	private _generateAuthTokens(user: UserEntity): AuthTokensDto {
-		const payload: AuthTokenPayload = {
-			id: user.id,
-			email: user.email,
-			isConfirmed: user.isConfirmed,
-		};
-
+		const { ...payload } = new AuthTokenPayload(user);
 		return this._tokenService.generateTokens(payload);
 	}
 }

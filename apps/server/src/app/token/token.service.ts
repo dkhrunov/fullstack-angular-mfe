@@ -15,8 +15,7 @@ export class TokenService {
 		private readonly _jwtService: JwtService
 	) {}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	public generateTokens<P extends Object>(payload: P): AuthTokensDto {
+	public generateTokens<P extends Record<string, any>>(payload: P): AuthTokensDto {
 		const accessToken = this._jwtService.sign(payload, {
 			secret: process.env.JWT_ACCESS_SECRET,
 			expiresIn: Number(process.env.JWT_ACCESS_EXPIRES_IN),
@@ -30,10 +29,16 @@ export class TokenService {
 		return new AuthTokensDto(accessToken, refreshToken);
 	}
 
-	public async upsertRefreshToken(userId: number, oldToken: string, newToken: string): Promise<TokenEntity> {
+	public async upsertRefreshToken(
+		userId: number,
+		oldToken: string,
+		newToken: string
+	): Promise<TokenEntity> {
 		const token = await this._tokenRepository.findOne({ where: { refreshToken: oldToken } });
 		if (token) {
-			const updateResult = await this._tokenRepository.update(token.id, { refreshToken: newToken });
+			const updateResult = await this._tokenRepository.update(token.id, {
+				refreshToken: newToken,
+			});
 			return updateResult.raw[0] as TokenEntity;
 		}
 
@@ -56,7 +61,9 @@ export class TokenService {
 
 		tokens.forEach((token) => {
 			try {
-				this._jwtService.verify(token.refreshToken, { secret: process.env.JWT_REFRESH_SECRET });
+				this._jwtService.verify(token.refreshToken, {
+					secret: process.env.JWT_REFRESH_SECRET,
+				});
 			} catch (error) {
 				invalidTokens.push(token);
 			}

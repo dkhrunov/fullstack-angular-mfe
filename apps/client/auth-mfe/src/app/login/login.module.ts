@@ -22,7 +22,6 @@ import { LoginComponent } from './login.component';
 				component: LoginComponent,
 			},
 		]),
-		ReactiveFormsModule,
 		NzFormModule,
 		NzButtonModule,
 		NzIconModule,
@@ -30,6 +29,7 @@ import { LoginComponent } from './login.component';
 		NzCheckboxModule,
 		NzAlertModule,
 		NzTypographyModule,
+		ReactiveFormsModule,
 	],
 })
 export class LoginModule {}

@@ -1,9 +1,10 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { AuthModule } from '@nx-mfe/client/auth';
+import { DecoratorsModule } from '@nx-mfe/client/common';
 import { CONFIG_TOKEN, ConfigModule, IConfig } from '@nx-mfe/client/config';
 
 @NgModule({
-	imports: [AuthModule, ConfigModule],
+	imports: [AuthModule, ConfigModule, DecoratorsModule],
 })
 export class CoreModule {
 	/**

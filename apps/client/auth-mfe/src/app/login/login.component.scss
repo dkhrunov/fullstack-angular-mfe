@@ -1,11 +1,16 @@
 nz-alert {
 	position: absolute;
-	width: 320px;
+	width: 24rem;
+	height: 4rem;
+
+	::ng-deep .ant-alert {
+		height: 100%;
+	}
 }
 
 form {
-	width: 320px;
-	margin-top: 5rem;
+	width: 24rem;
+	margin-top: 6.188rem;
 }
 
 .remember-me {

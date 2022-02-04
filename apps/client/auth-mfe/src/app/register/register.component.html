@@ -1,5 +1,12 @@
 <h1 nz-typography>Registration</h1>
 
+<nz-alert
+	*ngIf="authFacade.registerError$ | async as errorMessage"
+	nzType="error"
+	[nzMessage]="errorMessage"
+	nzShowIcon
+></nz-alert>
+
 <form nz-form [formGroup]="form" (ngSubmit)="submitForm()">
 	<nz-form-item>
 		<nz-form-label [nzSpan]="24" nzFor="email" nzRequired>E-mail</nz-form-label>
@@ -51,8 +58,15 @@
 				Please input your Password!
 			</ng-container>
 			<ng-container *ngIf="control.hasError('minlength')">
-				Password should contain at least
-				{{ control.errors.minlength.requiredLength }} characters
+				Add
+				{{
+					control.errors.minlength.requiredLength - control.errors.minlength.actualLength
+				}}
+				more characters!
+			</ng-container>
+			<ng-container *ngIf="control.hasError('pattern') && !control.hasError('minlength')">
+				Password should contain at least one letter, one number and one special character
+				(@$!%*#?&).
 			</ng-container>
 		</ng-template>
 	</nz-form-item>
@@ -82,7 +96,7 @@
 			<ng-container *ngIf="control.hasError('required')">
 				Please confirm your password!
 			</ng-container>
-			<ng-container *ngIf="control.hasError('confirm')">
+			<ng-container *ngIf="control.hasError('confirm') && !control.hasError('required')">
 				Password is inconsistent!
 			</ng-container>
 		</ng-template>
@@ -95,7 +109,7 @@
 				nz-button
 				class="submit-button"
 				nzType="primary"
-				[nzLoading]="isLoading$ | async"
+				[nzLoading]="authFacade.isRegistering$ | async"
 			>
 				Register
 			</button>

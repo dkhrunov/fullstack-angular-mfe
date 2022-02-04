@@ -1,27 +1,33 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '@nx-mfe/client/auth';
-import { BehaviorSubject, finalize, startWith, Subject, takeUntil, tap } from 'rxjs';
+import { FormGroup, Validators } from '@angular/forms';
+import { Form, IfFormValid } from '@nx-mfe/client/common';
+import { Credentials } from '@nx-mfe/shared/data-access';
+import { startWith, Subject, takeUntil, tap } from 'rxjs';
 
-const INITIAL_VALUE_REMEMBER_ME = false;
+import { AuthFacadeService } from '../services/auth-facade.service';
 
 @Component({
 	selector: 'nx-mfe-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
+	providers: [AuthFacadeService],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnDestroy {
-	public passwordVisible = false;
-	public readonly form = this._createForm();
-	public readonly isLoggedIn$ = this._authService.isLoggedIn$;
+	@Form({
+		email: [[Validators.required, Validators.email]],
+		password: [[Validators.required]],
+		rememberMe: [[]],
+	})
+	public readonly form: FormGroup;
 
-	private readonly _isLoading$ = new BehaviorSubject<boolean>(false);
-	public readonly isLoading$ = this._isLoading$.asObservable();
+	public passwordVisible = false;
 
 	private readonly _destroy$ = new Subject<void>();
 
-	constructor(private readonly _fb: FormBuilder, private readonly _authService: AuthService) {
+	constructor(public readonly authFacade: AuthFacadeService) {
+		this._setDefaultFormValue();
+		this.form.get('rememberMe')?.setValue(this.authFacade.rememberMeValue);
 		this._listenRememberMeChanges();
 	}
 
@@ -30,36 +36,18 @@ export class LoginComponent implements OnDestroy {
 		this._destroy$.complete();
 	}
 
-	public login(): void {
-		this._validate();
-
-		if (this.form.valid) {
-			this._isLoading$.next(true);
-
-			const { email, password } = this.form.value;
-
-			this._authService
-				.login({ email, password })
-				.pipe(finalize(() => this._isLoading$.next(false)))
-				.subscribe();
-		}
+	@IfFormValid('form')
+	public async login(): Promise<void> {
+		const credentials = new Credentials(this.form.value);
+		this.authFacade.login(credentials);
 	}
 
-	private _createForm(): FormGroup {
-		return this._fb.group({
-			email: [null, [Validators.required, Validators.email]],
-			password: [null, [Validators.required, Validators.minLength(5)]],
-			rememberMe: [INITIAL_VALUE_REMEMBER_ME],
+	private _setDefaultFormValue(): void {
+		this.form.setValue({
+			email: null,
+			password: null,
+			rememberMe: this.authFacade.rememberMeValue,
 		});
-	}
-
-	private _validate(): void {
-		for (const i in this.form.controls) {
-			if (Object.prototype.hasOwnProperty.call(this.form.controls, i)) {
-				this.form.controls[i].markAsDirty();
-				this.form.controls[i].updateValueAndValidity();
-			}
-		}
 	}
 
 	private _listenRememberMeChanges(): void {
@@ -67,8 +55,8 @@ export class LoginComponent implements OnDestroy {
 			.get('rememberMe')
 			?.valueChanges.pipe(
 				takeUntil(this._destroy$),
-				startWith(INITIAL_VALUE_REMEMBER_ME),
-				tap((value: boolean) => this._authService.rememberMe(value))
+				startWith(this.authFacade.rememberMeValue),
+				tap((value: boolean) => this.authFacade.rememberMe(value))
 			)
 			.subscribe();
 	}

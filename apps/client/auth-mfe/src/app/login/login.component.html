@@ -1,20 +1,13 @@
 <h1 nz-typography>Login</h1>
 
 <nz-alert
-	*ngIf="(isLoggedIn$ | async) && loginForm.submitted"
-	nzType="success"
-	nzMessage="User successfully logged in"
-	nzShowIcon
-></nz-alert>
-
-<nz-alert
-	*ngIf="!(isLoggedIn$ | async) && loginForm.submitted"
+	*ngIf="authFacade.loginError$ | async as errorMessage"
 	nzType="error"
-	nzMessage="You input incorrect data, please try again"
+	[nzMessage]="errorMessage"
 	nzShowIcon
 ></nz-alert>
 
-<form #loginForm="ngForm" nz-form [formGroup]="form" (ngSubmit)="login()">
+<form nz-form [formGroup]="form" (ngSubmit)="login()">
 	<nz-form-item>
 		<nz-form-label [nzSpan]="24" nzFor="email">E-mail</nz-form-label>
 		<nz-form-control nzHasFeedback [nzErrorTip]="emailErrorTpl">
@@ -22,7 +15,7 @@
 				<input
 					nz-input
 					id="email"
-					type="text"
+					type="email"
 					formControlName="email"
 					placeholder="Input your e-mail"
 				/>
@@ -63,10 +56,6 @@
 			<ng-container *ngIf="control.hasError('required')">
 				Please input your Password!
 			</ng-container>
-			<ng-container *ngIf="control.hasError('minlength')">
-				Password should contain at least
-				{{ control.errors.minlength.requiredLength }} characters
-			</ng-container>
 		</ng-template>
 	</nz-form-item>
 
@@ -88,7 +77,7 @@
 				nzBlock
 				class="submit-button"
 				nzType="primary"
-				[nzLoading]="isLoading$ | async"
+				[nzLoading]="authFacade.isLogIn$ | async"
 			>
 				Log in
 			</button>

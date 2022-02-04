@@ -168,6 +168,31 @@
 				}
 			}
 		},
+		"client-common": {
+			"projectType": "library",
+			"root": "libs/client/common",
+			"sourceRoot": "libs/client/common/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/client/common"],
+					"options": {
+						"jestConfig": "libs/client/common/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/client/common/src/**/*.ts",
+							"libs/client/common/src/**/*.html"
+						]
+					}
+				}
+			}
+		},
 		"client-config": {
 			"projectType": "library",
 			"root": "libs/client/config",

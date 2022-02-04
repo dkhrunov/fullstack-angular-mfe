@@ -10,7 +10,7 @@ import { TokenStorage, TokenStorageFactory } from '../token-storage';
 	providedIn: 'root',
 })
 export class AuthTokenStorageStrategy implements ITokenStorageStrategy {
-	private _strategy: TokenStorage = this._rehydrate();
+	private _strategy: TokenStorage = this._dehydrate();
 
 	public get strategy(): TokenStorage {
 		return this._strategy;
@@ -30,7 +30,7 @@ export class AuthTokenStorageStrategy implements ITokenStorageStrategy {
 		localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, JSON.stringify(type));
 	}
 
-	private _rehydrate(): TokenStorage {
+	private _dehydrate(): TokenStorage {
 		const tokenStorageName = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
 
 		if (!tokenStorageName) return this._defaultAuthTokenStorageStrategy;
