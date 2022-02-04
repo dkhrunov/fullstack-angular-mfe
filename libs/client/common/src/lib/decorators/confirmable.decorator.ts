@@ -1,7 +1,13 @@
+import { InjectorContainerModule } from '@nx-mfe/client/core';
 import { ConfirmType, ModalOptions, NzModalService } from 'ng-zorro-antd/modal';
 
-import { DecoratorsModule } from './decorators.module';
-
+/**
+ * Декоратор метода.
+ *
+ * При вызове декарируемого метода, откроется окно для подтверждения данной операции.
+ * @param options параметры для NzModal confirm
+ * @param confirmType тип окошка
+ */
 export function Confirmable(options?: Omit<ModalOptions, 'nzOnOk'>, confirmType?: ConfirmType) {
 	return (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) => {
 		const defaultOptions: ModalOptions = {
@@ -13,7 +19,7 @@ export function Confirmable(options?: Omit<ModalOptions, 'nzOnOk'>, confirmType?
 		const originalMethod = descriptor.value;
 
 		descriptor.value = function (...args: unknown[]) {
-			DecoratorsModule.injector.get(NzModalService).confirm(
+			InjectorContainerModule.injector.get(NzModalService).confirm(
 				{
 					...defaultOptions,
 					...options,

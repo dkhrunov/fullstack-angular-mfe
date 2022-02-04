@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
-import { Form, IfFormValid } from '@nx-mfe/client/common';
+import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { Credentials } from '@nx-mfe/shared/data-access';
 import { startWith, Subject, takeUntil, tap } from 'rxjs';
 
@@ -27,7 +27,6 @@ export class LoginComponent implements OnDestroy {
 
 	constructor(public readonly authFacade: AuthFacadeService) {
 		this._setDefaultFormValue();
-		this.form.get('rememberMe')?.setValue(this.authFacade.rememberMeValue);
 		this._listenRememberMeChanges();
 	}
 

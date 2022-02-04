@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 
-import { DecoratorsModule } from './decorators';
-
 @NgModule({
-	imports: [DecoratorsModule],
+	imports: [],
 })
 export class CommonModule {}

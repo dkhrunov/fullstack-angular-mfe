@@ -1,10 +1,11 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { AuthModule } from '@nx-mfe/client/auth';
-import { DecoratorsModule } from '@nx-mfe/client/common';
 import { CONFIG_TOKEN, ConfigModule, IConfig } from '@nx-mfe/client/config';
 
+import { InjectorContainerModule } from './injector-container.module';
+
 @NgModule({
-	imports: [AuthModule, ConfigModule, DecoratorsModule],
+	imports: [AuthModule, ConfigModule, InjectorContainerModule],
 })
 export class CoreModule {
 	/**

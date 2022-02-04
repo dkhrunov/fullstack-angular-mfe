@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { PASSWORD_REGEXP } from '@nx-mfe/client/auth';
-import { Form, IfFormValid } from '@nx-mfe/client/common';
-import { CustomValidators } from '@nx-mfe/client/forms';
+import { CustomValidators, Form, IfFormValid } from '@nx-mfe/client/forms';
 import { RegistrationCredentials } from '@nx-mfe/shared/data-access';
 
 import { AuthFacadeService } from '../services/auth-facade.service';
