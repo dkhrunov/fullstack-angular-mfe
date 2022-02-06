@@ -35,10 +35,7 @@ export class AuthService {
 			throw new UnauthorizedException('Некорректная почта или пароль');
 		}
 
-		const isPasswordCorrect = await bcrypt.compare(
-			Buffer.from(credentials.password, 'base64').toString(),
-			user.password
-		);
+		const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
 		if (!isPasswordCorrect) {
 			throw new UnauthorizedException('Некорректная почта или пароль');
 		}

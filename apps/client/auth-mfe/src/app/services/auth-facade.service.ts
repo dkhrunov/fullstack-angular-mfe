@@ -47,8 +47,6 @@ export class AuthFacadeService implements OnDestroy {
 	public login(credentials: Credentials): void {
 		this._isLogIn$.next(true);
 
-		credentials.password = btoa(credentials.password);
-
 		this._authService
 			.login(credentials)
 			.pipe(
