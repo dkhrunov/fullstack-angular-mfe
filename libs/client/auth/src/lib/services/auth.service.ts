@@ -35,6 +35,9 @@ export class AuthService {
 			})
 			.pipe(
 				tap((authTokens) => {
+					// TODO это должно тут быть или вынести в фасад? Разделить на 2 сервиса:
+					//  1) только работает с запросами;
+					//  2) выполняет запрос из первого сервиса и добавляет логику для процесса авторизации
 					this._authTokenManager.setAuthTokens(authTokens);
 					this._router.navigate(['/']);
 					this._isLoggedIn$.next(this._isLoggedIn);

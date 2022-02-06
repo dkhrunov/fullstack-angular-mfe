@@ -28,8 +28,8 @@ export function Form(
 		[field: string]: [] | [ValidatorFn[]] | [ValidatorFn[], AsyncValidatorFn[]];
 	},
 	options?: AbstractControlOptions | null | undefined
-) {
-	return (target: any, propertyKey: string) => {
+): PropertyDecorator {
+	return (target: any, propertyKey: string | symbol): void => {
 		const controlsConfig = Object.entries(controls).reduce((res, [controlName, value]) => {
 			if (value.length !== 0) {
 				// @ts-ignore

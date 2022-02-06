@@ -9,7 +9,11 @@ import { ConfirmType, ModalOptions, NzModalService } from 'ng-zorro-antd/modal';
  * @param confirmType тип окошка
  */
 export function Confirmable(options?: Omit<ModalOptions, 'nzOnOk'>, confirmType?: ConfirmType) {
-	return (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) => {
+	return function (
+		_target: any,
+		_propertyKey: string,
+		descriptor: TypedPropertyDescriptor<any>
+	): TypedPropertyDescriptor<any> {
 		const defaultOptions: ModalOptions = {
 			nzTitle: 'Are you sure?',
 			nzContent: 'Do you want to perform this action?',

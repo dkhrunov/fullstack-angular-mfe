@@ -36,7 +36,7 @@ export class LoginComponent implements OnDestroy {
 	}
 
 	@IfFormValid('form')
-	public async login(): Promise<void> {
+	public login(): void {
 		const credentials = new Credentials(this.form.value);
 		this.authFacade.login(credentials);
 	}
