@@ -1,10 +1,10 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import {
-	AUTH_TOKEN_STORAGE_STRATEGY_TOKEN,
-	DEFAULT_AUTH_TOKEN_STORAGE_TOKEN,
-	DEFAULT_TOKEN_STORAGE_TOKEN,
-	TOKEN_STORAGE_STRATEGY_TOKEN,
+	AUTH_TOKEN_STORAGE_STRATEGY,
+	DEFAULT_AUTH_TOKEN_STORAGE,
+	DEFAULT_TOKEN_STORAGE,
+	TOKEN_STORAGE_STRATEGY,
 } from './injection-tokens';
 import { ITokenManagerConfig } from './interfaces';
 import { AuthTokenStorageStrategy, TokenStorageStrategy } from './services';
@@ -21,19 +21,19 @@ export class TokenManagerModule {
 			ngModule: TokenManagerModule,
 			providers: [
 				{
-					provide: DEFAULT_TOKEN_STORAGE_TOKEN,
+					provide: DEFAULT_TOKEN_STORAGE,
 					useClass: config?.defaultTokenStorage ?? TokenLocalStorage,
 				},
 				{
-					provide: DEFAULT_AUTH_TOKEN_STORAGE_TOKEN,
+					provide: DEFAULT_AUTH_TOKEN_STORAGE,
 					useClass: config?.defaultAuthTokenStorage ?? TokenLocalStorage,
 				},
 				{
-					provide: TOKEN_STORAGE_STRATEGY_TOKEN,
+					provide: TOKEN_STORAGE_STRATEGY,
 					useExisting: TokenStorageStrategy,
 				},
 				{
-					provide: AUTH_TOKEN_STORAGE_STRATEGY_TOKEN,
+					provide: AUTH_TOKEN_STORAGE_STRATEGY,
 					useExisting: AuthTokenStorageStrategy,
 				},
 			],

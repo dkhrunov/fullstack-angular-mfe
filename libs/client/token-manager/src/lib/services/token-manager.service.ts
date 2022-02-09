@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 
-import { TOKEN_STORAGE_STRATEGY_TOKEN } from '../injection-tokens';
+import { TOKEN_STORAGE_STRATEGY } from '../injection-tokens';
 import { ITokenManager, ITokenStorageStrategy } from '../interfaces';
 import { TokenStorage } from '../token-storage';
 
@@ -9,7 +9,7 @@ import { TokenStorage } from '../token-storage';
 })
 export class TokenManager implements ITokenManager {
 	constructor(
-		@Inject(TOKEN_STORAGE_STRATEGY_TOKEN)
+		@Inject(TOKEN_STORAGE_STRATEGY)
 		private readonly _tokenStorageStrategy: ITokenStorageStrategy
 	) {}
 

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 
 import { AuthTokensTypes } from '../enums';
-import { AUTH_TOKEN_STORAGE_STRATEGY_TOKEN } from '../injection-tokens';
+import { AUTH_TOKEN_STORAGE_STRATEGY } from '../injection-tokens';
 import { IAuthTokenManager, IAuthTokens, ITokenStorageStrategy } from '../interfaces';
 import { TokenManager } from './token-manager.service';
 
@@ -10,7 +10,7 @@ import { TokenManager } from './token-manager.service';
 })
 export class AuthTokenManager extends TokenManager implements IAuthTokenManager {
 	constructor(
-		@Inject(AUTH_TOKEN_STORAGE_STRATEGY_TOKEN)
+		@Inject(AUTH_TOKEN_STORAGE_STRATEGY)
 		protected readonly _authTokenStorageStrategy: ITokenStorageStrategy
 	) {
 		super(_authTokenStorageStrategy);

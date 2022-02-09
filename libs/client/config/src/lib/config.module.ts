@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
-import { CONFIG_TOKEN } from './injection-tokens';
+import { CONFIG } from './injection-tokens';
 import { IConfig } from './interfaces';
 
 @NgModule({})
@@ -15,7 +15,7 @@ export class ConfigModule {
 			ngModule: ConfigModule,
 			providers: [
 				{
-					provide: CONFIG_TOKEN,
+					provide: CONFIG,
 					useValue: config,
 				},
 			],

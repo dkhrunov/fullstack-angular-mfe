@@ -1,1 +1,1 @@
-export * from './CONFIG_TOKEN';
+export * from './config.token';

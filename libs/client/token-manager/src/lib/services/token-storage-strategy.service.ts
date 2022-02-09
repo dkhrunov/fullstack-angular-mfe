@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 
 import { AUTH_TOKEN_STORAGE_KEY } from '../const';
 import { ETokenStorageType } from '../enums';
-import { DEFAULT_AUTH_TOKEN_STORAGE_TOKEN } from '../injection-tokens';
+import { DEFAULT_AUTH_TOKEN_STORAGE } from '../injection-tokens';
 import { ITokenStorageStrategy } from '../interfaces';
 import { TokenStorage, TokenStorageFactory } from '../token-storage';
 
@@ -17,7 +17,7 @@ export class TokenStorageStrategy implements ITokenStorageStrategy {
 	}
 
 	constructor(
-		@Inject(DEFAULT_AUTH_TOKEN_STORAGE_TOKEN)
+		@Inject(DEFAULT_AUTH_TOKEN_STORAGE)
 		private readonly _defaultAuthTokenStorageStrategy: TokenStorage
 	) {}
 

@@ -1,3 +1,4 @@
+// FIXME если файл angular.json будет переименован в workspace.json то будут проблемы
 import * as workspaceConfig from '../../../../../../angular.json';
 import { MFE_PROJECT_REGEXP } from '../../../../../../tools/mfe';
 import { IWorkspaceConfig } from '../interfaces';
@@ -11,7 +12,7 @@ export class MfeRegistry {
 	}
 
 	/**
-	 * Получить инстанс
+	 * Получить инстанс класса
 	 */
 	public static instantiate(): MfeRegistry {
 		if (!MfeRegistry._instance) {
@@ -42,7 +43,6 @@ export class MfeRegistry {
 	/**
 	 * Получить конфиги микрофронтов
 	 * @param config Файл конфигурации
-	 * @private
 	 */
 	private _getMfesConfig(config: IWorkspaceConfig): IWorkspaceConfig['projects'] {
 		return Object.keys(config.projects)

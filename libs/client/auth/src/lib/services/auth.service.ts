@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CONFIG_TOKEN, IConfig } from '@nx-mfe/client/config';
+import { CONFIG, IConfig } from '@nx-mfe/client/config';
 import { AuthTokenManager } from '@nx-mfe/client/token-manager';
 import { AuthTokensDto, Credentials, RegistrationCredentials } from '@nx-mfe/shared/data-access';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
@@ -25,7 +25,7 @@ export class AuthService {
 		private readonly _httpClient: HttpClient,
 		private readonly _router: Router,
 		private readonly _authTokenManager: AuthTokenManager,
-		@Inject(CONFIG_TOKEN) private readonly _config: IConfig
+		@Inject(CONFIG) private readonly _config: IConfig
 	) {}
 
 	public login(credentials: Credentials): Observable<AuthTokensDto> {

@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { AuthModule } from '@nx-mfe/client/auth';
-import { CONFIG_TOKEN, ConfigModule, IConfig } from '@nx-mfe/client/config';
+import { CONFIG, ConfigModule, IConfig } from '@nx-mfe/client/config';
 
 import { InjectorContainerModule } from './injector-container.module';
 
@@ -25,7 +25,7 @@ export class CoreModule {
 			ngModule: CoreModule,
 			providers: [
 				{
-					provide: CONFIG_TOKEN,
+					provide: CONFIG,
 					useValue: config,
 				},
 			],
