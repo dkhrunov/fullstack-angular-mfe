@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
+import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
 @Component({
 	selector: 'nx-mfe-dashboard-entry',
 	template: `<div class="remote-entry">
-		<h2>dashboard's Remote Entry Component</h2>
+		<h2 (click)="open()">dashboard's Remote Entry Component</h2>
 	</div>`,
 	styles: [
 		`
@@ -15,4 +16,16 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class EntryComponent {}
+export class EntryComponent {
+	constructor(
+		private readonly _drawerService: NzDrawerService,
+		public readonly injector: Injector
+	) {}
+
+	public open(): void {
+		this._drawerService.create({
+			nzTitle: 'Template',
+			nzFooter: 'Footer',
+		});
+	}
+}

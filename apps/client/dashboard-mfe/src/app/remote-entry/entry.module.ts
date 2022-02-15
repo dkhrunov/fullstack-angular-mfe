@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 
 import { EntryComponent } from './entry.component';
 
 @NgModule({
-	declarations: [EntryComponent],
 	imports: [
 		CommonModule,
 		RouterModule.forChild([
@@ -14,7 +14,9 @@ import { EntryComponent } from './entry.component';
 				component: EntryComponent,
 			},
 		]),
+		NzDrawerModule,
 	],
-	providers: [],
+	declarations: [EntryComponent],
+	exports: [EntryComponent],
 })
 export class EntryModule {}

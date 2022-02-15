@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
-import { Form, IfFormValid } from '@nx-mfe/client/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { validateForm } from '@nx-mfe/client/forms';
 import { Credentials } from '@nx-mfe/shared/data-access';
 import { startWith, Subject, takeUntil, tap } from 'rxjs';
 
@@ -14,18 +14,17 @@ import { AuthFacadeService } from '../services/auth-facade.service';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnDestroy {
-	@Form({
-		email: [[Validators.required, Validators.email]],
-		password: [[Validators.required]],
-		rememberMe: [[]],
-	})
-	public readonly form: FormGroup;
+	public readonly form: FormGroup = this._fb.group({
+		email: [null, [Validators.required, Validators.email]],
+		password: [null, [Validators.required]],
+		rememberMe: [null],
+	});
 
 	public passwordVisible = false;
 
 	private readonly _destroy$ = new Subject<void>();
 
-	constructor(public readonly authFacade: AuthFacadeService) {
+	constructor(public readonly authFacade: AuthFacadeService, private readonly _fb: FormBuilder) {
 		this._setDefaultFormValue();
 		this._listenRememberMeChanges();
 	}
@@ -35,10 +34,13 @@ export class LoginComponent implements OnDestroy {
 		this._destroy$.complete();
 	}
 
-	@IfFormValid('form')
 	public login(): void {
-		const credentials = new Credentials(this.form.value);
-		this.authFacade.login(credentials);
+		validateForm(this.form);
+
+		if (this.form.valid) {
+			const credentials = new Credentials(this.form.value);
+			this.authFacade.login(credentials);
+		}
 	}
 
 	private _setDefaultFormValue(): void {

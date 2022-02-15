@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MfeModule } from '@nx-mfe/client/mfe';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -13,7 +14,6 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { LoginComponent } from './login.component';
 
 @NgModule({
-	declarations: [LoginComponent],
 	imports: [
 		CommonModule,
 		RouterModule.forChild([
@@ -22,6 +22,8 @@ import { LoginComponent } from './login.component';
 				component: LoginComponent,
 			},
 		]),
+		ReactiveFormsModule,
+		MfeModule,
 		NzFormModule,
 		NzButtonModule,
 		NzIconModule,
@@ -29,7 +31,8 @@ import { LoginComponent } from './login.component';
 		NzCheckboxModule,
 		NzAlertModule,
 		NzTypographyModule,
-		ReactiveFormsModule,
 	],
+	declarations: [LoginComponent],
+	exports: [LoginComponent],
 })
 export class LoginModule {}

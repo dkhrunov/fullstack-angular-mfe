@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PASSWORD_REGEXP } from '@nx-mfe/client/auth';
-import { CustomValidators, Form, IfFormValid } from '@nx-mfe/client/forms';
+import { CustomValidators, validateForm } from '@nx-mfe/client/forms';
 import { RegistrationCredentials } from '@nx-mfe/shared/data-access';
 
 import { AuthFacadeService } from '../services/auth-facade.service';
@@ -14,23 +14,26 @@ import { AuthFacadeService } from '../services/auth-facade.service';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-	@Form({
-		email: [[Validators.required, Validators.email]],
+	public readonly form: FormGroup = this._fb.group({
+		email: [null, [Validators.required, Validators.email]],
 		password: [
-			[Validators.required, Validators.minLength(6), Validators.pattern(PASSWORD_REGEXP)],
+			null,
+			[Validators.required, Validators.minLength(8), Validators.pattern(PASSWORD_REGEXP)],
 		],
-		confirm: [[Validators.required, CustomValidators.confirm('password')]],
-	})
-	public readonly form: FormGroup;
+		confirm: [null, [Validators.required, CustomValidators.confirm('password')]],
+	});
 
 	public passwordVisible = false;
 
-	constructor(public readonly authFacade: AuthFacadeService) {}
+	constructor(public readonly authFacade: AuthFacadeService, private readonly _fb: FormBuilder) {}
 
-	@IfFormValid('form')
 	public submitForm(): void {
-		const credentials = new RegistrationCredentials(this.form.value);
-		this.authFacade.register(credentials);
+		validateForm(this.form);
+
+		if (this.form.valid) {
+			const credentials = new RegistrationCredentials(this.form.value);
+			this.authFacade.register(credentials);
+		}
 	}
 
 	public validateConfirmPassword(): void {

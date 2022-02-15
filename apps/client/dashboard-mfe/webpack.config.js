@@ -2,4 +2,5 @@ const createMfeWebpackConfig = require('../../../tools/webpack/create-mfe-webpac
 
 module.exports = createMfeWebpackConfig('dashboard-mfe', {
 	EntryModule: 'apps/client/dashboard-mfe/src/app/remote-entry/entry.module.ts',
+	EntryComponent: 'apps/client/dashboard-mfe/src/app/remote-entry/entry.component.ts',
 });

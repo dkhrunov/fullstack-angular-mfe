@@ -1,9 +1,9 @@
 import { Injector, NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @NgModule({
-	imports: [ReactiveFormsModule, NzModalModule],
+	imports: [FormsModule, NzModalModule],
 })
 export class InjectorContainerModule {
 	static injector: Injector;

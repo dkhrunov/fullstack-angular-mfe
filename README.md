@@ -27,6 +27,14 @@ Below are our core plugins:
 
 There are also many [community plugins](https://nx.dev/community) you could add.
 
+## Notice
+
+**In production build MFE will be don`t work correctly, because MfeOutletDirective create component dynamically.**
+
+The production build runs an optimizer that strips the needed information.
+You could turn off AOT (check the angular.json configuration) and in this case the module and components will be compiled and runtime.
+But still, when built for production, the names of the components will be minified.
+
 ## Generate an MFE application
 
 **This project has custom nx generator to automate the creation of MFE applications.**
