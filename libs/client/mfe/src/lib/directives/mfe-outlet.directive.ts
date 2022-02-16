@@ -13,7 +13,7 @@ import {
 	Type,
 	ViewContainerRef,
 } from '@angular/core';
-import { EChangesStrategy, TrackChanges } from '@nx-mfe/client/common';
+import { EChangesStrategy, OutsideZone, TrackChanges } from '@nx-mfe/client/common';
 import { lastValueFrom, Subject } from 'rxjs';
 
 import { DefaultMfeOutletFallbackComponent, DefaultMfeOutletLoaderComponent } from '../components';
@@ -100,11 +100,15 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		} catch (e) {
 			console.error(e);
 
-			this._cache.setError(this.mfe, e);
+			if (this._cache.isMfeRegistered(this.mfe)) {
+				this._cache.setError(this.mfe, e);
+			}
+
 			this._showFallback();
 		}
 	}
 
+	@OutsideZone()
 	private async _loadMfe(): Promise<[Type<unknown>, Type<unknown>]> {
 		const mfePromise = loadMfeModule(this.mfe).then(async (Module) => [
 			Module,

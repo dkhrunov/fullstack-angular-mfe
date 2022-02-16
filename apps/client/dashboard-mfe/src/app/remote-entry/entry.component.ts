@@ -3,9 +3,11 @@ import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
 @Component({
 	selector: 'nx-mfe-dashboard-entry',
-	template: `<div class="remote-entry">
-		<h2 (click)="open()">dashboard's Remote Entry Component</h2>
-	</div>`,
+	template: `
+		<div class="remote-entry">
+			<h2 (click)="open()">dashboard's Remote Entry Component</h2>
+		</div>
+	`,
 	styles: [
 		`
 			.remote-entry {
