@@ -20,29 +20,55 @@ import { DefaultMfeOutletFallbackComponent, DefaultMfeOutletLoaderComponent } fr
 import { loadMfeComponent, loadMfeModule } from '../loaders';
 import { MfeComponentsCache } from '../services';
 
+// TODO актуализировать доку
+/**
+ * Micro-frontend directive for plugin-based approach.
+ * -------------
+ *
+ * This directive allows you to load Micro-frontend inside in HTML template.
+ *
+ * @example
+ * <!-- Loads entry component from dashboard micro-frontend -->
+ * <ng-container *mfeOutlet="'dashboard-mfe/entry'"></ng-container>
+ *
+ * @example
+ * <!--
+ *   Loads entry component from dashboard micro-frontend
+ *   and provide context aka data ({ a: 1, b: 2 }) to entry component
+ * -->
+ * <ng-container *mfeOutlet="'dashboard-mfe/entry'; context: { a: 1, b: 2 } "></ng-container>
+ */
 @Directive({
 	// eslint-disable-next-line @angular-eslint/directive-selector
 	selector: '[mfeOutlet]',
 	exportAs: 'mfeOutlet',
 })
+// TODO jsDoc
+// TODO jsDoc
+// TODO jsDoc
+// TODO jsDoc
+// TODO jsDoc
 export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	@Input('mfeOutlet')
 	public mfe: string;
 
+	// TODO
 	@Input('mfeOutletContext')
 	public context: Record<string, unknown>;
 
 	@Input('mfeOutletInjector')
 	public injector?: Injector;
 
+	// TODO
 	@Input('mfeOutletLoader')
-	public loader?: TemplateRef<unknown>;
+	public loader?: TemplateRef<void>;
 
 	@Input('mfeOutletLoaderDelay')
 	public loaderDelay = 300;
 
+	// TODO
 	@Input('mfeOutletFallback')
-	public fallback?: TemplateRef<unknown>;
+	public fallback?: TemplateRef<void>;
 
 	private readonly _destroy$ = new Subject<void>();
 
@@ -73,15 +99,6 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 			this._showLoader();
 
 			if (this._cache.isMfeRegistered(this.mfe)) {
-				// const mfeComponentFactory = await lastValueFrom(
-				// 	this._cache.getValue(this.mfe).pipe(
-				// 		takeUntil(this._destroy$),
-				// 		catchError((e) => {
-				// 			this._showFallback();
-				// 			return throwError(e);
-				// 		})
-				// 	)
-				// );
 				const mfeComponentFactory = await lastValueFrom(this._cache.getValue(this.mfe));
 
 				this._showMfe(mfeComponentFactory);
@@ -95,6 +112,7 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 				);
 
 				this._cache.setValue(this.mfe, mfeComponentFactory);
+
 				this._showMfe(mfeComponentFactory);
 			}
 		} catch (e) {
@@ -109,26 +127,32 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	}
 
 	@OutsideZone()
-	private async _loadMfe(): Promise<[Type<unknown>, Type<unknown>]> {
-		const mfePromise = loadMfeModule(this.mfe).then(async (Module) => [
-			Module,
-			await loadMfeComponent(this.mfe),
-		]);
+	private _loadMfe(): Promise<[Type<unknown>, Type<unknown>]> {
+		let MfeModule: Type<unknown>;
+		let MfeComponent: Type<unknown>;
+
 		// Delay - anti-flicker
-		const loaderDelay = new Promise((resolve) => setTimeout(resolve, this.loaderDelay));
+		const delayPromise = new Promise((resolve) => setTimeout(resolve, this.loaderDelay));
 
-		const [[MfeModule, MfeComponent]] = await Promise.all([mfePromise, loaderDelay]);
-
-		return [MfeModule, MfeComponent];
+		// The MfeModule must be loaded first, then the MfeComponent, in that order
+		return loadMfeModule(this.mfe)
+			.then((Module) => {
+				MfeModule = Module;
+			})
+			.then(() => loadMfeComponent(this.mfe))
+			.then((Component) => {
+				MfeComponent = Component;
+			})
+			.then(() => delayPromise)
+			.then(() => [MfeModule, MfeComponent]);
 	}
 
 	private async _resolveMfeComponentFactory(
 		Module: Type<unknown>,
 		Component: Type<unknown>
 	): Promise<ComponentFactory<unknown>> {
-		// Difference for Ivy and ViewEngine
 		const moduleFactory = await this._compiler.compileModuleAsync(Module);
-		const moduleRef = moduleFactory.create(this._injector);
+		const moduleRef = moduleFactory.create(this.injector ?? this._injector);
 
 		return moduleRef.componentFactoryResolver.resolveComponentFactory(Component);
 	}

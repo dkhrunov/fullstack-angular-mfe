@@ -1,6 +1,9 @@
+:host {
+	width: 24rem;
+}
+
 nz-alert {
 	position: absolute;
-	width: 24rem;
 	height: 4rem;
 
 	::ng-deep .ant-alert {

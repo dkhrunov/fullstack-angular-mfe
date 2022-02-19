@@ -1,7 +1,6 @@
 import { Type } from '@angular/core';
 import { loadRemoteModule } from '@angular-architects/module-federation';
 
-import config from '../../../../../../config.json';
 import { MfeRegistry } from '../registry';
 
 /**
@@ -26,10 +25,8 @@ export async function loadMfeModule<T = unknown>(mfe: string, module?: string): 
 		throw new Error('Can`t load micro frontend app because module is undefined');
 	}
 
-	const mfePort = MfeRegistry.instantiate().getMfePort(_mfe);
-
+	const remoteEntry = MfeRegistry.getInstance().getMfeRemoteEntry(_mfe);
 	const remoteName = _mfe.replace(/-/g, '_');
-
 	const exposedModule = (module ?? _module)
 		.split('-')
 		.map((x) => x.charAt(0).toUpperCase() + x.substr(1))
@@ -37,7 +34,7 @@ export async function loadMfeModule<T = unknown>(mfe: string, module?: string): 
 		.concat('Module');
 
 	const remoteModule = await loadRemoteModule({
-		remoteEntry: `${config.remoteEntryUrl}:${mfePort}/${config.remoteEntryFileName}`,
+		remoteEntry,
 		remoteName,
 		exposedModule,
 	});
