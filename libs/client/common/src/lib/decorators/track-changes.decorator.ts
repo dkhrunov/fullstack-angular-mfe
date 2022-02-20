@@ -18,34 +18,61 @@ export enum EChangesStrategy {
 	NonFirst,
 }
 
+export interface TrackChangesOptions {
+	/**
+	 * Стратегия реагирования.
+	 * @default EChangesStrategy.Each
+	 */
+	strategy?: EChangesStrategy;
+	/**
+	 * Сравнивать предыдущие значение с текущим и выполнять метод, только при различии значений.
+	 * Значения должны быть имутабельными, так как сравниваются значения по ссылке.
+	 * @default false
+	 */
+	compare?: boolean;
+}
+
+const defaultOptions: TrackChangesOptions = {
+	strategy: EChangesStrategy.Each,
+	compare: false,
+};
+
 /**
- * Декоратор метода ngOnChanges, который вызывает определенную функцию при изменении значения в @Input() переменной.
+ * Декоратор метода ngOnChanges, который вызывает указанный метолд при изменении значения в @Input() prop.
  *
  * @param prop Имя переменной, которая будет отслеживаться
  * @param methodName Название метода, которое будет вызвано при изменении переменной
- * @param strategy Стратегия реагирования
+ * @param options Стратегия реагирования
  */
 export function TrackChanges<T>(
 	prop: string,
 	methodName: string,
-	strategy: EChangesStrategy = EChangesStrategy.Each
+	options?: TrackChangesOptions
 ): MethodDecorator {
 	return function (
 		target: any,
 		_propertyKey: string | symbol,
 		descriptor: PropertyDescriptor
 	): TypedPropertyDescriptor<any> {
+		const _options = { ...defaultOptions, ...options };
 		const originalMethod = descriptor.value as (changes: SimpleChanges) => void;
 
 		descriptor.value = function (changes: SimpleChanges): void {
 			if (changes && changes[prop] && changes[prop].currentValue !== undefined) {
 				const isFirstChange = changes[prop].firstChange;
+				const isDifference = changes[prop].previousValue !== changes[prop].currentValue;
+				const shouldCompareValues = _options.compare;
+
 				if (
-					strategy === EChangesStrategy.Each ||
-					(strategy === EChangesStrategy.First && isFirstChange) ||
-					(strategy === EChangesStrategy.NonFirst && !isFirstChange)
+					_options.strategy === EChangesStrategy.Each ||
+					(_options.strategy === EChangesStrategy.First && isFirstChange) ||
+					(_options.strategy === EChangesStrategy.NonFirst && !isFirstChange)
 				) {
-					target[methodName].call(this, changes[prop].currentValue as T);
+					if (!shouldCompareValues) {
+						target[methodName].call(this, changes[prop].currentValue as T);
+					} else if (isDifference) {
+						target[methodName].call(this, changes[prop].currentValue as T);
+					}
 				}
 			}
 
