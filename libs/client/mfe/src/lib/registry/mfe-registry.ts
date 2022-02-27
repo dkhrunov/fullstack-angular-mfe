@@ -4,6 +4,7 @@ import config from '../../../../../../config.json';
 import { MFE_PROJECT_REGEXP } from '../../../../../../tools/mfe';
 import { IWorkspaceConfig } from '../interfaces';
 
+// TODO добавить возможность настраивать workspaceConfig, прокидывая данный файл через forRoot(options)
 export class MfeRegistry {
 	private static _instance: MfeRegistry;
 	private readonly _mfeAppsConfig: IWorkspaceConfig['projects'];
@@ -12,10 +13,17 @@ export class MfeRegistry {
 		this._mfeAppsConfig = this._parseConfig(config);
 	}
 
+	// TODO
 	/**
 	 * Get instance of the MfeRegistry
 	 */
-	public static getInstance(): MfeRegistry {
+	public static getInstance(_config?: any): MfeRegistry {
+		// if (_config) {
+		// 	MfeRegistry._instance = new MfeRegistry(_config);
+		// }
+		//
+		// return MfeRegistry._instance;
+
 		if (!MfeRegistry._instance) {
 			MfeRegistry._instance = new MfeRegistry(workspaceConfig);
 		}

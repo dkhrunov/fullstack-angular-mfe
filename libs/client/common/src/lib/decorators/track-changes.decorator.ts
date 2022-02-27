@@ -1,32 +1,34 @@
 import { SimpleChanges } from '@angular/core';
 
 /**
- * Стратегии реагирования на изменения в @Input() переменной компонента.
+ * Strategy for changing the component's @Input() variable.
  */
 export enum EChangesStrategy {
 	/**
-	 * Вызывается на каждое изменение.
+	 * Called on every change.
 	 */
 	Each,
 	/**
-	 * Вызывается только на первое изменение.
+	 * Called only on the first change.
 	 */
 	First,
 	/**
-	 * Вызывается на каждое изменение, кроме первого.
+	 * Called on every change except the first.
 	 */
 	NonFirst,
 }
 
 export interface TrackChangesOptions {
 	/**
-	 * Стратегия реагирования.
+	 * Change strategy.
 	 * @default EChangesStrategy.Each
 	 */
 	strategy?: EChangesStrategy;
 	/**
-	 * Сравнивать предыдущие значение с текущим и выполнять метод, только при различии значений.
-	 * Значения должны быть имутабельными, так как сравниваются значения по ссылке.
+	 * Compare the previous value with the current one
+	 * and execute the method only if the values differ.
+	 *
+	 * Values must be immutable, as values are compared by reference.
 	 * @default false
 	 */
 	compare?: boolean;
@@ -38,11 +40,12 @@ const defaultOptions: TrackChangesOptions = {
 };
 
 /**
- * Декоратор метода ngOnChanges, который вызывает указанный метолд при изменении значения в @Input() prop.
+ * Decorator of lifecycle hook ngOnChanges,
+ * that call specified method when changes prop (@Input) value.
  *
- * @param prop Имя переменной, которая будет отслеживаться
- * @param methodName Название метода, которое будет вызвано при изменении переменной
- * @param options Стратегия реагирования
+ * @param prop Variable name of Input, that will be call method when changes.
+ * @param methodName The name of the method that will be called when the variable changes.
+ * @param options Options.
  */
 export function TrackChanges<T>(
 	prop: string,

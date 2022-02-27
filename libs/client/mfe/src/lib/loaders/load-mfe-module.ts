@@ -4,17 +4,17 @@ import { loadRemoteModule } from '@angular-architects/module-federation';
 import { MfeRegistry } from '../registry';
 
 /**
- * Loads exposed module of microfront.
+ * Loads exposed module of micro-frontend.
  *
- * @param mfe The name of the microfront and the name of the exposed module in this microfront,
+ * @param mfe The name of the micro-frontend and the name of the exposed module in this micro-frontend,
  * are given after slash symbol "/", for example: 'auth-mfe/login'.
  */
 export async function loadMfeModule<T = unknown>(mfe: string): Promise<Type<T>>;
 /**
- * Loads exposed module of microfront.
+ * Loads exposed module of micro-frontend.
  *
- * @param mfe The name of the microfront.
- * @param module The name of exposed module in this microfront.
+ * @param mfe The name of the micro-frontend.
+ * @param module The name of exposed module in this micro-frontend.
  */
 export async function loadMfeModule<T = unknown>(mfe: string, module: string): Promise<Type<T>>;
 export async function loadMfeModule<T = unknown>(mfe: string, module?: string): Promise<Type<T>> {

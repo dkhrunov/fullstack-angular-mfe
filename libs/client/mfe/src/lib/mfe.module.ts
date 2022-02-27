@@ -14,7 +14,7 @@ import { PRELOAD_MFES_TOKEN } from './tokens';
  * Core lib of micro-frontend architecture.
  * ---------------
  *
- * For core module provide MfeModule.forRoot().
+ * For core module provide MfeModule.forRoot(options).
  *
  * For feature modules provide MfeModule.
  */
@@ -34,6 +34,10 @@ import { PRELOAD_MFES_TOKEN } from './tokens';
 	imports: [NzResultModule, NzIconModule, NzSpinModule],
 })
 export class MfeModule {
+	/**
+	 * Sets global configuration of Mfe lib.
+	 * @param options
+	 */
 	public static forRoot(options: IMfeModuleRootOptions): ModuleWithProviders<MfeModule> {
 		return {
 			ngModule: MfeModule,
@@ -58,7 +62,7 @@ export class MfeModule {
 	/**
 	 * Loads micro-frontend app bundle
 	 * @param mfe Micro-frontend app name
-	 * @private
+	 * @internal
 	 */
 	private _loadMfeBundle(mfe: string): Promise<void> {
 		const remoteEntry = this._mfeRegistry.getMfeRemoteEntry(mfe);

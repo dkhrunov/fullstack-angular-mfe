@@ -6,7 +6,6 @@ import {
 	ComponentFactoryResolver,
 	ComponentRef,
 	Directive,
-	EventEmitter,
 	Injector,
 	Input,
 	OnChanges,
@@ -16,21 +15,12 @@ import {
 	ViewContainerRef,
 } from '@angular/core';
 import { EChangesStrategy, OutsideZone, TrackChanges } from '@nx-mfe/client/common';
-import { lastValueFrom, Subject, takeUntil } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 import { DefaultMfeOutletFallbackComponent, DefaultMfeOutletLoaderComponent } from '../components';
 import { loadMfeComponent, loadMfeModule } from '../loaders';
-import { MfeComponentsCache } from '../services';
-
-// TODO вынеси
-type CustomInputs = Record<string, unknown>;
-// TODO вынеси
-type CustomOutputs = Record<string, (event: unknown) => void>;
-
-// TODO вынеси
-type ComponentInputs = ComponentFactory<unknown>['inputs'];
-// TODO вынеси
-type ComponentOutputs = ComponentFactory<unknown>['outputs'];
+import { DynamicComponentBinding, MfeComponentsCache } from '../services';
+import { MfeInputs, MfeOutputs } from '../types';
 
 // TODO jsDoc
 // TODO jsDoc
@@ -60,28 +50,29 @@ type ComponentOutputs = ComponentFactory<unknown>['outputs'];
 	// eslint-disable-next-line @angular-eslint/directive-selector
 	selector: '[mfeOutlet]',
 	exportAs: 'mfeOutlet',
+	providers: [DynamicComponentBinding],
 })
 export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	@Input('mfeOutlet')
 	public mfe: string;
 
 	@Input('mfeOutletInputs')
-	public inputs?: CustomInputs;
+	public inputs?: MfeInputs;
 
 	@Input('mfeOutletOutputs')
-	public outputs?: CustomOutputs;
+	public outputs?: MfeOutputs;
 
 	@Input('mfeOutletInjector')
 	public injector?: Injector;
 
-	// TODO
+	// TODO mfe string + validation of string
 	@Input('mfeOutletLoader')
 	public loader?: TemplateRef<void>;
 
 	@Input('mfeOutletLoaderDelay')
 	public loaderDelay = 300;
 
-	// TODO
+	// TODO mfe string + validation of string
 	@Input('mfeOutletFallback')
 	public fallback?: TemplateRef<void>;
 
@@ -89,18 +80,18 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	private _mfeComponentRef?: ComponentRef<unknown>;
 	private _loaderComponentRef?: ComponentRef<unknown>;
 	private _fallbackComponentRef?: ComponentRef<unknown>;
-	private readonly _destroy$ = new Subject<void>();
 
 	constructor(
 		private readonly _vcr: ViewContainerRef,
 		private readonly _cfr: ComponentFactoryResolver,
 		private readonly _compiler: Compiler,
 		private readonly _injector: Injector,
-		private readonly _cache: MfeComponentsCache
+		private readonly _cache: MfeComponentsCache,
+		private readonly _binding: DynamicComponentBinding
 	) {}
 
 	@TrackChanges('mfe', '_renderMfe', { strategy: EChangesStrategy.NonFirst })
-	@TrackChanges('inputs', '_bindInputsOnChanges', {
+	@TrackChanges('inputs', '_rebindInputs', {
 		strategy: EChangesStrategy.NonFirst,
 		compare: true,
 	})
@@ -109,9 +100,6 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	}
 
 	public ngOnDestroy(): void {
-		this._destroy$.next();
-		this._destroy$.complete();
-
 		this._destroyDisplayedComponent();
 	}
 
@@ -119,12 +107,21 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		this._renderMfe();
 	}
 
-	// TODO не обновляет view в ChangeDetectionStrategy.OnPush
-	protected _bindInputsOnChanges(): void {
+	/**
+	 * Rebind MfeInputs of micro-frontend component.
+	 *
+	 * Used when changing input "inputs" of this directive.
+	 * @internal
+	 */
+	protected _rebindInputs(): void {
 		if (!this._mfeComponentRef || !this._mfeComponentFactory) return;
 
-		this._validateInputs(this._mfeComponentFactory.inputs, this.inputs ?? {});
-		this._bindInputs(
+		this._binding.validateInputs(
+			this._mfeComponentFactory.inputs,
+			this.inputs ?? {},
+			this._mfeComponentRef?.instance
+		);
+		this._binding.bindInputs(
 			this._mfeComponentFactory.inputs,
 			this.inputs ?? {},
 			this._mfeComponentRef?.instance
@@ -135,6 +132,15 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		this._mfeComponentRef?.injector.get(ChangeDetectorRef).detectChanges();
 	}
 
+	/**
+	 * Rerender micro-frontend component.
+	 *
+	 * While loading bundle of micro-frontend showing loader.
+	 * If error occur then showing fallback.
+	 *
+	 * Used when changing input "mfe" of this directive.
+	 * @internal
+	 */
 	protected async _renderMfe(): Promise<void> {
 		try {
 			if (this._mfeComponentRef) {
@@ -173,6 +179,10 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Load bundle of micro-fronted.
+	 * @internal
+	 */
 	@OutsideZone()
 	private _loadMfe(): Promise<[Type<unknown>, Type<unknown>]> {
 		let MfeModule: Type<unknown>;
@@ -194,6 +204,10 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 			.then(() => [MfeModule, MfeComponent]);
 	}
 
+	/**
+	 * Compile micro-frontend module and resolve component factory.
+	 * @internal
+	 */
 	private async _resolveMfeComponentFactory(
 		Module: Type<unknown>,
 		Component: Type<unknown>
@@ -204,6 +218,11 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		return moduleRef.componentFactoryResolver.resolveComponentFactory(Component);
 	}
 
+	/**
+	 * Show micro-frontend component.
+	 * @param componentFactory Factory of micro-frontend component.
+	 * @internal
+	 */
 	private _showMfe(componentFactory: ComponentFactory<unknown>): void {
 		this._vcr.clear();
 
@@ -216,6 +235,10 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		this._mfeComponentRef = componentRef;
 	}
 
+	/**
+	 * Show loader.
+	 * @internal
+	 */
 	private _showLoader(): void {
 		this._vcr.clear();
 
@@ -231,6 +254,10 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Show fallback.
+	 * @internal
+	 */
 	private _showFallback(): void {
 		this._vcr.clear();
 
@@ -246,6 +273,10 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Bind micro-frontend MfeInputs and MfeOutputs properties.
+	 * @internal
+	 */
 	private _bindMfeComponent(): void {
 		if (!this._mfeComponentRef) {
 			throw new Error(`ComponentRef of micro-frontend '${this.mfe}' dont exist`);
@@ -255,19 +286,23 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 			throw new Error(`ComponentFactory of micro-frontend '${this.mfe}' dont exist`);
 		}
 
-		this._validateInputs(this._mfeComponentFactory.inputs, this.inputs ?? {});
-		this._validateOutputs(
+		this._binding.validateInputs(
+			this._mfeComponentFactory.inputs,
+			this.inputs ?? {},
+			this._mfeComponentRef?.instance
+		);
+		this._binding.validateOutputs(
 			this._mfeComponentFactory.outputs,
 			this.outputs ?? {},
 			this._mfeComponentRef?.instance
 		);
 
-		this._bindInputs(
+		this._binding.bindInputs(
 			this._mfeComponentFactory.inputs,
 			this.inputs ?? {},
 			this._mfeComponentRef?.instance
 		);
-		this._bindOutputs(
+		this._binding.bindOutputs(
 			this._mfeComponentFactory.outputs,
 			this.outputs ?? {},
 			this._mfeComponentRef?.instance
@@ -278,74 +313,10 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		this._mfeComponentRef?.injector.get(ChangeDetectorRef).detectChanges();
 	}
 
-	// TODO to bindingService
-	private _validateInputs(componentInputs: ComponentInputs, inputs: CustomInputs): void {
-		Object.keys(inputs).forEach((userInputKey) => {
-			const componentHaveThatInput = componentInputs.some(
-				(componentInput) => componentInput.templateName === userInputKey
-			);
-			if (!componentHaveThatInput) {
-				throw new Error(`Input ${userInputKey} is not ${this.mfe} input.`);
-			}
-		});
-	}
-
-	// TODO to bindingService
-	private _validateOutputs(
-		componentOutputs: ComponentOutputs,
-		outputs: CustomOutputs,
-		componentInstance: any
-	): void {
-		componentOutputs.forEach((output) => {
-			if (!(componentInstance[output.propName] instanceof EventEmitter)) {
-				throw new Error(`Output ${output.propName} must be a typeof EventEmitter`);
-			}
-		});
-
-		const outputsKeys = Object.keys(outputs);
-		outputsKeys.forEach((key) => {
-			const componentHaveThatOutput = componentOutputs.some(
-				(output) => output.templateName === key
-			);
-			if (!componentHaveThatOutput) {
-				throw new Error(`Output ${key} is not ${this.mfe} output.`);
-			}
-			if (!(outputs[key] instanceof Function)) {
-				throw new Error(`Output ${key} must be a function`);
-			}
-		});
-	}
-
-	// TODO to bindingService
-	private _bindInputs(
-		componentInputs: ComponentInputs,
-		inputs: CustomInputs,
-		componentInstance: any
-	): void {
-		componentInputs.forEach((input) => {
-			componentInstance[input.propName] = inputs[input.templateName];
-		});
-	}
-
-	// TODO to bindingService
-	private _bindOutputs(
-		componentOutputs: ComponentOutputs,
-		outputs: CustomOutputs,
-		componentInstance: any
-	): void {
-		componentOutputs.forEach((output) => {
-			(componentInstance[output.propName] as EventEmitter<any>)
-				.pipe(takeUntil(this._destroy$))
-				.subscribe((event) => {
-					const handler = outputs[output.templateName];
-					if (handler) {
-						// in case the output has not been provided at all
-						handler(event);
-					}
-				});
-		});
-	}
-
+	/**
+	 * Destroy all displayed components.
+	 * @internal
+	 */
 	private _destroyDisplayedComponent() {
 		this._loaderComponentRef?.destroy();
 		this._fallbackComponentRef?.destroy();
