@@ -56,6 +56,9 @@
 		"client-forms": {
 			"tags": ["scope:client"]
 		},
+		"client-injector-container": {
+			"tags": ["scope:client"]
+		},
 		"client-mfe": {
 			"tags": ["scope:client"]
 		},

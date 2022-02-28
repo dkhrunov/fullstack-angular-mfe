@@ -1,13 +1,13 @@
-// TODO  circular dep InjectorContainerModule
-import { InjectorContainerModule } from '@nx-mfe/client/core';
+import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 import { ConfirmType, ModalOptions, NzModalService } from 'ng-zorro-antd/modal';
 
 /**
- * Декоратор метода.
+ * When calling the decorated method, a window will open to confirm this operation.
+ * ----
  *
- * При вызове декарируемого метода, откроется окно для подтверждения данной операции.
- * @param options параметры для NzModal confirm
- * @param confirmType тип окошка
+ * Method decorator.
+ * @param options Options for NzModal confirm.
+ * @param confirmType Type of window, by default "confirm".
  */
 export function Confirmable(options?: Omit<ModalOptions, 'nzOnOk'>, confirmType?: ConfirmType) {
 	return function (

@@ -40,8 +40,10 @@ const defaultOptions: TrackChangesOptions = {
 };
 
 /**
- * Decorator of lifecycle hook ngOnChanges,
- * that call specified method when changes prop (@Input) value.
+ * Decorator of lifecycle hook ngOnChanges, that call specified method when changes prop (@Input) value.
+ * -------
+ *
+ * Method decorator.
  *
  * @param prop Variable name of Input, that will be call method when changes.
  * @param methodName The name of the method that will be called when the variable changes.

@@ -22,6 +22,7 @@
 			"@nx-mfe/client/config": ["libs/client/config/src/index.ts"],
 			"@nx-mfe/client/core": ["libs/client/core/src/index.ts"],
 			"@nx-mfe/client/forms": ["libs/client/forms/src/index.ts"],
+			"@nx-mfe/client/injector-container": ["libs/client/injector-container/src/index.ts"],
 			"@nx-mfe/client/mfe": ["libs/client/mfe/src/index.ts"],
 			"@nx-mfe/client/token-manager": ["libs/client/token-manager/src/index.ts"],
 			"@nx-mfe/server/domains": ["libs/server/domains/src/index.ts"],

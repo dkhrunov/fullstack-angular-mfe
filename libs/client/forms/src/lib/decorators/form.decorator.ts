@@ -1,5 +1,5 @@
 import { AbstractControlOptions, AsyncValidatorFn, FormBuilder, ValidatorFn } from '@angular/forms';
-import { InjectorContainerModule } from '@nx-mfe/client/core';
+import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 
 import { generateMetadataKey } from './helpers';
 

@@ -1,8 +1,10 @@
 import { NgZone, ɵɵdirectiveInject as directiveInject } from '@angular/core';
 
 /**
- * Execute decorated method outside NgZone,
- * that means this method don`t trigger Angular change detection mechanism.
+ * Execute decorated method outside NgZone, that means this method don`t trigger Angular change detection mechanism.
+ * ----------
+ *
+ * Method decorator. <br/>
  *
  * NgZone triggers when:
  * - Component initialization;

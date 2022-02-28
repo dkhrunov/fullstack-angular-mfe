@@ -410,6 +410,31 @@
 				}
 			}
 		},
+		"client-injector-container": {
+			"projectType": "library",
+			"root": "libs/client/injector-container",
+			"sourceRoot": "libs/client/injector-container/src",
+			"prefix": "nx-mfe",
+			"targets": {
+				"test": {
+					"executor": "@nrwl/jest:jest",
+					"outputs": ["coverage/libs/client/injector-container"],
+					"options": {
+						"jestConfig": "libs/client/injector-container/jest.config.js",
+						"passWithNoTests": true
+					}
+				},
+				"lint": {
+					"executor": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": [
+							"libs/client/injector-container/src/**/*.ts",
+							"libs/client/injector-container/src/**/*.html"
+						]
+					}
+				}
+			}
+		},
 		"client-mfe": {
 			"projectType": "library",
 			"root": "libs/client/mfe",

@@ -1,15 +1,17 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { AuthModule } from '@nx-mfe/client/auth';
 import { CONFIG, ConfigModule, IConfig } from '@nx-mfe/client/config';
-// TODO circular dep with @Confirmable from common lib
+import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 import { MfeModule } from '@nx-mfe/client/mfe';
 
 // FIXME могут быть проблемы во время сборки
 import * as workspaceConfig from '../../../../../angular.json';
 // FIXME могут быть проблемы во время сборки
 import * as mfeConfig from '../../../../../mfe-config.json';
-import { InjectorContainerModule } from './injector-container.module';
 
+/**
+ * Provides core functionality of apps and micro-frontends.
+ */
 @NgModule({
 	imports: [
 		AuthModule,
@@ -22,19 +24,18 @@ import { InjectorContainerModule } from './injector-container.module';
 		}),
 	],
 })
-// TODO jsDoc
 export class CoreModule {
 	/**
-	 * Используется в app.module.ts файлах в приложениях и микрофронтах для определения ядра приложения.
+	 * Used in app.module.ts files in applications and micro-frontends to define the core of the application.
+	 * --------
 	 *
-	 * Можно задать собственные конфигурации для микроприложений в режиме запуска standalone app.
+	 * You can set your own configurations for micro-frontends in standalone app launch mode. <br/>
 	 *
-	 * **Ограничение:**
+	 * **Limitation:** If the remote micro-frontend is not running as a standalone app,
+	 * then the remote micro-frontend will always use the config obtained
+	 * from the host micro-frontend (shell) inside which it is used.
 	 *
-	 * Если Remote-микрофронт запущен не как standalone app, то Remote-микрофронт
-	 * всегда будет использовать конфиг полученный из Host-микрофронта (shell) внутри которого он используется.
-	 *
-	 * @param config объкет конфигурации приложения
+	 * @param config Application configuration object (environment config file).
 	 */
 	public static forRoot(config: IConfig): ModuleWithProviders<CoreModule> {
 		return {
