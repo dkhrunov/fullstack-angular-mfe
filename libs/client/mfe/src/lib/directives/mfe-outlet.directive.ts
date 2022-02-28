@@ -17,6 +17,7 @@ import {
 import { EChangesStrategy, OutsideZone, TrackChanges } from '@nx-mfe/client/common';
 import { lastValueFrom } from 'rxjs';
 
+// FIXME не динамично для либы
 import { DefaultMfeOutletFallbackComponent, DefaultMfeOutletLoaderComponent } from '../components';
 import { loadMfeComponent, loadMfeModule } from '../loaders';
 import { DynamicComponentBinding, MfeComponentsCache } from '../services';

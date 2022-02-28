@@ -8,6 +8,7 @@ import { AsyncSubject } from 'rxjs';
  * It also makes it possible to take micro-frontends from the cache,
  * instead of second load.
  */
+// TODO jsDoc
 @Injectable({
 	providedIn: 'root',
 })

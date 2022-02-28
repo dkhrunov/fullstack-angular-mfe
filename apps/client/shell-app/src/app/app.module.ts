@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from '@nx-mfe/client/core';
-import { MfeModule } from '@nx-mfe/client/mfe';
 
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -17,7 +16,6 @@ import { AppRoutingModule } from './app-routing.module';
 		HttpClientModule,
 		AppRoutingModule,
 		CoreModule.forRoot(environment),
-		MfeModule.forRoot({ preload: [] }),
 	],
 	bootstrap: [AppComponent],
 })

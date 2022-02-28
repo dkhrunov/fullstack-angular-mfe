@@ -1,3 +1,4 @@
+// TODO  circular dep InjectorContainerModule
 import { InjectorContainerModule } from '@nx-mfe/client/core';
 import { ConfirmType, ModalOptions, NzModalService } from 'ng-zorro-antd/modal';
 

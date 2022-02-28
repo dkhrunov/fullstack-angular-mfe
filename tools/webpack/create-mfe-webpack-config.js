@@ -1,6 +1,6 @@
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const sharedLibs = require('./shared-libs');
-const config = require('../../config.json');
+const config = require('../../mfe-config.json');
 
 module.exports = function (name, exposes) {
 	name = name.replace(/-/g, '_');

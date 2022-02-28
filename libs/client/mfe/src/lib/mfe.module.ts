@@ -1,4 +1,4 @@
-import { Inject, ModuleWithProviders, NgModule, Optional } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { loadRemoteEntry } from '@angular-architects/module-federation';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzResultModule } from 'ng-zorro-antd/result';
@@ -8,7 +8,6 @@ import { DefaultMfeOutletFallbackComponent, DefaultMfeOutletLoaderComponent } fr
 import { MfeOutletDirective } from './directives';
 import { IMfeModuleRootOptions } from './interfaces';
 import { MfeRegistry } from './registry';
-import { PRELOAD_MFES_TOKEN } from './tokens';
 
 /**
  * Core lib of micro-frontend architecture.
@@ -21,53 +20,57 @@ import { PRELOAD_MFES_TOKEN } from './tokens';
 @NgModule({
 	declarations: [
 		MfeOutletDirective,
+
+		// FIXME не динамично для либы
 		DefaultMfeOutletFallbackComponent,
+
+		// FIXME не динамично для либы
 		DefaultMfeOutletLoaderComponent,
 	],
 	exports: [MfeOutletDirective],
-	providers: [
-		{
-			provide: MfeRegistry,
-			useValue: MfeRegistry.getInstance(),
-		},
-	],
+	// FIXME не динамично для либы
 	imports: [NzResultModule, NzIconModule, NzSpinModule],
 })
 export class MfeModule {
 	/**
 	 * Sets global configuration of Mfe lib.
-	 * @param options
+	 * @param options Object of options.
 	 */
 	public static forRoot(options: IMfeModuleRootOptions): ModuleWithProviders<MfeModule> {
+		const mfeRegistry = MfeRegistry.getInstance(options.mfeConfig, options.workspaceConfig);
+		const loadMfeBundle = loadMfeBundleFromMfeRegistry(mfeRegistry);
+
+		if (options.preload) {
+			options.preload.map((mfe) => loadMfeBundle(mfe));
+		}
+
 		return {
 			ngModule: MfeModule,
 			providers: [
 				{
-					provide: PRELOAD_MFES_TOKEN,
-					useValue: options.preload,
+					provide: MfeRegistry,
+					useValue: mfeRegistry,
 				},
 			],
 		};
 	}
+}
 
-	constructor(
-		private readonly _mfeRegistry: MfeRegistry,
-		@Optional() @Inject(PRELOAD_MFES_TOKEN) private _mfePrefetch: string[]
-	) {
-		if (this._mfePrefetch) {
-			this._mfePrefetch.map((mfe) => this._loadMfeBundle(mfe));
-		}
-	}
-
+/**
+ * Loads micro-frontend app bundle (HOF - High Order Function).
+ *
+ * Returns function that can load micro-frontend app by provided name.
+ * @param mfeRegistry Registry of micro-frontends apps.
+ */
+function loadMfeBundleFromMfeRegistry(mfeRegistry: MfeRegistry): (mfe: string) => Promise<void> {
 	/**
-	 * Loads micro-frontend app bundle
-	 * @param mfe Micro-frontend app name
-	 * @internal
+	 * Loads micro-frontend app bundle.
+	 * @param mfe Micro-frontend app name.
 	 */
-	private _loadMfeBundle(mfe: string): Promise<void> {
-		const remoteEntry = this._mfeRegistry.getMfeRemoteEntry(mfe);
+	return (mfe: string): Promise<void> => {
+		const remoteEntry = mfeRegistry.getMfeRemoteEntry(mfe);
 		const remoteName = mfe.replace(/-/g, '_');
 
 		return loadRemoteEntry(remoteEntry, remoteName);
-	}
+	};
 }

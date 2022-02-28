@@ -1,31 +1,33 @@
-// FIXME если файл angular.json будет переименован в workspace.json то будут проблемы
-import * as workspaceConfig from '../../../../../../angular.json';
-import config from '../../../../../../config.json';
-import { MFE_PROJECT_REGEXP } from '../../../../../../tools/mfe';
-import { IWorkspaceConfig } from '../interfaces';
+import { MFE_PROJECT_REGEXP } from '../const';
+import { IMfeConfig, IWorkspaceConfig } from '../interfaces';
 
-// TODO добавить возможность настраивать workspaceConfig, прокидывая данный файл через forRoot(options)
+/**
+ * Registry of micro-frontends apps.
+ */
 export class MfeRegistry {
 	private static _instance: MfeRegistry;
 	private readonly _mfeAppsConfig: IWorkspaceConfig['projects'];
+	private readonly _mfeConfig: IMfeConfig;
 
-	private constructor(config: IWorkspaceConfig) {
-		this._mfeAppsConfig = this._parseConfig(config);
+	private constructor(mfeConfig: IMfeConfig, workspaceConfig: IWorkspaceConfig) {
+		this._mfeConfig = mfeConfig;
+		this._mfeAppsConfig = this._parseConfig(workspaceConfig);
 	}
 
-	// TODO
 	/**
 	 * Get instance of the MfeRegistry
 	 */
-	public static getInstance(_config?: any): MfeRegistry {
-		// if (_config) {
-		// 	MfeRegistry._instance = new MfeRegistry(_config);
-		// }
-		//
-		// return MfeRegistry._instance;
-
+	public static getInstance(
+		mfeConfig?: IMfeConfig,
+		workspaceConfig?: IWorkspaceConfig
+	): MfeRegistry {
 		if (!MfeRegistry._instance) {
-			MfeRegistry._instance = new MfeRegistry(workspaceConfig);
+			if (!mfeConfig || !workspaceConfig)
+				throw Error(
+					'MfeConfig and workspaceConfig should be provided for first time used MfeRegistry.getInstance(mfeConfig, workspaceConfig)'
+				);
+
+			MfeRegistry._instance = new MfeRegistry(mfeConfig, workspaceConfig);
 		}
 
 		return MfeRegistry._instance;
@@ -36,7 +38,9 @@ export class MfeRegistry {
 	 * @param mfe Micro-frontend app name
 	 */
 	public getMfeRemoteEntry(mfe: string): string {
-		return `${config.remoteEntryUrl}:${this.getMfePort(mfe)}/${config.remoteEntryFileName}`;
+		return `${this._mfeConfig.remoteEntryUrl}:${this.getMfePort(mfe)}/${
+			this._mfeConfig.remoteEntryFileName
+		}`;
 	}
 
 	/**
