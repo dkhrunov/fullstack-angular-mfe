@@ -15,6 +15,6 @@ export function replaceRemoteMfeWebpackConfig(mfe: string): void {
 		.readFileSync(path.resolve(__dirname, '../patterns/remote-webpack.config.txt'))
 		.toString();
 
-	const content = replacePatterns(webpackConfigPattern, [mfe]);
+	const content = replacePatterns(webpackConfigPattern, [mfe, mfe, mfe]);
 	fs.writeFileSync(webpackConfigPath, content);
 }

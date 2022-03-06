@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-	selector: 'nx-mfe-mfe-outlet-loader',
+	selector: 'nx-mfe-default',
 	template: `
 		<div class="container">
 			<nz-spin nzSimple nzSize="large"></nz-spin>
@@ -17,5 +17,6 @@ import { Component } from '@angular/core';
 			}
 		`,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DefaultMfeOutletLoaderComponent {}
+export class SpinnerComponent {}
