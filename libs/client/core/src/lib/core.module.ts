@@ -5,9 +5,9 @@ import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 import { MfeModule } from '@nx-mfe/client/mfe';
 
 // FIXME могут быть проблемы во время сборки
-import * as workspaceConfig from '../../../../../angular.json';
-// FIXME могут быть проблемы во время сборки
 import * as mfeConfig from '../../../../../mfe-config.json';
+// FIXME могут быть проблемы во время сборки
+import * as workspaceConfig from '../../../../../workspace.json';
 
 /**
  * Provides core functionality of apps and micro-frontends.
@@ -20,7 +20,9 @@ import * as mfeConfig from '../../../../../mfe-config.json';
 		MfeModule.forRoot({
 			mfeConfig: mfeConfig,
 			workspaceConfig: workspaceConfig,
-			preload: [],
+			preload: ['loaders-mfe'],
+			loaderDelay: 300,
+			loaderMfe: 'loaders-mfe/spinner',
 		}),
 	],
 })

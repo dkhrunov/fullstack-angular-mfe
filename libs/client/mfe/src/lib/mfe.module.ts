@@ -2,18 +2,18 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { loadRemoteEntry } from '@angular-architects/module-federation';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzResultModule } from 'ng-zorro-antd/result';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
 
-import { DefaultMfeOutletFallbackComponent, DefaultMfeOutletLoaderComponent } from './components';
+import { DefaultMfeOutletFallbackComponent } from './components';
 import { MfeOutletDirective } from './directives';
 import { IMfeModuleRootOptions } from './interfaces';
 import { MfeRegistry } from './registry';
+import { OPTIONS } from './tokens';
 
 /**
  * Core lib of micro-frontend architecture.
  * ---------------
  *
- * For core module provide MfeModule.forRoot(options).
+ * For core module provide MfeModule.forRoot(options). <br/>
  *
  * For feature modules provide MfeModule.
  */
@@ -23,13 +23,10 @@ import { MfeRegistry } from './registry';
 
 		// FIXME не динамично для либы
 		DefaultMfeOutletFallbackComponent,
-
-		// FIXME не динамично для либы
-		DefaultMfeOutletLoaderComponent,
 	],
 	exports: [MfeOutletDirective],
 	// FIXME не динамично для либы
-	imports: [NzResultModule, NzIconModule, NzSpinModule],
+	imports: [NzResultModule, NzIconModule],
 })
 export class MfeModule {
 	/**
@@ -51,6 +48,10 @@ export class MfeModule {
 					provide: MfeRegistry,
 					useValue: mfeRegistry,
 				},
+				{
+					provide: OPTIONS,
+					useValue: options,
+				},
 			],
 		};
 	}
@@ -58,15 +59,12 @@ export class MfeModule {
 
 /**
  * Loads micro-frontend app bundle (HOF - High Order Function).
+ * ------
  *
  * Returns function that can load micro-frontend app by provided name.
  * @param mfeRegistry Registry of micro-frontends apps.
  */
 function loadMfeBundleFromMfeRegistry(mfeRegistry: MfeRegistry): (mfe: string) => Promise<void> {
-	/**
-	 * Loads micro-frontend app bundle.
-	 * @param mfe Micro-frontend app name.
-	 */
 	return (mfe: string): Promise<void> => {
 		const remoteEntry = mfeRegistry.getMfeRemoteEntry(mfe);
 		const remoteName = mfe.replace(/-/g, '_');

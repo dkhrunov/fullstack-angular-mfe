@@ -6,6 +6,7 @@ import {
 	ComponentFactoryResolver,
 	ComponentRef,
 	Directive,
+	Inject,
 	Injector,
 	Input,
 	OnChanges,
@@ -18,10 +19,23 @@ import { EChangesStrategy, OutsideZone, TrackChanges } from '@nx-mfe/client/comm
 import { lastValueFrom } from 'rxjs';
 
 // FIXME не динамично для либы
-import { DefaultMfeOutletFallbackComponent, DefaultMfeOutletLoaderComponent } from '../components';
+import { DefaultMfeOutletFallbackComponent } from '../components';
+import { IMfeModuleRootOptions } from '../interfaces';
 import { loadMfeComponent, loadMfeModule } from '../loaders';
 import { DynamicComponentBinding, MfeComponentsCache } from '../services';
+import { OPTIONS } from '../tokens';
 import { MfeInputs, MfeOutputs } from '../types';
+
+export interface LoadedMfe<TModule = unknown, TComponent = unknown> {
+	module: Type<TModule>;
+	component: Type<TComponent>;
+}
+
+const delay = <T>(time: number) => {
+	return (result: T) => {
+		return new Promise<T>((resolve) => setTimeout(() => resolve(result), time));
+	};
+};
 
 // TODO jsDoc
 // TODO jsDoc
@@ -71,7 +85,7 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	public loader?: TemplateRef<void>;
 
 	@Input('mfeOutletLoaderDelay')
-	public loaderDelay = 300;
+	public loaderDelay = this._options.loaderDelay ?? 0;
 
 	// TODO mfe string + validation of string
 	@Input('mfeOutletFallback')
@@ -88,7 +102,8 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		private readonly _compiler: Compiler,
 		private readonly _injector: Injector,
 		private readonly _cache: MfeComponentsCache,
-		private readonly _binding: DynamicComponentBinding
+		private readonly _binding: DynamicComponentBinding,
+		@Inject(OPTIONS) private readonly _options: IMfeModuleRootOptions
 	) {}
 
 	@TrackChanges('mfe', '_renderMfe', { strategy: EChangesStrategy.NonFirst })
@@ -158,10 +173,12 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 			} else {
 				this._cache.registerMfe(this.mfe);
 
-				const [MfeModule, MfeComponent] = await this._loadMfe();
+				const { module, component } = await this._loadMfe(this.mfe).then(
+					delay(this.loaderDelay)
+				);
 				this._mfeComponentFactory = await this._resolveMfeComponentFactory(
-					MfeModule,
-					MfeComponent
+					module,
+					component
 				);
 
 				this._cache.setValue(this.mfe, this._mfeComponentFactory);
@@ -185,24 +202,13 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	 * @internal
 	 */
 	@OutsideZone()
-	private _loadMfe(): Promise<[Type<unknown>, Type<unknown>]> {
-		let MfeModule: Type<unknown>;
-		let MfeComponent: Type<unknown>;
+	private async _loadMfe<TModule = unknown, TComponent = unknown>(
+		mfe: string
+	): Promise<LoadedMfe<TModule, TComponent>> {
+		const module = await loadMfeModule<TModule>(mfe);
+		const component = await loadMfeComponent<TComponent>(mfe);
 
-		// Delay - anti-flicker
-		const delayPromise = new Promise((resolve) => setTimeout(resolve, this.loaderDelay));
-
-		// The MfeModule must be loaded first, then the MfeComponent, in that order
-		return loadMfeModule(this.mfe)
-			.then((Module) => {
-				MfeModule = Module;
-			})
-			.then(() => loadMfeComponent(this.mfe))
-			.then((Component) => {
-				MfeComponent = Component;
-			})
-			.then(() => delayPromise)
-			.then(() => [MfeModule, MfeComponent]);
+		return { module, component };
 	}
 
 	/**
@@ -240,18 +246,40 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	 * Show loader.
 	 * @internal
 	 */
-	private _showLoader(): void {
+	private async _showLoader(): Promise<void> {
 		this._vcr.clear();
 
 		if (this.loader) {
 			this._vcr.createEmbeddedView(this.loader);
-		} else {
-			const loaderFactory = this._cfr.resolveComponentFactory(
-				DefaultMfeOutletLoaderComponent
-			);
-			const loaderRef = this._vcr.createComponent(loaderFactory);
-			loaderRef.changeDetectorRef.detectChanges();
-			this._loaderComponentRef = loaderRef;
+		} else if (this._options.loaderMfe) {
+			// TODO сделать так чтобы не дублировать код (не работает!!!!) Мб создать сервис
+			try {
+				if (this._cache.isMfeRegistered(this._options.loaderMfe)) {
+					const loaderFactory = await lastValueFrom(
+						this._cache.getValue(this._options.loaderMfe)
+					);
+					const loaderRef = this._vcr.createComponent(loaderFactory);
+					loaderRef.changeDetectorRef.detectChanges();
+					this._loaderComponentRef = loaderRef;
+				} else {
+					this._cache.registerMfe(this._options.loaderMfe);
+
+					const { module, component } = await this._loadMfe(this._options.loaderMfe);
+					const loaderFactory = await this._resolveMfeComponentFactory(module, component);
+
+					this._cache.setValue(this._options.loaderMfe, loaderFactory);
+
+					const loaderRef = this._vcr.createComponent(loaderFactory);
+					loaderRef.changeDetectorRef.detectChanges();
+					this._loaderComponentRef = loaderRef;
+				}
+			} catch (e) {
+				console.error(e);
+
+				if (this._cache.isMfeRegistered(this._options.loaderMfe)) {
+					this._cache.setError(this._options.loaderMfe, e);
+				}
+			}
 		}
 	}
 
