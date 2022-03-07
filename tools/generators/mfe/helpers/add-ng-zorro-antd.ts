@@ -6,8 +6,7 @@ import { getProjects, Tree, updateProjectConfiguration } from '@nrwl/devkit';
  * @param mfe Название микрофронта
  */
 export function addNgZorroAntd(tree: Tree, mfe: string): void {
-	const projectName = `client-${mfe}`;
-	const projectConfig = getProjects(tree).get(projectName);
+	const projectConfig = getProjects(tree).get(mfe);
 
 	if (!projectConfig) return;
 
@@ -25,5 +24,5 @@ export function addNgZorroAntd(tree: Tree, mfe: string): void {
 	options.styles = options.styles ?? [];
 	options.styles.push('node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css');
 
-	updateProjectConfiguration(tree, `client-${mfe}`, projectConfig);
+	updateProjectConfiguration(tree, mfe, projectConfig);
 }

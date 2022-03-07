@@ -45,7 +45,7 @@ export class MfeComponentsCache {
 	public getValue<C>(mfe: string): AsyncSubject<ComponentFactory<C>> {
 		const mfeSubject = this._map.get(mfe);
 
-		if (!mfeSubject) throw Error(`MFE - ${mfe} dont exist in cache`);
+		if (!mfeSubject) throw new Error(`MFE - ${mfe} dont exist in cache`);
 
 		return mfeSubject;
 	}

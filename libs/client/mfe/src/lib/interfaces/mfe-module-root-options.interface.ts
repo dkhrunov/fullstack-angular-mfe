@@ -5,7 +5,11 @@ import { IWorkspaceConfig } from './workspace-config.interface';
 export interface IMfeModuleRootOptions {
 	mfeConfig: IMfeConfig;
 	workspaceConfig: IWorkspaceConfig;
+	mfeProjectPattern?: RegExp;
+	mfePrefix?: string;
+	mfePostfix?: string;
 	preload?: string[];
-	loaderDelay?: number;
-	loaderMfe?: string;
+	delay?: number;
+	loader?: string;
+	fallback?: string;
 }

@@ -1,4 +1,3 @@
-import { MFE_PROJECT_REGEXP } from '../const';
 import { IMfeConfig, IWorkspaceConfig } from '../interfaces';
 
 /**
@@ -8,10 +7,16 @@ export class MfeRegistry {
 	private static _instance: MfeRegistry;
 	private readonly _mfeAppsConfig: IWorkspaceConfig['projects'];
 	private readonly _mfeConfig: IMfeConfig;
+	private readonly _mfeProjectPattern?: RegExp;
 
-	private constructor(mfeConfig: IMfeConfig, workspaceConfig: IWorkspaceConfig) {
+	private constructor(
+		mfeConfig: IMfeConfig,
+		workspaceConfig: IWorkspaceConfig,
+		mfeProjectPattern?: RegExp
+	) {
 		this._mfeConfig = mfeConfig;
 		this._mfeAppsConfig = this._parseConfig(workspaceConfig);
+		this._mfeProjectPattern = mfeProjectPattern;
 	}
 
 	/**
@@ -23,7 +28,7 @@ export class MfeRegistry {
 	): MfeRegistry {
 		if (!MfeRegistry._instance) {
 			if (!mfeConfig || !workspaceConfig)
-				throw Error(
+				throw new Error(
 					'MfeConfig and workspaceConfig should be provided for first time used MfeRegistry.getInstance(mfeConfig, workspaceConfig)'
 				);
 
@@ -35,34 +40,30 @@ export class MfeRegistry {
 
 	/**
 	 * Get the remote entry URL the micro-frontend app
-	 * @param mfe Micro-frontend app name
+	 * @param mfeApp Micro-frontend app name
 	 */
-	public getMfeRemoteEntry(mfe: string): string {
-		return `${this._mfeConfig.remoteEntryUrl}:${this.getMfePort(mfe)}/${
+	public getMfeRemoteEntry(mfeApp: string): string {
+		return `${this._mfeConfig.remoteEntryUrl}:${this.getMfePort(mfeApp)}/${
 			this._mfeConfig.remoteEntryFileName
 		}`;
 	}
 
 	/**
 	 * Get the port on which the micro-frontend app is running
-	 * @param mfe Micro-frontend app name
+	 * @param mfeApp Micro-frontend app name
 	 */
-	public getMfePort(mfe: string): number {
-		// FIXME не динамично для либы - `client-${mfe}`
-		if (!this._mfeAppsConfig[`client-${mfe}`]) {
-			throw new Error(`Project client-${mfe} not defined in workspace.json file`);
+	public getMfePort(mfeApp: string): number {
+		if (!this._mfeAppsConfig[mfeApp]) {
+			throw new Error(`Project ${mfeApp} not defined in workspace.json file`);
 		}
 
-		// FIXME не динамично для либы - `client-${mfe}`
-		if (!this._mfeAppsConfig[`client-${mfe}`].targets?.serve?.options?.port) {
+		if (!this._mfeAppsConfig[mfeApp].targets?.serve?.options?.port) {
 			throw new Error(
-				// FIXME не динамично для либы  - `client-${mfe}`
-				`Project client-${mfe} not defined port option (targets.serve.options.port) in workspace.json file`
+				`Project ${mfeApp} not defined port option (targets.serve.options.port) in workspace.json file`
 			);
 		}
 
-		// FIXME не динамично для либы - `client-${mfe}`
-		return this._mfeAppsConfig[`client-${mfe}`].targets.serve.options.port;
+		return this._mfeAppsConfig[mfeApp].targets.serve.options.port;
 	}
 
 	/**
@@ -70,11 +71,10 @@ export class MfeRegistry {
 	 * @param config Config file
 	 */
 	private _parseConfig(config: IWorkspaceConfig): IWorkspaceConfig['projects'] {
-		return (
-			Object.keys(config.projects)
-				// FIXME не динамично для либы - MFE_PROJECT_REGEXP
-				.filter((projectName) => projectName.match(MFE_PROJECT_REGEXP))
-				.reduce((obj, key) => ({ ...obj, [key]: config.projects[key] }), {})
-		);
+		return Object.keys(config.projects)
+			.filter((projectName) =>
+				this._mfeProjectPattern ? projectName.match(this._mfeProjectPattern) : true
+			)
+			.reduce((obj, key) => ({ ...obj, [key]: config.projects[key] }), {});
 	}
 }

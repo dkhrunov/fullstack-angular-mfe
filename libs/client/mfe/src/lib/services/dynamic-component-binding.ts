@@ -16,6 +16,50 @@ export class DynamicComponentBinding implements OnDestroy {
 	}
 
 	/**
+	 * Bind provided MfeInputs to dynamic component.
+	 * @param componentInputs Array of available component MfeInputs.
+	 * @param inputs Provided MfeInputs.
+	 * @param componentInstance Dynamic component instance.
+	 */
+	public bindInputs(
+		componentInputs: DynamicComponentInputs,
+		inputs: MfeInputs,
+		componentInstance: any
+	): void {
+		this.validateInputs(componentInputs, inputs, componentInstance);
+
+		componentInputs.forEach((input) => {
+			componentInstance[input.propName] = inputs[input.templateName];
+		});
+	}
+
+	/**
+	 * Bind provided MfeOutputs to dynamic component.
+	 * @param componentOutputs Array of available component MfeOutputs.
+	 * @param outputs Provided MfeOutputs.
+	 * @param componentInstance Dynamic component instance.
+	 */
+	public bindOutputs(
+		componentOutputs: DynamicComponentOutputs,
+		outputs: MfeOutputs,
+		componentInstance: any
+	): void {
+		this.validateOutputs(componentOutputs, outputs, componentInstance);
+
+		componentOutputs.forEach((output) => {
+			(componentInstance[output.propName] as EventEmitter<any>)
+				.pipe(takeUntil(this._destroy$))
+				.subscribe((event) => {
+					const handler = outputs[output.templateName];
+					if (handler) {
+						// in case the output has not been provided at all
+						handler(event);
+					}
+				});
+		});
+	}
+
+	/**
 	 * Validate MfeInputs of dynamic component.
 	 * @param componentInputs Array of available component MfeInputs.
 	 * @param inputs Provided MfeInputs.
@@ -71,46 +115,6 @@ export class DynamicComponentBinding implements OnDestroy {
 			if (!(outputs[key] instanceof Function)) {
 				throw new Error(`Output "${key}" must be a function`);
 			}
-		});
-	}
-
-	/**
-	 * Bind provided MfeInputs to dynamic component.
-	 * @param componentInputs Array of available component MfeInputs.
-	 * @param inputs Provided MfeInputs.
-	 * @param componentInstance Dynamic component instance.
-	 */
-	public bindInputs(
-		componentInputs: DynamicComponentInputs,
-		inputs: MfeInputs,
-		componentInstance: any
-	): void {
-		componentInputs.forEach((input) => {
-			componentInstance[input.propName] = inputs[input.templateName];
-		});
-	}
-
-	/**
-	 * Bind provided MfeOutputs to dynamic component.
-	 * @param componentOutputs Array of available component MfeOutputs.
-	 * @param outputs Provided MfeOutputs.
-	 * @param componentInstance Dynamic component instance.
-	 */
-	public bindOutputs(
-		componentOutputs: DynamicComponentOutputs,
-		outputs: MfeOutputs,
-		componentInstance: any
-	): void {
-		componentOutputs.forEach((output) => {
-			(componentInstance[output.propName] as EventEmitter<any>)
-				.pipe(takeUntil(this._destroy$))
-				.subscribe((event) => {
-					const handler = outputs[output.templateName];
-					if (handler) {
-						// in case the output has not been provided at all
-						handler(event);
-					}
-				});
 		});
 	}
 }

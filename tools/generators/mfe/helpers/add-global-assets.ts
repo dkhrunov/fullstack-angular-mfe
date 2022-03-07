@@ -6,8 +6,7 @@ import { getProjects, Tree, updateProjectConfiguration } from '@nrwl/devkit';
  * @param mfe Название микрофронта
  */
 export function addGlobalAssets(tree: Tree, mfe: string): void {
-	const projectName = `client-${mfe}`;
-	const projectConfig = getProjects(tree).get(projectName);
+	const projectConfig = getProjects(tree).get(mfe);
 
 	if (!projectConfig) return;
 
@@ -25,5 +24,5 @@ export function addGlobalAssets(tree: Tree, mfe: string): void {
 	options.styles = options.styles ?? [];
 	options.styles.push('libs/client/assets/styles/styles.scss');
 
-	updateProjectConfiguration(tree, `client-${mfe}`, projectConfig);
+	updateProjectConfiguration(tree, mfe, projectConfig);
 }

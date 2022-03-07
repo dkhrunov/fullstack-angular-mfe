@@ -1,11 +1,11 @@
-import { Component, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
 @Component({
 	selector: 'nx-mfe-dashboard-entry',
 	template: `
 		<div class="remote-entry">
-			<h2 (click)="open()">dashboard's Remote Entry Component</h2>
+			<h2 (click)="open()">{{ text ? text : 'dashboard Remote Entry Component' }}</h2>
 		</div>
 	`,
 	styles: [
@@ -17,12 +17,13 @@ import { NzDrawerService } from 'ng-zorro-antd/drawer';
 			}
 		`,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EntryComponent {
-	constructor(
-		private readonly _drawerService: NzDrawerService,
-		public readonly injector: Injector
-	) {}
+	@Input()
+	public text?: string;
+
+	constructor(private readonly _drawerService: NzDrawerService) {}
 
 	public open(): void {
 		this._drawerService.create({

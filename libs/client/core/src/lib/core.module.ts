@@ -20,9 +20,11 @@ import * as workspaceConfig from '../../../../../workspace.json';
 		MfeModule.forRoot({
 			mfeConfig: mfeConfig,
 			workspaceConfig: workspaceConfig,
-			preload: ['loaders-mfe'],
-			loaderDelay: 300,
-			loaderMfe: 'loaders-mfe/spinner',
+			mfeProjectPattern: /^client-.+-mfe$/g,
+			preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
+			delay: 500,
+			loader: 'client-loaders-mfe/spinner',
+			fallback: 'client-fallbacks-mfe/mfe-fallback',
 		}),
 	],
 })

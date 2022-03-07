@@ -16,7 +16,7 @@ export function linkRemoteWithHost(tree: Tree, remote: string, host: string): vo
 		}
 
 		options.commands = options.commands ?? [];
-		options.commands.push(`nx serve client-${remote}`);
+		options.commands.push('nx serve remote');
 
 		return workspaceJson;
 	});

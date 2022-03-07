@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-	selector: 'nx-mfe-mfe-outlet-fallback',
+	selector: 'nx-mfe-client-fallbacks-mfe-entry',
 	template: `
 		<nz-result
 			nzStatus="error"
@@ -14,5 +14,6 @@ import { Component } from '@angular/core';
 			</ng-template>
 		</nz-result>
 	`,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DefaultMfeOutletFallbackComponent {}
+export class MfeFallbackComponent {}

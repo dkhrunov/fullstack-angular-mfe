@@ -9,13 +9,13 @@ const routes: Routes = [
 		children: [
 			{
 				path: 'login',
-				loadChildren: () => loadMfeModule('auth-mfe/login'),
+				loadChildren: () => loadMfeModule('client-auth-mfe/login'),
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},
 			{
 				path: 'register',
-				loadChildren: () => loadMfeModule('auth-mfe/register'),
+				loadChildren: () => loadMfeModule('client-auth-mfe/register'),
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},
@@ -27,7 +27,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'dashboard',
-		loadChildren: () => loadMfeModule('dashboard-mfe/entry'),
+		loadChildren: () => loadMfeModule('client-dashboard-mfe/entry'),
 		canLoad: [AuthGuard],
 		canActivate: [AuthGuard],
 	},

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-	selector: 'nx-mfe-default',
+	selector: 'nx-mfe-spinner',
 	template: `
 		<div class="container">
 			<nz-spin nzSimple nzSize="large"></nz-spin>
