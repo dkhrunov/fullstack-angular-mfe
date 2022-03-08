@@ -1,6 +1,10 @@
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const sharedLibs = require('./shared-libs');
 
+/**
+ * Create Webpack config for Host or Shell app.
+ * @param name Name of Host or Shell app, **should be same as in workspace.json or angular.json**
+ */
 module.exports = function (name) {
 	name = name.replace(/-/g, '_');
 

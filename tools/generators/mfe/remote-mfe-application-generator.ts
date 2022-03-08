@@ -1,4 +1,5 @@
 import { applicationGenerator } from '@nrwl/angular/generators';
+import { normalizeOptions } from '@nrwl/angular/src/generators/application/lib';
 import { formatFiles, installPackagesTask, Tree } from '@nrwl/devkit';
 
 import { REMOTE_MFE_TAG } from '../../mfe';
@@ -18,7 +19,7 @@ import { Schema } from './schema';
  * @param tree Виртуальная файловая система (AST)
  * @param schema Схема параметров генератора
  */
-export async function remoteMfeApplicationGenerator(tree: Tree, schema: Partial<Schema>) {
+export async function remoteMfeApplicationGenerator(tree: Tree, schema: Schema) {
 	const availablePort = getAvailableMfePort(tree);
 	// const hostApp = schema.host ?? 'client-shell-app';
 
@@ -30,22 +31,25 @@ export async function remoteMfeApplicationGenerator(tree: Tree, schema: Partial<
 		port: availablePort,
 		// host: schema.host ?? 'client-shell-app',
 		tags: schema.tags?.length ? schema.tags + `, ${REMOTE_MFE_TAG}` : REMOTE_MFE_TAG,
-		directory: 'client',
 	};
 
 	await applicationGenerator(tree, schema);
 	await formatFiles(tree);
 
-	addNgZorroAntd(tree, schema.name!);
-	addGlobalAssets(tree, schema.name!);
-	// linkRemoteWithHost(tree, schema.name!, hostApp);
+	const mfeName = schema.directory?.replace(new RegExp('/', 'g'), '-') + '-' + schema.name;
+
+	addNgZorroAntd(tree, mfeName);
+	addGlobalAssets(tree, mfeName);
+	// linkRemoteWithHost(tree, mfeName, hostApp);
 
 	return () => {
 		installPackagesTask(tree);
 
-		replaceEnvironmentFiles(schema.name!);
-		replaceRemoteMfeWebpackConfig(schema.name!);
-		replaceRemoteMfeAppModule(schema.name!);
-		replaceRemoteEntryModule(schema.name!);
+		const normalizedSchema = normalizeOptions(tree, schema);
+
+		replaceEnvironmentFiles(normalizedSchema);
+		replaceRemoteMfeWebpackConfig(normalizedSchema);
+		replaceRemoteMfeAppModule(normalizedSchema);
+		replaceRemoteEntryModule(normalizedSchema);
 	};
 }

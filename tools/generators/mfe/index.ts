@@ -4,10 +4,12 @@ import { hostMfeApplicationGenerator } from './host-mfe-aplication-generator';
 import { remoteMfeApplicationGenerator } from './remote-mfe-application-generator';
 import { Schema } from './schema';
 
+export * from './helpers';
 export * from './host-mfe-aplication-generator';
 export * from './remote-mfe-application-generator';
+export { Schema } from './schema';
 
-export default async function (tree: Tree, schema: Partial<Schema>) {
+export default async function (tree: Tree, schema: Schema) {
 	switch (schema.type) {
 		case 'host':
 			return await hostMfeApplicationGenerator(tree, schema);

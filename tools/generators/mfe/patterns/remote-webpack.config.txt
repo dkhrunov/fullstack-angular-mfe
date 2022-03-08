@@ -1,6 +1,6 @@
-const createMfeWebpackConfig = require('../../../tools/webpack/create-mfe-webpack-config');
+const createMfeWebpackConfig = require('{***}/tools/webpack/create-mfe-webpack-config');
 
 module.exports = createMfeWebpackConfig('{***}', {
-	RemoteEntryModule: 'apps/client/{***}/src/app/remote-entry/entry.module.ts',
-	RemoteEntryComponent: 'apps/client/{***}/src/app/remote-entry/entry.component.ts',
+	RemoteEntryModule: '{***}/src/app/remote-entry/entry.module.ts',
+	RemoteEntryComponent: '{***}/src/app/remote-entry/entry.component.ts',
 });

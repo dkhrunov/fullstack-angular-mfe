@@ -1,13 +1,14 @@
+import { NormalizedSchema } from '@nrwl/angular/src/generators/application/lib';
 import * as fs from 'fs';
 import * as path from 'path';
 
 /**
  * Заменить контент файла environment.prod.ts и environment.ts
- * @param mfe Название микрофронта
+ * @param options Normalized options
  */
-export function replaceEnvironmentFiles(mfe: string): void {
+export function replaceEnvironmentFiles(options: NormalizedSchema): void {
 	const environmentDirPath = path.normalize(
-		path.resolve(process.cwd(), 'apps/client', mfe, 'src/environments')
+		path.resolve(process.cwd(), options.appProjectRoot, 'src/environments')
 	);
 
 	const environmentProdPattern = fs.readFileSync(

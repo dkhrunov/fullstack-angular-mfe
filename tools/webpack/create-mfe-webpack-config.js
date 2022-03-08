@@ -2,6 +2,11 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const sharedLibs = require('./shared-libs');
 const config = require('../../mfe-config.json');
 
+/**
+ * Create Webpack config for Remote or Micro-frontend app.
+ * @param name Name of Remote or Micro-frontend app, **should be same as in workspace.json or angular.json**
+ * @param exposes Map of exposed components and modules
+ */
 module.exports = function (name, exposes) {
 	name = name.replace(/-/g, '_');
 

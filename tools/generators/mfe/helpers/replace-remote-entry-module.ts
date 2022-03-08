@@ -1,13 +1,14 @@
+import { NormalizedSchema } from '@nrwl/angular/src/generators/application/lib';
 import * as fs from 'fs';
 import * as path from 'path';
 
 /**
  * Заменить контент файла entry.module.ts
- * @param mfe Название микрофронта
+ * @param options Normalized options
  */
-export function replaceRemoteEntryModule(mfe: string): void {
+export function replaceRemoteEntryModule(options: NormalizedSchema): void {
 	const filePath = path.normalize(
-		path.resolve(process.cwd(), 'apps/client', mfe, 'src/app/remote-entry/entry.module.ts')
+		path.resolve(process.cwd(), options.appProjectRoot, 'src/app/remote-entry/entry.module.ts')
 	);
 	const appModulePattern = fs.readFileSync(
 		path.resolve(__dirname, '../patterns/entry.module.txt')
