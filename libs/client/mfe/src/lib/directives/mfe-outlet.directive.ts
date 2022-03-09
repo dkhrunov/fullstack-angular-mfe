@@ -18,17 +18,10 @@ import { validateMfeString } from '../helpers';
 import { IMfeModuleRootOptions } from '../interfaces';
 import { DynamicComponentBinding, MfeComponentsCache, MfeService } from '../services';
 import { OPTIONS } from '../tokens';
-import { MfeInputs, MfeOutputs } from '../types';
+import { MfeOutletInputs, MfeOutletOutputs } from '../types';
 
 const delay = <T>(time: number) => new Promise<T>((resolve) => setTimeout(resolve, time));
 
-// TODO jsDoc
-// TODO jsDoc
-// TODO jsDoc
-// TODO jsDoc
-// TODO jsDoc
-
-// TODO актуализировать доку
 /**
  * Micro-frontend directive for plugin-based approach.
  * -------------
@@ -36,15 +29,35 @@ const delay = <T>(time: number) => new Promise<T>((resolve) => setTimeout(resolv
  * This directive allows you to load micro-frontend inside in HTML template.
  *
  * @example
- * <!-- Loads entry component from dashboard micro-frontend -->
+ * <!-- Loads entry component from dashboard micro-frontend app. -->
  * <ng-container *mfeOutlet="'dashboard-mfe/entry'"></ng-container>
  *
  * @example
  * <!--
- *   Loads entry component from dashboard micro-frontend
- *   and provide context aka data ({ a: 1, b: 2 }) to entry component
+ *   Loads micro-frontend named - entry from dashboard app with custom loader and custom fallback.
+ *   And set input text to micro-frontend component.
  * -->
- * <ng-container *mfeOutlet="'dashboard-mfe/entry'; context: { a: 1, b: 2 } "></ng-container>
+ * <ng-container *mfeOutlet="
+ *     'dashboard/entry';
+ *     inputs: { text: text$ | async };
+ *     loader: loader;
+ *     fallback: fallback
+ * ">
+ * </ng-container>
+ *
+ * <ng-template #loader><div>loading...</div></ng-template>
+ * <ng-template #fallback><div>ops! Something went wrong</div></ng-template>
+ *
+ * @example
+ * <!--
+ *    Loads micro-frontend named - entry from dashboard app with
+ *    custom fallback specified as micro-frontend component too.
+ * -->
+ * <ng-container *mfeOutlet="
+ *     'client-dashboard-mfe/entry';
+ *     fallback: 'fallback-mfe/default'
+ * ">
+ * </ng-container>
  */
 @Directive({
 	// eslint-disable-next-line @angular-eslint/directive-selector
@@ -53,37 +66,73 @@ const delay = <T>(time: number) => new Promise<T>((resolve) => setTimeout(resolv
 	providers: [DynamicComponentBinding],
 })
 export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
+	/**
+	 * Micro-frontend string. First half it is app name (remote app)
+	 * and second half after slash '/' symbol it is name of exposed component.
+	 *
+	 * **Notice**
+	 *
+	 * From micro-frontend app should be exposed both module class and component class.
+	 *
+	 * @example
+	 * // loader-mfe - it is app name
+	 * // spinner - exposed component.
+	 * // From loader-mfe should be exposed SpinnerComponent and SpinnerModule.
+	 * 'loaded-mfe/spinner'
+	 */
 	@Input('mfeOutlet')
 	public mfe: string;
 
+	/**
+	 * A map of Inputs for a micro-frontend component.
+	 */
 	@Input('mfeOutletInputs')
-	public inputs?: MfeInputs;
-
-	@Input('mfeOutletOutputs')
-	public outputs?: MfeOutputs;
+	public inputs?: MfeOutletInputs;
 
 	/**
+	 * A map of Outputs for a micro-frontend component.
+	 */
+	@Input('mfeOutletOutputs')
+	public outputs?: MfeOutletOutputs;
+
+	/**
+	 * Custom injector for micro-frontend component.
+	 *
 	 * @default current injector
 	 */
 	@Input('mfeOutletInjector')
 	public injector?: Injector = this._injector;
 
 	/**
+	 * TemplateRef or micro-frontend string this content shows
+	 * when loading and compiling micro-frontend component.
+	 *
+	 * **Overrides the loader specified in the global library settings.**
+	 *
 	 * @default options.loader
 	 */
 	@Input('mfeOutletLoader')
 	public loader?: TemplateRef<unknown> | string = this._options.loader;
 
-	@Input('mfeOutletLoaderDelay')
 	/**
+	 * The delay between displaying the contents of the bootloader and the micro-frontend .
+	 *
+	 * This is to avoid flickering when the micro-frontend loads very quickly.
+	 *
 	 * @default options.delay, if not set, then 0
 	 */
+	@Input('mfeOutletLoaderDelay')
 	public loaderDelay = this._options.delay ?? 0;
 
-	@Input('mfeOutletFallback')
 	/**
+	 * TemplateRef or micro-frontend string this content shows
+	 * when error occur in the loading and the compiling process micro-frontend component.
+	 *
+	 * **Overrides fallback the specified in the global library settings.**
+	 *
 	 * @default options.fallback
 	 */
+	@Input('mfeOutletFallback')
 	public fallback?: TemplateRef<unknown> | string = this._options.fallback;
 
 	private _mfeComponentFactory?: ComponentFactory<unknown>;
@@ -120,16 +169,37 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		this.render();
 	}
 
+	/**
+	 * Checks that value of directive is correct micro-frontend string.
+	 *
+	 * @param value Value
+	 *
+	 * @internal
+	 */
 	protected validateMfe(value: string): void {
 		validateMfeString(value);
 	}
 
+	/**
+	 * Checks that value of loader Input is correct micro-frontend string.
+	 *
+	 * @param value Value
+	 *
+	 * @internal
+	 */
 	protected validateLoader(value: TemplateRef<unknown> | string): void {
 		if (typeof value === 'string') {
 			validateMfeString(value);
 		}
 	}
 
+	/**
+	 * Checks that value  of fallback Input is correct micro-frontend string.
+	 *
+	 * @param value Value
+	 *
+	 * @internal
+	 */
 	protected validateFallback(value: TemplateRef<unknown> | string): void {
 		if (typeof value === 'string') {
 			validateMfeString(value);
@@ -137,9 +207,10 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	}
 
 	/**
-	 * Rebind MfeInputs of micro-frontend component.
+	 * Rebind MfeOutletInputs of micro-frontend component.
 	 *
 	 * Used when changing input "inputs" of this directive.
+	 *
 	 * @internal
 	 */
 	protected dataBound(): void {
@@ -163,6 +234,7 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	 * If error occur then showing fallback.
 	 *
 	 * Used when changing input "mfe" of this directive.
+	 *
 	 * @internal
 	 */
 	protected async render(): Promise<void> {
@@ -181,6 +253,11 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Shows micro-frontend component.
+	 *
+	 * @internal
+	 */
 	private async _showMfe(): Promise<void> {
 		this._clear();
 
@@ -190,7 +267,8 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	}
 
 	/**
-	 * Show loader.
+	 * Shows loader content.
+	 *
 	 * @internal
 	 */
 	private async _showLoader(): Promise<void> {
@@ -205,7 +283,8 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	}
 
 	/**
-	 * Show fallback.
+	 * Shows fallback content.
+	 *
 	 * @internal
 	 */
 	private async _showFallback(): Promise<void> {
@@ -219,10 +298,20 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Creates component of the micro-frontend in the viewContainer.
+	 *
+	 * @param mfe Micro-frontend string
+	 *
+	 * @internal
+	 */
 	private async _createMfeComponent<C>(
 		mfe: string
 	): Promise<{ componentFactory: ComponentFactory<C>; componentRef: ComponentRef<C> }> {
-		const componentFactory = await this._mfeService.get<unknown, C>(mfe, this.injector);
+		const componentFactory = await this._mfeService.getComponentFactory<unknown, C>(
+			mfe,
+			this.injector
+		);
 		const componentRef = this._vcr.createComponent(componentFactory, undefined, this.injector);
 		componentRef.changeDetectorRef.detectChanges();
 
@@ -230,7 +319,8 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	}
 
 	/**
-	 * Bind micro-frontend MfeInputs and MfeOutputs properties.
+	 * Binding the initial data of the micro-frontend.
+	 *
 	 * @internal
 	 */
 	private _initDataBound(): void {
@@ -260,6 +350,7 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 
 	/**
 	 * Destroy all displayed components.
+	 *
 	 * @internal
 	 */
 	private _clear() {

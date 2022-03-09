@@ -1,3 +1,7 @@
+/**
+ * Validate micro-frontend string.
+ * @param mfe String
+ */
 export function validateMfeString(mfe: string): void {
 	if (mfe.match(/.+\/.+/) === null) {
 		throw new Error(

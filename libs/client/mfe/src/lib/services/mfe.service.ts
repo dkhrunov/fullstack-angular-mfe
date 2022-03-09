@@ -1,12 +1,14 @@
 import { Compiler, ComponentFactory, Injectable, Injector, Type } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 
-import { validateMfeString } from '../helpers';
+import { loadMfeComponent, loadMfeModule, validateMfeString } from '../helpers';
 import { LoadedMfe } from '../interfaces';
-import { loadMfeComponent, loadMfeModule } from '../loaders';
 import { MfeComponentsCache } from './mfe-components-cache.service';
 
-// TODO jsDoc
+/**
+ * A low-level service for loading a micro-frontend module and a component,
+ * or getting component factory.
+ */
 @Injectable({
 	providedIn: 'root',
 })
@@ -17,7 +19,12 @@ export class MfeService {
 		private readonly _cache: MfeComponentsCache
 	) {}
 
-	public async get<TModule = unknown, TComponent = unknown>(
+	/**
+	 * Get the micro-frontend component factory.
+	 * @param mfe Micro-frontend string
+	 * @param injector Custom injector, by default sets current injector.
+	 */
+	public async getComponentFactory<TModule = unknown, TComponent = unknown>(
 		mfe: string,
 		injector?: Injector
 	): Promise<ComponentFactory<TComponent>> {
@@ -51,7 +58,11 @@ export class MfeService {
 		}
 	}
 
-	private async load<TModule = unknown, TComponent = unknown>(
+	/**
+	 * Loads the micro-frontend exposed module and exposed component.
+	 * @param mfe Micro-frontend string
+	 */
+	public async load<TModule = unknown, TComponent = unknown>(
 		mfe: string
 	): Promise<LoadedMfe<TModule, TComponent>> {
 		validateMfeString(mfe);
@@ -62,12 +73,20 @@ export class MfeService {
 		return { module, component };
 	}
 
+	/**
+	 * Loads an exposed micro-frontend module.
+	 * @param mfe Micro-frontend string
+	 */
 	public async loadModule<T>(mfe: string): Promise<Type<T>> {
 		validateMfeString(mfe);
 
 		return await loadMfeModule<T>(mfe);
 	}
 
+	/**
+	 * Loads an exposed micro-frontend component.
+	 * @param mfe Micro-frontend string
+	 */
 	public async loadComponent<T>(mfe: string): Promise<Type<T>> {
 		validateMfeString(mfe);
 
@@ -75,11 +94,11 @@ export class MfeService {
 	}
 
 	/**
-	 * Compile micro-frontend module and resolve component factory.
+	 * Compile the micro-frontend module and return component factory.
 	 *
-	 * @param Module
-	 * @param Component
-	 * @param injector
+	 * @param Module Micro-frontend module class
+	 * @param Component Micro-frontend component class
+	 * @param injector Custom injector, by default sets current injector.
 	 * @internal
 	 */
 	private async _resolveMfeComponentFactory<TModule = unknown, TComponent = unknown>(

@@ -1,7 +1,12 @@
 import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
-import { DynamicComponentInputs, DynamicComponentOutputs, MfeInputs, MfeOutputs } from '../types';
+import {
+	DynamicComponentInputs,
+	DynamicComponentOutputs,
+	MfeOutletInputs,
+	MfeOutletOutputs,
+} from '../types';
 
 /**
  * The service that binds the dynamic component.
@@ -16,14 +21,14 @@ export class DynamicComponentBinding implements OnDestroy {
 	}
 
 	/**
-	 * Bind provided MfeInputs to dynamic component.
-	 * @param componentInputs Array of available component MfeInputs.
-	 * @param inputs Provided MfeInputs.
+	 * Bind provided MfeOutletInputs to dynamic component.
+	 * @param componentInputs Array of available component MfeOutletInputs.
+	 * @param inputs Provided MfeOutletInputs.
 	 * @param componentInstance Dynamic component instance.
 	 */
 	public bindInputs(
 		componentInputs: DynamicComponentInputs,
-		inputs: MfeInputs,
+		inputs: MfeOutletInputs,
 		componentInstance: any
 	): void {
 		this.validateInputs(componentInputs, inputs, componentInstance);
@@ -34,14 +39,14 @@ export class DynamicComponentBinding implements OnDestroy {
 	}
 
 	/**
-	 * Bind provided MfeOutputs to dynamic component.
-	 * @param componentOutputs Array of available component MfeOutputs.
-	 * @param outputs Provided MfeOutputs.
+	 * Bind provided MfeOutletOutputs to dynamic component.
+	 * @param componentOutputs Array of available component MfeOutletOutputs.
+	 * @param outputs Provided MfeOutletOutputs.
 	 * @param componentInstance Dynamic component instance.
 	 */
 	public bindOutputs(
 		componentOutputs: DynamicComponentOutputs,
-		outputs: MfeOutputs,
+		outputs: MfeOutletOutputs,
 		componentInstance: any
 	): void {
 		this.validateOutputs(componentOutputs, outputs, componentInstance);
@@ -60,14 +65,14 @@ export class DynamicComponentBinding implements OnDestroy {
 	}
 
 	/**
-	 * Validate MfeInputs of dynamic component.
-	 * @param componentInputs Array of available component MfeInputs.
-	 * @param inputs Provided MfeInputs.
+	 * Validate MfeOutletInputs of dynamic component.
+	 * @param componentInputs Array of available component MfeOutletInputs.
+	 * @param inputs Provided MfeOutletInputs.
 	 * @param componentInstance Dynamic component instance.
 	 */
 	public validateInputs(
 		componentInputs: DynamicComponentInputs,
-		inputs: MfeInputs,
+		inputs: MfeOutletInputs,
 		componentInstance: any
 	): void {
 		Object.keys(inputs).forEach((userInputKey) => {
@@ -83,14 +88,14 @@ export class DynamicComponentBinding implements OnDestroy {
 	}
 
 	/**
-	 * Validate MfeOutputs of dynamic component.
-	 * @param componentOutputs Array of available component MfeOutputs.
-	 * @param outputs Provided MfeOutputs.
+	 * Validate MfeOutletOutputs of dynamic component.
+	 * @param componentOutputs Array of available component MfeOutletOutputs.
+	 * @param outputs Provided MfeOutletOutputs.
 	 * @param componentInstance Dynamic component instance.
 	 */
 	public validateOutputs(
 		componentOutputs: DynamicComponentOutputs,
-		outputs: MfeOutputs,
+		outputs: MfeOutletOutputs,
 		componentInstance: any
 	): void {
 		componentOutputs.forEach((output) => {
