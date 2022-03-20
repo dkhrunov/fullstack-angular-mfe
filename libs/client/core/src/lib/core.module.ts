@@ -18,8 +18,8 @@ import * as workspaceConfig from '../../../../../workspace.json';
 		ConfigModule,
 		InjectorContainerModule,
 		MfeModule.forRoot({
-			mfeConfig: mfeConfig,
-			workspaceConfig: workspaceConfig,
+			mfeConfig,
+			workspaceConfig,
 			mfeProjectPattern: /^client-.+-mfe$/g,
 			preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
 			delay: 500,

@@ -7,7 +7,6 @@ export class MfeRegistry {
 	private static _instance: MfeRegistry;
 	private readonly _mfeAppsConfig: IWorkspaceConfig['projects'];
 	private readonly _mfeConfig: IMfeConfig;
-	private readonly _mfeProjectPattern?: RegExp;
 
 	private constructor(
 		mfeConfig: IMfeConfig,
@@ -15,8 +14,7 @@ export class MfeRegistry {
 		mfeProjectPattern?: RegExp
 	) {
 		this._mfeConfig = mfeConfig;
-		this._mfeAppsConfig = this._parseConfig(workspaceConfig);
-		this._mfeProjectPattern = mfeProjectPattern;
+		this._mfeAppsConfig = this._parseConfig(workspaceConfig, mfeProjectPattern);
 	}
 
 	/**
@@ -24,7 +22,8 @@ export class MfeRegistry {
 	 */
 	public static getInstance(
 		mfeConfig?: IMfeConfig,
-		workspaceConfig?: IWorkspaceConfig
+		workspaceConfig?: IWorkspaceConfig,
+		mfeProjectPattern?: RegExp
 	): MfeRegistry {
 		if (!MfeRegistry._instance) {
 			if (!mfeConfig || !workspaceConfig)
@@ -32,7 +31,7 @@ export class MfeRegistry {
 					'MfeConfig and workspaceConfig should be provided for first time used MfeRegistry.getInstance(mfeConfig, workspaceConfig)'
 				);
 
-			MfeRegistry._instance = new MfeRegistry(mfeConfig, workspaceConfig);
+			MfeRegistry._instance = new MfeRegistry(mfeConfig, workspaceConfig, mfeProjectPattern);
 		}
 
 		return MfeRegistry._instance;
@@ -70,11 +69,12 @@ export class MfeRegistry {
 	 * Parse the config, extracting information about each micro-frontend app
 	 * @param config Config file
 	 */
-	private _parseConfig(config: IWorkspaceConfig): IWorkspaceConfig['projects'] {
+	private _parseConfig(
+		config: IWorkspaceConfig,
+		projectPattern?: RegExp
+	): IWorkspaceConfig['projects'] {
 		return Object.keys(config.projects)
-			.filter((projectName) =>
-				this._mfeProjectPattern ? projectName.match(this._mfeProjectPattern) : true
-			)
+			.filter((projectName) => (projectPattern ? projectName.match(projectPattern) : true))
 			.reduce((obj, key) => ({ ...obj, [key]: config.projects[key] }), {});
 	}
 }

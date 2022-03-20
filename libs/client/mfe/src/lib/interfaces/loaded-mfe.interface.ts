@@ -7,9 +7,9 @@ export interface LoadedMfe<TModule = unknown, TComponent = unknown> {
 	/**
 	 * Loaded module class of micro-frontend.
 	 */
-	module: Type<TModule>;
+	ModuleClass: Type<TModule>;
 	/**
 	 * Loaded component class of micro-frontend.
 	 */
-	component: Type<TComponent>;
+	ComponentClass: Type<TComponent>;
 }

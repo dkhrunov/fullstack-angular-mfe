@@ -17,8 +17,8 @@ export class MfeComponentsCache {
 	 * Register a new micro-frontend.
 	 * @param mfe Micro-frontend string
 	 */
-	public registerMfe<C>(mfe: string): void {
-		if (this.isMfeRegistered(mfe)) return;
+	public register<C>(mfe: string): void {
+		if (this.isRegistered(mfe)) return;
 
 		this._map.set(mfe, new AsyncSubject<ComponentFactory<C>>());
 	}
@@ -27,7 +27,7 @@ export class MfeComponentsCache {
 	 * Checks that specified micro-frontend app already registered.
 	 * @param mfe Micro-frontend string
 	 */
-	public isMfeRegistered(mfe: string): boolean {
+	public isRegistered(mfe: string): boolean {
 		return this._map.has(mfe);
 	}
 

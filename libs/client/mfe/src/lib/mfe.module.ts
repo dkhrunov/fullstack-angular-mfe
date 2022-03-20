@@ -25,7 +25,11 @@ export class MfeModule {
 	 * @param options Object of options.
 	 */
 	public static forRoot(options: IMfeModuleRootOptions): ModuleWithProviders<MfeModule> {
-		const mfeRegistry = MfeRegistry.getInstance(options.mfeConfig, options.workspaceConfig);
+		const mfeRegistry = MfeRegistry.getInstance(
+			options.mfeConfig,
+			options.workspaceConfig,
+			options.mfeProjectPattern
+		);
 		const loadMfeBundle = loadMfeBundleWithMfeRegistry(mfeRegistry);
 
 		if (options.loader) validateMfeString(options.loader);

@@ -20,37 +20,34 @@ export class MfeService {
 	) {}
 
 	/**
-	 * Get the micro-frontend component factory.
+	 * Resolve the micro-frontend component factory.
 	 * @param mfe Micro-frontend string
 	 * @param injector Custom injector, by default sets current injector.
 	 */
-	public async getComponentFactory<TModule = unknown, TComponent = unknown>(
+	public async resolveComponentFactory<TModule = unknown, TComponent = unknown>(
 		mfe: string,
-		injector?: Injector
+		injector: Injector = this._injector
 	): Promise<ComponentFactory<TComponent>> {
 		try {
 			validateMfeString(mfe);
 
-			if (this._cache.isMfeRegistered(mfe)) {
+			if (this._cache.isRegistered(mfe)) {
 				return lastValueFrom(this._cache.getValue(mfe));
 			}
 
-			this._cache.registerMfe(mfe);
+			this._cache.register(mfe);
 
-			const { module, component } = await this.load<TModule, TComponent>(mfe);
-			const componentFactory = await this._resolveMfeComponentFactory<TModule, TComponent>(
-				module,
-				component,
-				injector
-			);
+			const { ModuleClass, ComponentClass } = await this.load<TModule, TComponent>(mfe);
+			const moduleFactory = await this._compiler.compileModuleAsync(ModuleClass);
+			const moduleRef = moduleFactory.create(injector);
+			const componentFactory =
+				moduleRef.componentFactoryResolver.resolveComponentFactory(ComponentClass);
 
 			this._cache.setValue(mfe, componentFactory);
 
 			return componentFactory;
 		} catch (error) {
-			console.error(error);
-
-			if (this._cache.isMfeRegistered(mfe)) {
+			if (this._cache.isRegistered(mfe)) {
 				this._cache.setError(mfe, error);
 			}
 
@@ -67,10 +64,10 @@ export class MfeService {
 	): Promise<LoadedMfe<TModule, TComponent>> {
 		validateMfeString(mfe);
 
-		const module = await this.loadModule<TModule>(mfe);
-		const component = await this.loadComponent<TComponent>(mfe);
+		const ModuleClass = await this.loadModule<TModule>(mfe);
+		const ComponentClass = await this.loadComponent<TComponent>(mfe);
 
-		return { module, component };
+		return { ModuleClass, ComponentClass };
 	}
 
 	/**
@@ -91,24 +88,5 @@ export class MfeService {
 		validateMfeString(mfe);
 
 		return await loadMfeComponent<T>(mfe);
-	}
-
-	/**
-	 * Compile the micro-frontend module and return component factory.
-	 *
-	 * @param Module Micro-frontend module class
-	 * @param Component Micro-frontend component class
-	 * @param injector Custom injector, by default sets current injector.
-	 * @internal
-	 */
-	private async _resolveMfeComponentFactory<TModule = unknown, TComponent = unknown>(
-		Module: Type<TModule>,
-		Component: Type<TComponent>,
-		injector: Injector = this._injector
-	): Promise<ComponentFactory<TComponent>> {
-		const moduleFactory = await this._compiler.compileModuleAsync(Module);
-		const moduleRef = moduleFactory.create(injector);
-
-		return moduleRef.componentFactoryResolver.resolveComponentFactory(Component);
 	}
 }

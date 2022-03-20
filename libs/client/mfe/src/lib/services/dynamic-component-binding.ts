@@ -65,6 +65,13 @@ export class DynamicComponentBinding implements OnDestroy {
 	}
 
 	/**
+	 * Unbind all outputs.
+	 */
+	public unbindOutputs(): void {
+		this._destroy$.next();
+	}
+
+	/**
 	 * Validate MfeOutletInputs of dynamic component.
 	 * @param componentInputs Array of available component MfeOutletInputs.
 	 * @param inputs Provided MfeOutletInputs.

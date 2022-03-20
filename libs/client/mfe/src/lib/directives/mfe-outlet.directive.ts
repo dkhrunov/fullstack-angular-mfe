@@ -239,7 +239,10 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	 */
 	protected async render(): Promise<void> {
 		try {
-			if (!this._cache.isMfeRegistered(this.mfe)) {
+			// If some component already rendered then need to unbind outputs
+			if (this._mfeComponentFactory) this._binding.unbindOutputs();
+
+			if (!this._cache.isRegistered(this.mfe)) {
 				await this._showLoader();
 				await delay(this.loaderDelay);
 			}
@@ -305,13 +308,16 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	 *
 	 * @internal
 	 */
-	private async _createMfeComponent<C>(
+	private async _createMfeComponent<TModule = unknown, TComponent = unknown>(
 		mfe: string
-	): Promise<{ componentFactory: ComponentFactory<C>; componentRef: ComponentRef<C> }> {
-		const componentFactory = await this._mfeService.getComponentFactory<unknown, C>(
-			mfe,
-			this.injector
-		);
+	): Promise<{
+		componentFactory: ComponentFactory<TComponent>;
+		componentRef: ComponentRef<TComponent>;
+	}> {
+		const componentFactory = await this._mfeService.resolveComponentFactory<
+			TModule,
+			TComponent
+		>(mfe, this.injector);
 		const componentRef = this._vcr.createComponent(componentFactory, undefined, this.injector);
 		componentRef.changeDetectorRef.detectChanges();
 
