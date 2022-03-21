@@ -95,5 +95,8 @@
 			"plugins": ["@angular-eslint/template"],
 			"processor": "@angular-eslint/template/extract-inline-html"
 		}
-	]
+	],
+	"sort-imports": ["error", {
+		"ignoreDeclarationSort": true
+	}]
 }

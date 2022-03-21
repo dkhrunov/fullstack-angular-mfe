@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PASSWORD_REGEXP } from '@nx-mfe/client/auth';
-import { CustomValidators, validateForm } from '@nx-mfe/client/forms';
+import { CustomValidators, Form, IfFormValid } from '@nx-mfe/client/forms';
 import { RegistrationCredentials } from '@nx-mfe/shared/data-access';
-
 import { AuthFacadeService } from '../services/auth-facade.service';
 
 @Component({
@@ -14,29 +13,33 @@ import { AuthFacadeService } from '../services/auth-facade.service';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-	public readonly form: FormGroup = this._fb.group({
-		email: [null, [Validators.required, Validators.email]],
-		password: [
-			null,
-			[Validators.required, Validators.minLength(8), Validators.pattern(PASSWORD_REGEXP)],
-		],
-		confirm: [null, [Validators.required, CustomValidators.confirm('password')]],
-	});
+	@Form()
+	public form: FormGroup;
 
 	public passwordVisible = false;
 
-	constructor(public readonly authFacade: AuthFacadeService, private readonly _fb: FormBuilder) {}
+	constructor(public readonly authFacade: AuthFacadeService, private readonly _fb: FormBuilder) {
+		this._createForm();
+	}
 
+	@IfFormValid()
 	public submitForm(): void {
-		validateForm(this.form);
-
-		if (this.form.valid) {
-			const credentials = new RegistrationCredentials(this.form.value);
-			this.authFacade.register(credentials);
-		}
+		const credentials = new RegistrationCredentials(this.form.value);
+		this.authFacade.register(credentials);
 	}
 
 	public validateConfirmPassword(): void {
-		setTimeout(() => this.form.controls.confirm.updateValueAndValidity());
+		this.form.controls.confirm.updateValueAndValidity();
+	}
+
+	private _createForm(): void {
+		this.form = this._fb.group({
+			email: [null, [Validators.required, Validators.email]],
+			password: [
+				null,
+				[Validators.required, Validators.minLength(8), Validators.pattern(PASSWORD_REGEXP)],
+			],
+			confirm: [null, [Validators.required, CustomValidators.confirm('password')]],
+		});
 	}
 }

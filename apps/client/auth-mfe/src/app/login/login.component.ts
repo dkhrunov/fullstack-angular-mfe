@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { validateForm } from '@nx-mfe/client/forms';
+import { NzConfirmable } from '@nx-mfe/client/common';
+import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { Credentials } from '@nx-mfe/shared/data-access';
-import { startWith, Subject, takeUntil, tap } from 'rxjs';
-
+import { BehaviorSubject, startWith, Subject, takeUntil, tap } from 'rxjs';
 import { AuthFacadeService } from '../services/auth-facade.service';
 
 @Component({
@@ -14,19 +14,21 @@ import { AuthFacadeService } from '../services/auth-facade.service';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnDestroy {
-	public readonly form: FormGroup = this._fb.group({
-		email: [null, [Validators.required, Validators.email]],
-		password: [null, [Validators.required]],
-		rememberMe: [null],
-	});
+	@Form()
+	public form: FormGroup;
+
+	public text$ = new BehaviorSubject<string>('Test string');
 
 	public passwordVisible = false;
 
 	private readonly _destroy$ = new Subject<void>();
 
 	constructor(public readonly authFacade: AuthFacadeService, private readonly _fb: FormBuilder) {
-		this._setDefaultFormValue();
+		this._createForm();
 		this._listenRememberMeChanges();
+
+		setTimeout(() => this.text$.next('Test string changed in Subject'), 2000);
+		setTimeout(() => this.text$.next('Test string changed 2x in Subject'), 3000);
 	}
 
 	public ngOnDestroy(): void {
@@ -34,20 +36,18 @@ export class LoginComponent implements OnDestroy {
 		this._destroy$.complete();
 	}
 
+	@IfFormValid()
+	@NzConfirmable()
 	public login(): void {
-		validateForm(this.form);
-
-		if (this.form.valid) {
-			const credentials = new Credentials(this.form.value);
-			this.authFacade.login(credentials);
-		}
+		const credentials = new Credentials(this.form.value);
+		this.authFacade.login(credentials);
 	}
 
-	private _setDefaultFormValue(): void {
-		this.form.setValue({
-			email: null,
-			password: null,
-			rememberMe: this.authFacade.rememberMeValue,
+	private _createForm(): void {
+		this.form = this._fb.group({
+			email: [null, [Validators.required, Validators.email]],
+			password: [null, [Validators.required]],
+			rememberMe: [this.authFacade.rememberMeValue],
 		});
 	}
 

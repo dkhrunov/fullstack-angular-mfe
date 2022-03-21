@@ -1,54 +1,32 @@
-import { AbstractControlOptions, AsyncValidatorFn, FormBuilder, ValidatorFn } from '@angular/forms';
-import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
-
 import { generateMetadataKey } from './helpers';
 
 /**
- * Декоратор свойства.
+ * Creates the metadata for working with this form in other decorators, like IfFormValid and etc.
+ * ------
  *
- * Создает форму (FormGroup). Начальное значение для всех контролов формы по дефолту устанавливается в null.
+ * Property decorator.
  *
- * Также добавляет метаданые в класс, чтобы другие декораторы, например @IfFormValid(), могли работать с данной формой.
- *
- * **Примечание:**
- * чтобы установить другое дефолтное значение для формы - нужно в конструкторе установить для контрола/формы необходимое значение:
  * @example
- * this.form.setValue({
- *			email: 'test@test.com',
- *			password: null,
- *			rememberMe: true,
- *		});
+ * @Form()
+ * public form: FormGroup;
  *
- * @param controls коллекция контролов формы. Ключом для каждого элемента является имя,
- * под которым будет зарегистрирован контрол формы
- * @param options объект параметров конфигурации для FormGroup
+ * // OR with ID
+ *
+ * @Form('uniqName')
+ * public form: FormGroup;
+ *
+ * @IfFormValid('uniqName')
+ * public submit(): void {...}
+ *
+ * @param id Sets id for decorated form, if not sets when used default metadata key
  */
-export function Form(
-	controls: {
-		[field: string]: [] | [ValidatorFn[]] | [ValidatorFn[], AsyncValidatorFn[]];
-	},
-	options?: AbstractControlOptions | null | undefined
-): PropertyDecorator {
+export function Form(id?: string | symbol | number): PropertyDecorator {
 	return (target: any, propertyKey: string | symbol): void => {
-		const controlsConfig = Object.entries(controls).reduce((res, [controlName, value]) => {
-			if (value.length !== 0) {
-				// @ts-ignore
-				res[controlName] = [null, value[0], value[1]];
-			} else {
-				// @ts-ignore
-				res[controlName] = [null];
-			}
-
-			return res;
-		}, {});
-		const form = InjectorContainerModule.injector
-			.get(FormBuilder)
-			.group(controlsConfig, options);
-		const metadataKey = generateMetadataKey(propertyKey);
-		target[metadataKey] = form;
+		const metadataKey = generateMetadataKey(id);
 
 		Object.defineProperty(target, propertyKey, {
-			value: form,
+			set: (value) => (target[metadataKey] = value),
+			get: () => target[metadataKey],
 		});
 	};
 }

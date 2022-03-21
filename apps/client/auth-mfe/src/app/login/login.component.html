@@ -5,7 +5,8 @@
 	nzType="error"
 	[nzMessage]="errorMessage"
 	nzShowIcon
-></nz-alert>
+>
+</nz-alert>
 
 <form nz-form [formGroup]="form" (ngSubmit)="login()">
 	<nz-form-item>
@@ -86,9 +87,13 @@
 	</nz-form-item>
 </form>
 
-<ng-container *mfeOutlet="'dashboard-mfe/entry'; context: {}"></ng-container>
-<ng-container *mfeOutlet="'dashboard-mfe/entry'"></ng-container>
+<ng-container
+	*mfeOutlet="'client-dashboard-mfe/entry'; inputs: { text: text$ | async }; loader: loader"
+>
+</ng-container>
 
-<!--
-<ng-container *mfeOutlet="'auth-mfe/register'"></ng-container>
--->
+<ng-template #loader>
+	<div>loading...</div>
+</ng-template>
+
+<ng-container *mfeOutlet="'client-dashboard-mfe/entry'"></ng-container>

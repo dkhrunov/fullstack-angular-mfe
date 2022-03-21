@@ -1,28 +1,40 @@
 import { FormGroup } from '@angular/forms';
-
 import { generateMetadataKey, validateForm } from './helpers';
 
 /**
- * Декоратор метода.
+ * Decorated method will be executed if the form is valid.
+ * -----
  *
- * Декорируемый метод будет выполнен, если форма будет валидна.
+ * Method decorator.
  *
- * **Примечание:**
- * сначала выполняется валидация формы, потом вызов тела декорируемого метода.
- * @param formPropName имя своства в котором храниться форма, данная форма и будет валидироваться
+ * **Note:**
+ * form validation is performed first, then the body of the method being decorated is called.
+ *
+ * @example
+ * @Form()
+ * public form: FormGroup;
+ *
+ * @IfFormValid()
+ * public submit(): void {...}
+ *
+ * @param formId Identificator provided in @Form('id') decorator, if not sets when used default metadata key
  */
-export function IfFormValid(formPropName: string | number): MethodDecorator {
+export function IfFormValid(formId?: string | symbol | number): MethodDecorator {
 	return function (
 		target: any,
 		_propertyKey: string | symbol,
 		descriptor: TypedPropertyDescriptor<any>
 	): TypedPropertyDescriptor<any> {
-		const metadataKey = generateMetadataKey(formPropName);
-		const form: FormGroup = target[metadataKey];
-
+		const metadataKey = generateMetadataKey(formId);
 		const originalMethod = descriptor.value;
 
 		descriptor.value = function (...args: unknown[]) {
+			const form: FormGroup = target[metadataKey];
+
+			if (!(form instanceof FormGroup)) {
+				throw new Error('Form property must be a FormGroup');
+			}
+
 			validateForm(form);
 
 			if (form.valid) {

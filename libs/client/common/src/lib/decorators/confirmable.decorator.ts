@@ -6,10 +6,11 @@ import { ConfirmType, ModalOptions, NzModalService } from 'ng-zorro-antd/modal';
  * ----
  *
  * Method decorator.
+ *
  * @param options Options for NzModal confirm.
  * @param confirmType Type of window, by default "confirm".
  */
-export function Confirmable(options?: Omit<ModalOptions, 'nzOnOk'>, confirmType?: ConfirmType) {
+export function NzConfirmable(options?: Omit<ModalOptions, 'nzOnOk'>, confirmType?: ConfirmType) {
 	return function (
 		_target: any,
 		_propertyKey: string,
