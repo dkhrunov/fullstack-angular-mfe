@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
 @Component({
@@ -23,6 +23,9 @@ export class EntryComponent {
 	@Input()
 	public text?: string;
 
+	@Output()
+	public click = new EventEmitter<boolean>();
+
 	constructor(private readonly _drawerService: NzDrawerService) {}
 
 	public open(): void {
@@ -30,5 +33,6 @@ export class EntryComponent {
 			nzTitle: 'Template',
 			nzFooter: 'Footer',
 		});
+		this.click.emit(true);
 	}
 }

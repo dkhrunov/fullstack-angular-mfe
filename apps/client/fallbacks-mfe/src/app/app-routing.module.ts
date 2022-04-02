@@ -8,6 +8,10 @@ const routes: Routes = [
 			import('./mfe-fallback/mfe-fallback.module').then((m) => m.MfeFallbackModule),
 	},
 	{
+		path: 'not-found',
+		loadChildren: () => import('./not-found/not-found.module').then((m) => m.NotFoundModule),
+	},
+	{
 		path: '**',
 		redirectTo: 'mfe-fallback',
 	},

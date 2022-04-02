@@ -1,6 +1,5 @@
 import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-
 import {
 	DynamicComponentInputs,
 	DynamicComponentOutputs,
@@ -107,7 +106,7 @@ export class DynamicComponentBinding implements OnDestroy {
 	): void {
 		componentOutputs.forEach((output) => {
 			if (!(componentInstance[output.propName] instanceof EventEmitter)) {
-				throw new Error(`Output "${output.propName}" must be an instance of EventEmitter`);
+				throw new Error(`Output "${output.propName}" must be an instance of EventEmitter.`);
 			}
 		});
 
@@ -125,7 +124,7 @@ export class DynamicComponentBinding implements OnDestroy {
 			}
 
 			if (!(outputs[key] instanceof Function)) {
-				throw new Error(`Output "${key}" must be a function`);
+				throw new Error(`Output "${key}" must be a function.`);
 			}
 		});
 	}

@@ -3,7 +3,6 @@ import { AuthModule } from '@nx-mfe/client/auth';
 import { CONFIG, ConfigModule, IConfig } from '@nx-mfe/client/config';
 import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 import { MfeModule } from '@nx-mfe/client/mfe';
-
 // FIXME могут быть проблемы во время сборки
 import * as mfeConfig from '../../../../../mfe-config.json';
 // FIXME могут быть проблемы во время сборки

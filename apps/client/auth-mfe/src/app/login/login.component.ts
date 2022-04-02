@@ -43,6 +43,10 @@ export class LoginComponent implements OnDestroy {
 		this.authFacade.login(credentials);
 	}
 
+	public onClick(bool: MouseEvent): void {
+		console.log('login', bool);
+	}
+
 	private _createForm(): void {
 		this.form = this._fb.group({
 			email: [null, [Validators.required, Validators.email]],

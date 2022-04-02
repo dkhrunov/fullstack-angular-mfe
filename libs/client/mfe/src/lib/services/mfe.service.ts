@@ -1,6 +1,5 @@
 import { Compiler, ComponentFactory, Injectable, Injector, Type } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-
 import { loadMfeComponent, loadMfeModule, validateMfeString } from '../helpers';
 import { LoadedMfe } from '../interfaces';
 import { MfeComponentsCache } from './mfe-components-cache.service';
@@ -56,7 +55,7 @@ export class MfeService {
 	}
 
 	/**
-	 * Loads the micro-frontend exposed module and exposed component.
+	 * Loads the micro-frontend exposed module class and exposed component class.
 	 * @param mfe Micro-frontend string
 	 */
 	public async load<TModule = unknown, TComponent = unknown>(
@@ -71,7 +70,7 @@ export class MfeService {
 	}
 
 	/**
-	 * Loads an exposed micro-frontend module.
+	 * Loads an exposed micro-frontend module class.
 	 * @param mfe Micro-frontend string
 	 */
 	public async loadModule<T>(mfe: string): Promise<Type<T>> {
@@ -81,7 +80,7 @@ export class MfeService {
 	}
 
 	/**
-	 * Loads an exposed micro-frontend component.
+	 * Loads an exposed micro-frontend component class.
 	 * @param mfe Micro-frontend string
 	 */
 	public async loadComponent<T>(mfe: string): Promise<Type<T>> {

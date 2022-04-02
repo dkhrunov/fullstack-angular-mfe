@@ -96,7 +96,10 @@
 			"processor": "@angular-eslint/template/extract-inline-html"
 		}
 	],
-	"sort-imports": ["error", {
-		"ignoreDeclarationSort": true
-	}]
+	"sort-imports": [
+		"error",
+		{
+			"ignoreDeclarationSort": true
+		}
+	]
 }

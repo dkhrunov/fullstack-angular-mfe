@@ -19,10 +19,6 @@ const routes: Routes = [
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},
-			{
-				path: '**',
-				redirectTo: '/dashboard',
-			},
 		],
 	},
 	{
@@ -36,10 +32,9 @@ const routes: Routes = [
 		pathMatch: 'full',
 		redirectTo: '/dashboard',
 	},
-	// TODO: add 404 page
 	{
 		path: '**',
-		redirectTo: '/dashboard',
+		loadChildren: () => loadMfeModule('client-fallbacks-mfe/not-found'),
 	},
 ];
 

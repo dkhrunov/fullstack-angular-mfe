@@ -1,23 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzResultModule } from 'ng-zorro-antd/result';
-import { MfeFallbackComponent } from './mfe-fallback.component';
+import { NotFoundComponent } from './not-found.component';
 
 @NgModule({
-	declarations: [MfeFallbackComponent],
+	declarations: [NotFoundComponent],
 	imports: [
 		CommonModule,
 		RouterModule.forChild([
 			{
 				path: '',
-				component: MfeFallbackComponent,
+				component: NotFoundComponent,
 			},
 		]),
 		NzResultModule,
-		NzIconModule,
+		NzButtonModule,
 	],
-	exports: [MfeFallbackComponent],
+	exports: [NotFoundComponent],
 })
-export class MfeFallbackModule {}
+export class NotFoundModule {}

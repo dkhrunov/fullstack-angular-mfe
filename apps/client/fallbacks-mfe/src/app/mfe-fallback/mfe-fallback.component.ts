@@ -5,8 +5,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 	template: `
 		<nz-result
 			nzStatus="error"
-			nzTitle="Submission Failed"
-			nzSubTitle="Please check and modify the following information before resubmitting."
+			nzTitle="Something went wrong"
+			nzSubTitle="Try reloading the page or contact support."
 			[nzIcon]="icon"
 		>
 			<ng-template #icon>

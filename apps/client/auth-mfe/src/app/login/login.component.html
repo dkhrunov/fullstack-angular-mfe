@@ -88,7 +88,12 @@
 </form>
 
 <ng-container
-	*mfeOutlet="'client-dashboard-mfe/entry'; inputs: { text: text$ | async }; loader: loader"
+	*mfeOutlet="
+		'client-dashboard-mfe/entry';
+		inputs: { text: text$ | async };
+		outputs: { click: onClick };
+		loader: loader
+	"
 >
 </ng-container>
 
@@ -97,3 +102,6 @@
 </ng-template>
 
 <ng-container *mfeOutlet="'client-dashboard-mfe/entry'"></ng-container>
+
+<ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 0"></ng-container>
+<ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 20000"></ng-container>
