@@ -18,7 +18,7 @@ module.exports = function (name) {
 			minimize: false,
 		},
 		experiments: {
-			outputModule: true
+			outputModule: true,
 		},
 		resolve: {
 			alias: { ...sharedLibs.getAliases() },
@@ -28,7 +28,7 @@ module.exports = function (name) {
 				remotes: {},
 				shared: sharedLibs.getShared(),
 				library: {
-					type: 'module'
+					type: 'module',
 				},
 			}),
 			sharedLibs.getPlugin(),
