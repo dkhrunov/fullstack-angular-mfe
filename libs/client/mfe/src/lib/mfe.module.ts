@@ -1,6 +1,5 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
 import { loadRemoteEntry } from '@angular-architects/module-federation';
-
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { MfeOutletDirective } from './directives';
 import { validateMfeString } from './helpers';
 import { IMfeModuleRootOptions } from './interfaces';
@@ -65,8 +64,7 @@ export class MfeModule {
 function loadMfeBundleWithMfeRegistry(mfeRegistry: MfeRegistry): (mfe: string) => Promise<void> {
 	return (mfe: string): Promise<void> => {
 		const remoteEntry = mfeRegistry.getMfeRemoteEntry(mfe);
-		const remoteName = mfe.replace(/-/g, '_');
 
-		return loadRemoteEntry(remoteEntry, remoteName);
+		return loadRemoteEntry({ type: 'module', remoteEntry });
 	};
 }

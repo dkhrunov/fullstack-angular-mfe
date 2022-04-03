@@ -1,105 +1,54 @@
 {
-	"npmScope": "nx-mfe",
-	"affected": {
-		"defaultBase": "development"
-	},
-	"implicitDependencies": {
-		"package.json": {
-			"dependencies": "*",
-			"devDependencies": "*"
-		},
-		".eslintrc.json": "*"
-	},
-	"tasksRunnerOptions": {
-		"default": {
-			"runner": "@nrwl/workspace/tasks-runners/default",
-			"options": {
-				"cacheableOperations": ["build", "lint", "test", "e2e"]
-			}
-		}
-	},
-	"targetDependencies": {
-		"build": [
-			{
-				"target": "build",
-				"projects": "dependencies"
-			}
-		]
-	},
-	"projects": {
-		"client-auth": {
-			"tags": ["scope:client"]
-		},
-		"client-auth-mfe": {
-			"tags": ["scope:client", "mfe:remote"]
-		},
-		"client-auth-mfe-e2e": {
-			"tags": ["scope:client"],
-			"implicitDependencies": ["client-auth-mfe"]
-		},
-		"client-common": {
-			"tags": ["scope:client"]
-		},
-		"client-config": {
-			"tags": ["scope:client"]
-		},
-		"client-core": {
-			"tags": ["scope:client"]
-		},
-		"client-dashboard-mfe": {
-			"tags": ["scope:client", "mfe:remote"]
-		},
-		"client-dashboard-mfe-e2e": {
-			"tags": ["scope:client"],
-			"implicitDependencies": ["client-dashboard-mfe"]
-		},
-		"client-fallbacks-mfe": {
-			"tags": ["mfe:remote"]
-		},
-		"client-fallbacks-mfe-e2e": {
-			"tags": [],
-			"implicitDependencies": ["client-fallbacks-mfe"]
-		},
-		"client-forms": {
-			"tags": ["scope:client"]
-		},
-		"client-injector-container": {
-			"tags": ["scope:client"]
-		},
-		"client-loaders-mfe": {
-			"tags": ["mfe:remote"]
-		},
-		"client-loaders-mfe-e2e": {
-			"tags": [],
-			"implicitDependencies": ["client-loaders-mfe"]
-		},
-		"client-mfe": {
-			"tags": ["scope:client"]
-		},
-		"client-shell-app": {
-			"tags": ["scope:client", "mfe:host"]
-		},
-		"client-shell-app-e2e": {
-			"tags": ["scope:client"],
-			"implicitDependencies": ["client-shell-app"]
-		},
-		"client-token-manager": {
-			"tags": ["scope:client"]
-		},
-		"server": {
-			"tags": ["scope:server"]
-		},
-		"server-domains": {
-			"tags": ["scope:server"]
-		},
-		"server-mailer": {
-			"tags": ["scope:server"]
-		},
-		"shared-data-access": {
-			"tags": ["scope:shared"]
-		},
-		"shared-utils": {
-			"tags": ["scope:shared"]
-		}
-	}
+  "npmScope": "nx-mfe",
+  "affected": {
+    "defaultBase": "development"
+  },
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e"
+        ],
+        "parallel": 3
+      }
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "generators": {
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "defaultProject": "client-shell-app"
 }

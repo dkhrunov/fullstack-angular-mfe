@@ -17,6 +17,9 @@ module.exports = function (name) {
 			runtimeChunk: false,
 			minimize: false,
 		},
+		experiments: {
+			outputModule: true
+		},
 		resolve: {
 			alias: { ...sharedLibs.getAliases() },
 		},
@@ -24,6 +27,9 @@ module.exports = function (name) {
 			new ModuleFederationPlugin({
 				remotes: {},
 				shared: sharedLibs.getShared(),
+				library: {
+					type: 'module'
+				},
 			}),
 			sharedLibs.getPlugin(),
 		],

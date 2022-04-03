@@ -1,5 +1,4 @@
 import { LoadRemoteModuleOptions } from '@angular-architects/module-federation';
-
 import { MfeRegistry } from '../registry';
 import { validateMfeString } from './validate-mfe-string';
 
@@ -13,7 +12,7 @@ import { validateMfeString } from './validate-mfe-string';
 export function parseMfeString(
 	mfe: string,
 	type: 'Module' | 'Component' = 'Module'
-): Required<LoadRemoteModuleOptions> {
+): LoadRemoteModuleOptions {
 	validateMfeString(mfe);
 
 	const [appName, exposedItem] = mfe.split('/');
@@ -23,12 +22,11 @@ export function parseMfeString(
 	}
 
 	const remoteEntry = MfeRegistry.getInstance().getMfeRemoteEntry(appName);
-	const remoteName = appName.replace(/-/g, '_');
 	const exposedModule = exposedItem
 		.split('-')
 		.map((x) => x.charAt(0).toUpperCase() + x.substr(1))
 		.join('')
 		.concat(type);
 
-	return { remoteEntry, remoteName, exposedModule };
+	return { type: 'module', remoteEntry, exposedModule };
 }

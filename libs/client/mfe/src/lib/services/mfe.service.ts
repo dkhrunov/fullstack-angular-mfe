@@ -50,7 +50,7 @@ export class MfeService {
 				this._cache.setError(mfe, error);
 			}
 
-			throw new Error(error);
+			throw new Error(error as string);
 		}
 	}
 
