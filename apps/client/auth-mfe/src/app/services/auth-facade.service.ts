@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AuthService } from '@nx-mfe/client/auth';
+import { HttpError } from '@nx-mfe/client/common';
 import {
 	AuthTokenStorageStrategy,
 	ETokenStorageType,
@@ -8,7 +9,6 @@ import {
 import {
 	Credentials,
 	DefaultHttpError,
-	HttpError,
 	RegistrationCredentials,
 	ServerErrorDto,
 } from '@nx-mfe/shared/data-access';

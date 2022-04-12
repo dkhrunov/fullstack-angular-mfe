@@ -103,5 +103,11 @@
 
 <ng-container *mfeOutlet="'client-dashboard-mfe/entry'"></ng-container>
 
-<ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 0"></ng-container>
-<ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 20000"></ng-container>
+<!-- <ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 0"></ng-container>
+<ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 20000"></ng-container> -->
+
+<p>Not existend MFE 'aaaa/bbb':</p>
+<ng-container *mfeOutlet="'aaaa/bbb'"></ng-container>
+
+<p>Not existend MFE 2 'aaaa/bbb':</p>
+<ng-container *mfeOutlet="'aaaa/bbb'"></ng-container>

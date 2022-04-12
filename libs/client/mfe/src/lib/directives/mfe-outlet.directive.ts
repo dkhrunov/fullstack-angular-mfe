@@ -2,7 +2,6 @@ import {
 	AfterViewInit,
 	ChangeDetectorRef,
 	ComponentFactory,
-	ComponentFactoryResolver,
 	ComponentRef,
 	Directive,
 	EmbeddedViewRef,
@@ -18,7 +17,12 @@ import {
 import { EChangesStrategy, TrackChanges } from '@nx-mfe/client/common';
 import { validateMfeString } from '../helpers';
 import { IMfeModuleRootOptions } from '../interfaces';
-import { DynamicComponentBinding, MfeComponentsCache, MfeService } from '../services';
+import {
+	DynamicComponentBinding,
+	MfeComponentFactoryResolver,
+	MfeComponentFactoryResolverOptions,
+	MfeComponentsCache,
+} from '../services';
 import { OPTIONS } from '../tokens';
 import { MfeOutletInputs, MfeOutletOutputs } from '../types';
 
@@ -141,6 +145,12 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	@Input('mfeOutletFallback')
 	public fallback?: CreationElement = this._options.fallback;
 
+	/**
+	 * Custom options for MfeComponentFactoryResolver.
+	 */
+	@Input('mfeOutletOptions')
+	public options?: MfeComponentFactoryResolverOptions;
+
 	private _mfeComponentFactory?: ComponentFactory<unknown>;
 	private _mfeComponentRef?: ComponentRef<unknown>;
 	private _loaderComponentRef?: ComponentRef<unknown> | EmbeddedViewRef<unknown>;
@@ -150,9 +160,8 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		private readonly _vcr: ViewContainerRef,
 		private readonly _injector: Injector,
 		private readonly _cache: MfeComponentsCache,
-		private readonly _mfeService: MfeService,
+		private readonly _mcfr: MfeComponentFactoryResolver,
 		private readonly _binding: DynamicComponentBinding,
-		private readonly _cfr: ComponentFactoryResolver,
 		@Inject(OPTIONS) private readonly _options: IMfeModuleRootOptions
 	) {}
 
@@ -235,9 +244,9 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 				await delay(this.loaderDelay);
 				this._showMfe();
 			}
-		} catch (e) {
-			console.error(e);
-			await this._showFallback();
+		} catch (error) {
+			console.error(error);
+			this._showFallback();
 		}
 	}
 
@@ -247,20 +256,15 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	 * @internal
 	 */
 	private async _showMfe(): Promise<void> {
-		const componentFactory = await this._mfeService.resolveComponentFactory(
-			this.mfe,
-			this.injector
-		);
-
-		this._clearView();
-
-		const componentRef = this._vcr.createComponent(componentFactory, undefined, this.injector);
-		componentRef.changeDetectorRef.detectChanges();
-
-		this._mfeComponentFactory = componentFactory;
-		this._mfeComponentRef = componentRef;
-
-		this._bindMfeData();
+		try {
+			if (this.mfe) {
+				this._mfeComponentRef = await this._displayComponent(this.mfe, true, this.options);
+				this._bindMfeData();
+			}
+		} catch (error) {
+			console.error(error);
+			this._showFallback();
+		}
 	}
 
 	/**
@@ -269,8 +273,13 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	 * @internal
 	 */
 	private async _showLoader(): Promise<void> {
-		if (this.loader) {
-			this._loaderComponentRef = await this._displayComponent(this.loader);
+		try {
+			if (this.loader) {
+				this._loaderComponentRef = await this._displayComponent(this.loader);
+			}
+		} catch (error) {
+			console.error(error);
+			this._showFallback();
 		}
 	}
 
@@ -286,11 +295,18 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	}
 
 	/**
-	 * Shows MFE | TemlateRer | Component content
-	 * @param templateRefOrMfeString MFE string or TemlateRef or Component
+	 * Shows MFE | TemlateRer | Component content.
+	 *
+	 * @param templateRefOrMfeString MFE string or TemlateRef or Component.
+	 * @param saveComponentFactory If true saves componentFactory to this._mfeComponentFactory property.
+	 * @param options Custom options for MfeComponentFactoryResolver.
+	 *
+	 * @internal
 	 */
-	private async _displayComponent<TComponent = unknown, TModule = unknown>(
-		mfeString: string
+	private async _displayComponent<TComponent = unknown>(
+		mfeString: string,
+		saveComponentFactory?: boolean,
+		options?: MfeComponentFactoryResolverOptions
 	): Promise<ComponentRef<TComponent>>;
 	private async _displayComponent<TContext = unknown>(
 		templateRef: TemplateRef<TContext>
@@ -298,20 +314,30 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	private async _displayComponent<TComponent = unknown>(
 		component: Type<TComponent>
 	): Promise<ComponentRef<TComponent>>;
-	private async _displayComponent<TComponent = unknown, TModule = unknown>(
-		content: CreationElement
+	private async _displayComponent<TComponent = unknown>(
+		content: CreationElement,
+		saveComponentFactory?: boolean,
+		options?: MfeComponentFactoryResolverOptions
 	): Promise<CreatedElementRef>;
-	private async _displayComponent<TComponent = unknown, TModule = unknown>(
-		content: CreationElement
+	private async _displayComponent<TComponent = unknown>(
+		content: CreationElement,
+		saveComponentFactory: boolean = false,
+		options?: MfeComponentFactoryResolverOptions
 	): Promise<CreatedElementRef> {
 		// MFE
 		if (typeof content === 'string') {
-			const componentFactory = await this._mfeService.resolveComponentFactory<
-				TModule,
-				TComponent
-			>(content, this.injector);
+			const componentFactory = await this._mcfr.resolveComponentFactory<TComponent>(
+				content,
+				this.injector,
+				options
+			);
+
+			if (saveComponentFactory) {
+				this._mfeComponentFactory = componentFactory;
+			}
 
 			this._clearView();
+
 			const componentRef = this._vcr.createComponent(
 				componentFactory,
 				undefined,
@@ -323,13 +349,14 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		// TemplateRef
 		else if (content instanceof TemplateRef) {
 			this._clearView();
+
 			return this._vcr.createEmbeddedView(content);
 		}
 		// Component
 		else {
 			this._clearView();
-			const factory = this._cfr.resolveComponentFactory(content);
-			return this._vcr.createComponent(factory, undefined, this.injector);
+
+			return this._vcr.createComponent(content, { injector: this.injector });
 		}
 	}
 
