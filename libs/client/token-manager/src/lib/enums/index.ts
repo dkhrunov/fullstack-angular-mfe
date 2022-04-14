@@ -1,3 +1,3 @@
-export * from './auth-tokens-types';
+export * from './auth-token';
 export * from './samesite-option';
-export * from './token-storage-type';
+export * from './token-storage';

@@ -1,4 +1,4 @@
-export enum ETokenStorageType {
+export enum ETokenStorage {
 	LocalStorage = 'LocalStorage',
 	SessionStorage = 'SessionStorage',
 	Cookies = 'Cookies',

@@ -1,6 +1,5 @@
-import { CookieBuilder } from '../cookie-builder';
 import { ESamesiteOption } from '../enums';
-import { JwtDecoder } from '../helpers';
+import { CookieBuilder, JwtDecoder } from '../helpers';
 import { TokenStorage } from './token-storage';
 
 export class TokenCookiesStorage extends TokenStorage {

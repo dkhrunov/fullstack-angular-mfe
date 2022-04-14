@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
-
-import { AuthTokensTypes } from '../enums';
-import { AUTH_TOKEN_STORAGE_STRATEGY } from '../injection-tokens';
-import { IAuthTokenManager, IAuthTokens, ITokenStorageStrategy } from '../interfaces';
+import { EAuthToken } from '../enums';
+import { IAuthTokenManager, IAuthTokens, ITokenStorageService } from '../interfaces';
+import { AuthTokenStorageService } from './auth-token-storage.service';
 import { TokenManager } from './token-manager.service';
 
 @Injectable({
@@ -10,42 +9,42 @@ import { TokenManager } from './token-manager.service';
 })
 export class AuthTokenManager extends TokenManager implements IAuthTokenManager {
 	constructor(
-		@Inject(AUTH_TOKEN_STORAGE_STRATEGY)
-		protected readonly _authTokenStorageStrategy: ITokenStorageStrategy
+		@Inject(AuthTokenStorageService)
+		protected readonly _authTokenStorageService: ITokenStorageService
 	) {
-		super(_authTokenStorageStrategy);
+		super(_authTokenStorageService);
 	}
 
 	public getAccessToken(): string | null {
-		return this.getToken(AuthTokensTypes.accessToken);
+		return this.getToken(EAuthToken.accessToken);
 	}
 
 	public setAccessToken(token: string): void {
-		this.setToken(AuthTokensTypes.accessToken, token);
+		this.setToken(EAuthToken.accessToken, token);
 	}
 
 	public deleteAccessToken(): void {
-		this.deleteToken(AuthTokensTypes.accessToken);
+		this.deleteToken(EAuthToken.accessToken);
 	}
 
 	public isValidAccessToken(): boolean {
-		return this.isValidToken(AuthTokensTypes.accessToken);
+		return this.isValidToken(EAuthToken.accessToken);
 	}
 
 	public getRefreshToken(): string | null {
-		return this.getToken(AuthTokensTypes.refreshToken);
+		return this.getToken(EAuthToken.refreshToken);
 	}
 
 	public setRefreshToken(token: string): void {
-		this.setToken(AuthTokensTypes.refreshToken, token);
+		this.setToken(EAuthToken.refreshToken, token);
 	}
 
 	public deleteRefreshToken(): void {
-		this.deleteToken(AuthTokensTypes.refreshToken);
+		this.deleteToken(EAuthToken.refreshToken);
 	}
 
 	public isValidRefreshToken(): boolean {
-		return this.isValidToken(AuthTokensTypes.refreshToken);
+		return this.isValidToken(EAuthToken.refreshToken);
 	}
 
 	public getAuthTokens(): {

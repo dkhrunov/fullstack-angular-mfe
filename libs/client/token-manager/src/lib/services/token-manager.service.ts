@@ -1,21 +1,20 @@
 import { Inject, Injectable } from '@angular/core';
-
-import { TOKEN_STORAGE_STRATEGY } from '../injection-tokens';
-import { ITokenManager, ITokenStorageStrategy } from '../interfaces';
+import { ITokenManager, ITokenStorageService } from '../interfaces';
 import { TokenStorage } from '../token-storage';
+import { TokenStorageService } from './token-storage.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class TokenManager implements ITokenManager {
-	constructor(
-		@Inject(TOKEN_STORAGE_STRATEGY)
-		private readonly _tokenStorageStrategy: ITokenStorageStrategy
-	) {}
-
 	private get _tokenStorage(): TokenStorage {
-		return this._tokenStorageStrategy.strategy;
+		return this._tokenStorageService.storage;
 	}
+
+	constructor(
+		@Inject(TokenStorageService)
+		private readonly _tokenStorageService: ITokenStorageService
+	) {}
 
 	public getToken(tokenName: string): string | null {
 		return this._tokenStorage.get(tokenName);

@@ -1,5 +1,4 @@
 export * from './lib/const';
-export * from './lib/cookie-builder';
 export * from './lib/enums';
 export * from './lib/injection-tokens';
 export * from './lib/interfaces';

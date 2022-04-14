@@ -2,8 +2,8 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { AuthService } from '@nx-mfe/client/auth';
 import { HttpError } from '@nx-mfe/client/common';
 import {
-	AuthTokenStorageStrategy,
-	ETokenStorageType,
+	AuthTokenStorageService,
+	ETokenStorage,
 	TokenCookiesStorage,
 } from '@nx-mfe/client/token-manager';
 import {
@@ -31,12 +31,12 @@ export class AuthFacadeService implements OnDestroy {
 	private readonly _destroy$ = new Subject<void>();
 
 	public get rememberMeValue(): boolean {
-		return this._authTokenStorageStrategy.strategy instanceof TokenCookiesStorage;
+		return this._authTokenStorage.storage instanceof TokenCookiesStorage;
 	}
 
 	constructor(
 		private readonly _authService: AuthService,
-		private readonly _authTokenStorageStrategy: AuthTokenStorageStrategy
+		private readonly _authTokenStorage: AuthTokenStorageService
 	) {}
 
 	public ngOnDestroy(): void {
@@ -89,8 +89,8 @@ export class AuthFacadeService implements OnDestroy {
 	}
 
 	public rememberMe(value: boolean): void {
-		this._authTokenStorageStrategy.setStrategy(
-			value ? ETokenStorageType.Cookies : ETokenStorageType.SessionStorage
+		this._authTokenStorage.setStorage(
+			value ? ETokenStorage.Cookies : ETokenStorage.SessionStorage
 		);
 	}
 }
