@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { AuthTokenPayload } from '@nx-mfe/shared/data-access';
 import { ExtractJwt, Strategy } from 'passport-jwt';

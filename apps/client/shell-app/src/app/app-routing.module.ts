@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard, UnAuthGuard } from '@nx-mfe/client/auth';
-import { loadMfeModule } from '@nx-mfe/client/mfe';
+import { loadMfe } from '@nx-mfe/client/mfe';
 
 const routes: Routes = [
 	{
@@ -9,13 +9,13 @@ const routes: Routes = [
 		children: [
 			{
 				path: 'login',
-				loadChildren: () => loadMfeModule('client-auth-mfe/login'),
+				loadChildren: () => loadMfe('client-auth-mfe/login'),
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},
 			{
 				path: 'register',
-				loadChildren: () => loadMfeModule('client-auth-mfe/register'),
+				loadChildren: () => loadMfe('client-auth-mfe/register'),
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},
@@ -23,7 +23,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'dashboard',
-		loadChildren: () => loadMfeModule('client-dashboard-mfe/entry'),
+		loadChildren: () => loadMfe('client-dashboard-mfe/entry'),
 		canLoad: [AuthGuard],
 		canActivate: [AuthGuard],
 	},
@@ -34,7 +34,7 @@ const routes: Routes = [
 	},
 	{
 		path: '**',
-		loadChildren: () => loadMfeModule('client-fallbacks-mfe/not-found'),
+		loadChildren: () => loadMfe('client-fallbacks-mfe/not-found'),
 	},
 ];
 

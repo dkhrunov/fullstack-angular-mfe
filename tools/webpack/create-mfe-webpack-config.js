@@ -19,6 +19,9 @@ module.exports = function (name, exposes) {
 			runtimeChunk: false,
 			minimize: false,
 		},
+		experiments: {
+			outputModule: true,
+		},
 		resolve: {
 			alias: { ...sharedLibs.getAliases() },
 		},
@@ -28,6 +31,9 @@ module.exports = function (name, exposes) {
 				exposes,
 				filename: config.remoteEntryFileName,
 				shared: sharedLibs.getShared(),
+				library: {
+					type: 'module',
+				},
 			}),
 			sharedLibs.getPlugin(),
 		],

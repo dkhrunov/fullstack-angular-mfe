@@ -1,1088 +1,1247 @@
 {
-	"version": 2,
-	"projects": {
-		"client-auth": {
-			"projectType": "library",
-			"root": "libs/client/auth",
-			"sourceRoot": "libs/client/auth/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/client/auth"],
-					"options": {
-						"jestConfig": "libs/client/auth/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/client/auth/src/**/*.ts",
-							"libs/client/auth/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"client-auth-mfe": {
-			"projectType": "application",
-			"root": "apps/client/auth-mfe",
-			"sourceRoot": "apps/client/auth-mfe/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"build": {
-					"executor": "@nrwl/angular:webpack-browser",
-					"outputs": ["{options.outputPath}"],
-					"options": {
-						"outputPath": "dist/apps/client/auth-mfe",
-						"index": "apps/client/auth-mfe/src/index.html",
-						"main": "apps/client/auth-mfe/src/main.ts",
-						"polyfills": "apps/client/auth-mfe/src/polyfills.ts",
-						"tsConfig": "apps/client/auth-mfe/tsconfig.app.json",
-						"inlineStyleLanguage": "scss",
-						"assets": [
-							"apps/client/auth-mfe/src/favicon.ico",
-							"apps/client/auth-mfe/src/assets",
-							{
-								"glob": "**/*",
-								"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-								"output": "/assets/"
-							},
-							{
-								"glob": "**/*",
-								"input": "./libs/client/assets/",
-								"output": "/assets/"
-							}
-						],
-						"styles": [
-							"apps/client/auth-mfe/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
-							"libs/client/assets/styles/styles.scss"
-						],
-						"scripts": [],
-						"customWebpackConfig": {
-							"path": "apps/client/auth-mfe/webpack.config.js"
-						}
-					},
-					"configurations": {
-						"production": {
-							"budgets": [
-								{
-									"type": "initial",
-									"maximumWarning": "500kb",
-									"maximumError": "1mb"
-								},
-								{
-									"type": "anyComponentStyle",
-									"maximumWarning": "2kb",
-									"maximumError": "4kb"
-								}
-							],
-							"fileReplacements": [
-								{
-									"replace": "apps/client/auth-mfe/src/environments/environment.ts",
-									"with": "apps/client/auth-mfe/src/environments/environment.prod.ts"
-								}
-							],
-							"outputHashing": "all",
-							"customWebpackConfig": {
-								"path": "apps/client/auth-mfe/webpack.prod.config.js"
-							}
-						},
-						"development": {
-							"buildOptimizer": false,
-							"optimization": false,
-							"vendorChunk": true,
-							"extractLicenses": false,
-							"sourceMap": true,
-							"namedChunks": true
-						}
-					},
-					"defaultConfiguration": "production"
-				},
-				"serve": {
-					"executor": "@nrwl/angular:webpack-server",
-					"configurations": {
-						"production": {
-							"browserTarget": "client-auth-mfe:build:production"
-						},
-						"development": {
-							"browserTarget": "client-auth-mfe:build:development"
-						}
-					},
-					"defaultConfiguration": "development",
-					"options": {
-						"port": 4201
-					}
-				},
-				"extract-i18n": {
-					"executor": "@angular-devkit/build-angular:extract-i18n",
-					"options": {
-						"browserTarget": "client-auth-mfe:build"
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"apps/client/auth-mfe/src/**/*.ts",
-							"apps/client/auth-mfe/src/**/*.html"
-						]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/apps/client/auth-mfe"],
-					"options": {
-						"jestConfig": "apps/client/auth-mfe/jest.config.js",
-						"passWithNoTests": true
-					}
-				}
-			}
-		},
-		"client-auth-mfe-e2e": {
-			"root": "apps/client/auth-mfe-e2e",
-			"sourceRoot": "apps/client/auth-mfe-e2e/src",
-			"projectType": "application",
-			"targets": {
-				"e2e": {
-					"executor": "@nrwl/cypress:cypress",
-					"options": {
-						"cypressConfig": "apps/client/auth-mfe-e2e/cypress.json",
-						"devServerTarget": "client-auth-mfe:serve:development"
-					},
-					"configurations": {
-						"production": {
-							"devServerTarget": "client-auth-mfe:serve:production"
-						}
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["apps/client/auth-mfe-e2e/**/*.{js,ts}"]
-					}
-				}
-			}
-		},
-		"client-common": {
-			"projectType": "library",
-			"root": "libs/client/common",
-			"sourceRoot": "libs/client/common/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/client/common"],
-					"options": {
-						"jestConfig": "libs/client/common/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/client/common/src/**/*.ts",
-							"libs/client/common/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"client-config": {
-			"projectType": "library",
-			"root": "libs/client/config",
-			"sourceRoot": "libs/client/config/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/client/config"],
-					"options": {
-						"jestConfig": "libs/client/config/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/client/config/src/**/*.ts",
-							"libs/client/config/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"client-core": {
-			"projectType": "library",
-			"root": "libs/client/core",
-			"sourceRoot": "libs/client/core/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/client/core"],
-					"options": {
-						"jestConfig": "libs/client/core/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/client/core/src/**/*.ts",
-							"libs/client/core/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"client-dashboard-mfe": {
-			"projectType": "application",
-			"root": "apps/client/dashboard-mfe",
-			"sourceRoot": "apps/client/dashboard-mfe/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"build": {
-					"executor": "@nrwl/angular:webpack-browser",
-					"outputs": ["{options.outputPath}"],
-					"options": {
-						"outputPath": "dist/apps/client/dashboard-mfe",
-						"index": "apps/client/dashboard-mfe/src/index.html",
-						"main": "apps/client/dashboard-mfe/src/main.ts",
-						"polyfills": "apps/client/dashboard-mfe/src/polyfills.ts",
-						"tsConfig": "apps/client/dashboard-mfe/tsconfig.app.json",
-						"inlineStyleLanguage": "scss",
-						"assets": [
-							"apps/client/dashboard-mfe/src/favicon.ico",
-							"apps/client/dashboard-mfe/src/assets",
-							{
-								"glob": "**/*",
-								"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-								"output": "/assets/"
-							},
-							{
-								"glob": "**/*",
-								"input": "./libs/client/assets/",
-								"output": "/assets/"
-							}
-						],
-						"styles": [
-							"apps/client/dashboard-mfe/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
-							"libs/client/assets/styles/styles.scss"
-						],
-						"scripts": [],
-						"customWebpackConfig": {
-							"path": "apps/client/dashboard-mfe/webpack.config.js"
-						}
-					},
-					"configurations": {
-						"production": {
-							"budgets": [
-								{
-									"type": "initial",
-									"maximumWarning": "500kb",
-									"maximumError": "1mb"
-								},
-								{
-									"type": "anyComponentStyle",
-									"maximumWarning": "2kb",
-									"maximumError": "4kb"
-								}
-							],
-							"fileReplacements": [
-								{
-									"replace": "apps/client/dashboard-mfe/src/environments/environment.ts",
-									"with": "apps/client/dashboard-mfe/src/environments/environment.prod.ts"
-								}
-							],
-							"outputHashing": "all",
-							"customWebpackConfig": {
-								"path": "apps/client/dashboard-mfe/webpack.prod.config.js"
-							}
-						},
-						"development": {
-							"buildOptimizer": false,
-							"optimization": false,
-							"vendorChunk": true,
-							"extractLicenses": false,
-							"sourceMap": true,
-							"namedChunks": true
-						}
-					},
-					"defaultConfiguration": "production"
-				},
-				"serve": {
-					"executor": "@nrwl/angular:webpack-server",
-					"configurations": {
-						"production": {
-							"browserTarget": "client-dashboard-mfe:build:production"
-						},
-						"development": {
-							"browserTarget": "client-dashboard-mfe:build:development"
-						}
-					},
-					"defaultConfiguration": "development",
-					"options": {
-						"port": 4202
-					}
-				},
-				"extract-i18n": {
-					"executor": "@angular-devkit/build-angular:extract-i18n",
-					"options": {
-						"browserTarget": "client-dashboard-mfe:build"
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"apps/client/dashboard-mfe/src/**/*.ts",
-							"apps/client/dashboard-mfe/src/**/*.html"
-						]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/apps/client/dashboard-mfe"],
-					"options": {
-						"jestConfig": "apps/client/dashboard-mfe/jest.config.js",
-						"passWithNoTests": true
-					}
-				}
-			}
-		},
-		"client-dashboard-mfe-e2e": {
-			"root": "apps/client/dashboard-mfe-e2e",
-			"sourceRoot": "apps/client/dashboard-mfe-e2e/src",
-			"projectType": "application",
-			"targets": {
-				"e2e": {
-					"executor": "@nrwl/cypress:cypress",
-					"options": {
-						"cypressConfig": "apps/client/dashboard-mfe-e2e/cypress.json",
-						"devServerTarget": "client-dashboard-mfe:serve:development"
-					},
-					"configurations": {
-						"production": {
-							"devServerTarget": "client-dashboard-mfe:serve:production"
-						}
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["apps/client/dashboard-mfe-e2e/**/*.{js,ts}"]
-					}
-				}
-			}
-		},
-		"client-fallbacks-mfe": {
-			"projectType": "application",
-			"root": "apps/client/fallbacks-mfe",
-			"sourceRoot": "apps/client/fallbacks-mfe/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"build": {
-					"executor": "@nrwl/angular:webpack-browser",
-					"outputs": ["{options.outputPath}"],
-					"options": {
-						"outputPath": "dist/apps/client/fallbacks-mfe",
-						"index": "apps/client/fallbacks-mfe/src/index.html",
-						"main": "apps/client/fallbacks-mfe/src/main.ts",
-						"polyfills": "apps/client/fallbacks-mfe/src/polyfills.ts",
-						"tsConfig": "apps/client/fallbacks-mfe/tsconfig.app.json",
-						"inlineStyleLanguage": "scss",
-						"assets": [
-							"apps/client/fallbacks-mfe/src/favicon.ico",
-							"apps/client/fallbacks-mfe/src/assets",
-							{
-								"glob": "**/*",
-								"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-								"output": "/assets/"
-							},
-							{
-								"glob": "**/*",
-								"input": "./libs/client/assets/",
-								"output": "/assets/"
-							}
-						],
-						"styles": [
-							"apps/client/fallbacks-mfe/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
-							"libs/client/assets/styles/styles.scss"
-						],
-						"scripts": [],
-						"customWebpackConfig": {
-							"path": "apps/client/fallbacks-mfe/webpack.config.js"
-						}
-					},
-					"configurations": {
-						"production": {
-							"budgets": [
-								{
-									"type": "initial",
-									"maximumWarning": "500kb",
-									"maximumError": "1mb"
-								},
-								{
-									"type": "anyComponentStyle",
-									"maximumWarning": "2kb",
-									"maximumError": "4kb"
-								}
-							],
-							"fileReplacements": [
-								{
-									"replace": "apps/client/fallbacks-mfe/src/environments/environment.ts",
-									"with": "apps/client/fallbacks-mfe/src/environments/environment.prod.ts"
-								}
-							],
-							"outputHashing": "all",
-							"customWebpackConfig": {
-								"path": "apps/client/fallbacks-mfe/webpack.prod.config.js"
-							}
-						},
-						"development": {
-							"buildOptimizer": false,
-							"optimization": false,
-							"vendorChunk": true,
-							"extractLicenses": false,
-							"sourceMap": true,
-							"namedChunks": true
-						}
-					},
-					"defaultConfiguration": "production"
-				},
-				"serve": {
-					"executor": "@nrwl/angular:webpack-server",
-					"configurations": {
-						"production": {
-							"browserTarget": "client-fallbacks-mfe:build:production"
-						},
-						"development": {
-							"browserTarget": "client-fallbacks-mfe:build:development"
-						}
-					},
-					"defaultConfiguration": "development",
-					"options": {
-						"port": 4204
-					}
-				},
-				"extract-i18n": {
-					"executor": "@angular-devkit/build-angular:extract-i18n",
-					"options": {
-						"browserTarget": "client-fallbacks-mfe:build"
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"apps/client/fallbacks-mfe/src/**/*.ts",
-							"apps/client/fallbacks-mfe/src/**/*.html"
-						]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/apps/client/fallbacks-mfe"],
-					"options": {
-						"jestConfig": "apps/client/fallbacks-mfe/jest.config.js",
-						"passWithNoTests": true
-					}
-				}
-			}
-		},
-		"client-fallbacks-mfe-e2e": {
-			"root": "apps/client/fallbacks-mfe-e2e",
-			"sourceRoot": "apps/client/fallbacks-mfe-e2e/src",
-			"projectType": "application",
-			"targets": {
-				"e2e": {
-					"executor": "@nrwl/cypress:cypress",
-					"options": {
-						"cypressConfig": "apps/client/fallbacks-mfe-e2e/cypress.json",
-						"devServerTarget": "client-fallbacks-mfe:serve:development"
-					},
-					"configurations": {
-						"production": {
-							"devServerTarget": "client-fallbacks-mfe:serve:production"
-						}
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["apps/client/fallbacks-mfe-e2e/**/*.{js,ts}"]
-					}
-				}
-			}
-		},
-		"client-forms": {
-			"projectType": "library",
-			"root": "libs/client/forms",
-			"sourceRoot": "libs/client/forms/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/client/forms"],
-					"options": {
-						"jestConfig": "libs/client/forms/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/client/forms/src/**/*.ts",
-							"libs/client/forms/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"client-injector-container": {
-			"projectType": "library",
-			"root": "libs/client/injector-container",
-			"sourceRoot": "libs/client/injector-container/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/client/injector-container"],
-					"options": {
-						"jestConfig": "libs/client/injector-container/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/client/injector-container/src/**/*.ts",
-							"libs/client/injector-container/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"client-loaders-mfe": {
-			"projectType": "application",
-			"root": "apps/client/loaders-mfe",
-			"sourceRoot": "apps/client/loaders-mfe/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"build": {
-					"executor": "@nrwl/angular:webpack-browser",
-					"outputs": ["{options.outputPath}"],
-					"options": {
-						"outputPath": "dist/apps/client/loaders-mfe",
-						"index": "apps/client/loaders-mfe/src/index.html",
-						"main": "apps/client/loaders-mfe/src/main.ts",
-						"polyfills": "apps/client/loaders-mfe/src/polyfills.ts",
-						"tsConfig": "apps/client/loaders-mfe/tsconfig.app.json",
-						"inlineStyleLanguage": "scss",
-						"assets": [
-							"apps/client/loaders-mfe/src/favicon.ico",
-							"apps/client/loaders-mfe/src/assets",
-							{
-								"glob": "**/*",
-								"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-								"output": "/assets/"
-							},
-							{
-								"glob": "**/*",
-								"input": "./libs/client/assets/",
-								"output": "/assets/"
-							}
-						],
-						"styles": [
-							"apps/client/loaders-mfe/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
-							"libs/client/assets/styles/styles.scss"
-						],
-						"scripts": [],
-						"customWebpackConfig": {
-							"path": "apps/client/loaders-mfe/webpack.config.js"
-						}
-					},
-					"configurations": {
-						"production": {
-							"budgets": [
-								{
-									"type": "initial",
-									"maximumWarning": "500kb",
-									"maximumError": "1mb"
-								},
-								{
-									"type": "anyComponentStyle",
-									"maximumWarning": "2kb",
-									"maximumError": "4kb"
-								}
-							],
-							"fileReplacements": [
-								{
-									"replace": "apps/client/loaders-mfe/src/environments/environment.ts",
-									"with": "apps/client/loaders-mfe/src/environments/environment.prod.ts"
-								}
-							],
-							"outputHashing": "all",
-							"customWebpackConfig": {
-								"path": "apps/client/loaders-mfe/webpack.prod.config.js"
-							}
-						},
-						"development": {
-							"buildOptimizer": false,
-							"optimization": false,
-							"vendorChunk": true,
-							"extractLicenses": false,
-							"sourceMap": true,
-							"namedChunks": true
-						}
-					},
-					"defaultConfiguration": "production"
-				},
-				"serve": {
-					"executor": "@nrwl/angular:webpack-server",
-					"configurations": {
-						"production": {
-							"browserTarget": "client-loaders-mfe:build:production"
-						},
-						"development": {
-							"browserTarget": "client-loaders-mfe:build:development"
-						}
-					},
-					"defaultConfiguration": "development",
-					"options": {
-						"port": 4203
-					}
-				},
-				"extract-i18n": {
-					"executor": "@angular-devkit/build-angular:extract-i18n",
-					"options": {
-						"browserTarget": "client-loaders-mfe:build"
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"apps/client/loaders-mfe/src/**/*.ts",
-							"apps/client/loaders-mfe/src/**/*.html"
-						]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/apps/client/loaders-mfe"],
-					"options": {
-						"jestConfig": "apps/client/loaders-mfe/jest.config.js",
-						"passWithNoTests": true
-					}
-				}
-			}
-		},
-		"client-loaders-mfe-e2e": {
-			"root": "apps/client/loaders-mfe-e2e",
-			"sourceRoot": "apps/client/loaders-mfe-e2e/src",
-			"projectType": "application",
-			"targets": {
-				"e2e": {
-					"executor": "@nrwl/cypress:cypress",
-					"options": {
-						"cypressConfig": "apps/client/loaders-mfe-e2e/cypress.json",
-						"devServerTarget": "client-loaders-mfe:serve:development"
-					},
-					"configurations": {
-						"production": {
-							"devServerTarget": "client-loaders-mfe:serve:production"
-						}
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["apps/client/loaders-mfe-e2e/**/*.{js,ts}"]
-					}
-				}
-			}
-		},
-		"client-mfe": {
-			"projectType": "library",
-			"root": "libs/client/mfe",
-			"sourceRoot": "libs/client/mfe/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/client/mfe"],
-					"options": {
-						"jestConfig": "libs/client/mfe/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/client/mfe/src/**/*.ts",
-							"libs/client/mfe/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"client-shell-app": {
-			"projectType": "application",
-			"root": "apps/client/shell-app",
-			"sourceRoot": "apps/client/shell-app/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"build": {
-					"executor": "@nrwl/angular:webpack-browser",
-					"outputs": ["{options.outputPath}"],
-					"options": {
-						"outputPath": "dist/apps/client/shell-app",
-						"index": "apps/client/shell-app/src/index.html",
-						"main": "apps/client/shell-app/src/main.ts",
-						"polyfills": "apps/client/shell-app/src/polyfills.ts",
-						"tsConfig": "apps/client/shell-app/tsconfig.app.json",
-						"inlineStyleLanguage": "scss",
-						"assets": [
-							"apps/client/shell-app/src/favicon.ico",
-							"apps/client/shell-app/src/assets",
-							{
-								"glob": "**/*",
-								"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-								"output": "/assets/"
-							},
-							{
-								"glob": "**/*",
-								"input": "./libs/client/assets/",
-								"output": "/assets/"
-							}
-						],
-						"styles": [
-							"apps/client/shell-app/src/styles.scss",
-							"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
-							"libs/client/assets/styles/styles.scss"
-						],
-						"scripts": [],
-						"customWebpackConfig": {
-							"path": "apps/client/shell-app/webpack.config.js"
-						}
-					},
-					"configurations": {
-						"production": {
-							"budgets": [
-								{
-									"type": "initial",
-									"maximumWarning": "500kb",
-									"maximumError": "1mb"
-								},
-								{
-									"type": "any@nrwl/angular:webpack-browserComponentStyle",
-									"maximumWarning": "2kb",
-									"maximumError": "4kb"
-								}
-							],
-							"fileReplacements": [
-								{
-									"replace": "apps/client/shell-app/src/environments/environment.ts",
-									"with": "apps/client/shell-app/src/environments/environment.prod.ts"
-								}
-							],
-							"outputHashing": "all",
-							"customWebpackConfig": {
-								"path": "apps/client/shell-app/webpack.prod.config.js"
-							}
-						},
-						"development": {
-							"buildOptimizer": false,
-							"optimization": false,
-							"vendorChunk": true,
-							"extractLicenses": false,
-							"sourceMap": true,
-							"namedChunks": true
-						}
-					},
-					"defaultConfiguration": "production"
-				},
-				"serve": {
-					"executor": "@nrwl/angular:webpack-server",
-					"configurations": {
-						"production": {
-							"browserTarget": "client-shell-app:build:production"
-						},
-						"development": {
-							"browserTarget": "client-shell-app:build:development"
-						}
-					},
-					"defaultConfiguration": "development",
-					"options": {
-						"port": 4200
-					}
-				},
-				"extract-i18n": {
-					"executor": "@angular-devkit/build-angular:extract-i18n",
-					"options": {
-						"browserTarget": "client-shell-app:build"
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"apps/client/shell-app/src/**/*.ts",
-							"apps/client/shell-app/src/**/*.html"
-						]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/apps/client/shell-app"],
-					"options": {
-						"jestConfig": "apps/client/shell-app/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"serve-mfe": {
-					"executor": "@nrwl/workspace:run-commands",
-					"options": {
-						"commands": [
-							"nx serve client-shell-app",
-							"nx serve client-auth-mfe",
-							"nx serve client-dashboard-mfe"
-						]
-					}
-				}
-			}
-		},
-		"client-shell-app-e2e": {
-			"root": "apps/client/shell-app-e2e",
-			"sourceRoot": "apps/client/shell-app-e2e/src",
-			"projectType": "application",
-			"targets": {
-				"e2e": {
-					"executor": "@nrwl/cypress:cypress",
-					"options": {
-						"cypressConfig": "apps/client/shell-app-e2e/cypress.json",
-						"devServerTarget": "client-shell-app:serve:development",
-						"tsConfig": "apps/client/shell-app-e2e/tsconfig.json"
-					},
-					"configurations": {
-						"production": {
-							"devServerTarget": "client-shell-app:serve:production"
-						}
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["apps/client/shell-app-e2e/**/*.{js,ts}"]
-					}
-				}
-			}
-		},
-		"client-token-manager": {
-			"projectType": "library",
-			"root": "libs/client/token-manager",
-			"sourceRoot": "libs/client/token-manager/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/client/token-manager"],
-					"options": {
-						"jestConfig": "libs/client/token-manager/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/client/token-manager/src/**/*.ts",
-							"libs/client/token-manager/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"server": {
-			"root": "apps/server",
-			"sourceRoot": "apps/server/src",
-			"projectType": "application",
-			"targets": {
-				"build": {
-					"executor": "@nrwl/node:build",
-					"outputs": ["{options.outputPath}"],
-					"options": {
-						"outputPath": "dist/apps/server",
-						"main": "apps/server/src/main.ts",
-						"tsConfig": "apps/server/tsconfig.app.json",
-						"assets": ["apps/server/src/assets"]
-					},
-					"configurations": {
-						"production": {
-							"optimization": true,
-							"extractLicenses": true,
-							"inspect": false,
-							"fileReplacements": [
-								{
-									"replace": "apps/server/src/environments/environment.ts",
-									"with": "apps/server/src/environments/environment.prod.ts"
-								}
-							]
-						}
-					}
-				},
-				"serve": {
-					"executor": "@nrwl/node:execute",
-					"options": {
-						"buildTarget": "server:build"
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["apps/server/**/*.ts"]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/apps/server"],
-					"options": {
-						"jestConfig": "apps/server/jest.config.js",
-						"passWithNoTests": true
-					}
-				}
-			}
-		},
-		"server-domains": {
-			"root": "libs/server/domains",
-			"sourceRoot": "libs/server/domains/src",
-			"projectType": "library",
-			"targets": {
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["libs/server/domains/**/*.ts"]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/server/domains"],
-					"options": {
-						"jestConfig": "libs/server/domains/jest.config.js",
-						"passWithNoTests": true
-					}
-				}
-			}
-		},
-		"server-mailer": {
-			"root": "libs/server/mailer",
-			"sourceRoot": "libs/server/mailer/src",
-			"projectType": "library",
-			"targets": {
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["libs/server/mailer/**/*.ts"]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/server/mailer"],
-					"options": {
-						"jestConfig": "libs/server/mailer/jest.config.js",
-						"passWithNoTests": true
-					}
-				}
-			}
-		},
-		"shared-data-access": {
-			"projectType": "library",
-			"root": "libs/shared/data-access",
-			"sourceRoot": "libs/shared/data-access/src",
-			"prefix": "nx-mfe",
-			"targets": {
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/shared/data-access"],
-					"options": {
-						"jestConfig": "libs/shared/data-access/jest.config.js",
-						"passWithNoTests": true
-					}
-				},
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"options": {
-						"lintFilePatterns": [
-							"libs/shared/data-access/src/**/*.ts",
-							"libs/shared/data-access/src/**/*.html"
-						]
-					}
-				}
-			}
-		},
-		"shared-utils": {
-			"root": "libs/shared/utils",
-			"sourceRoot": "libs/shared/utils/src",
-			"projectType": "library",
-			"targets": {
-				"lint": {
-					"executor": "@nrwl/linter:eslint",
-					"outputs": ["{options.outputFile}"],
-					"options": {
-						"lintFilePatterns": ["libs/shared/utils/**/*.ts"]
-					}
-				},
-				"test": {
-					"executor": "@nrwl/jest:jest",
-					"outputs": ["coverage/libs/shared/utils"],
-					"options": {
-						"jestConfig": "libs/shared/utils/jest.config.js",
-						"passWithNoTests": true
-					}
-				}
-			}
-		}
-	},
-	"cli": {
-		"defaultCollection": "@nrwl/angular"
-	},
-	"generators": {
-		"@nrwl/angular:application": {
-			"style": "scss",
-			"linter": "eslint",
-			"unitTestRunner": "jest",
-			"e2eTestRunner": "cypress"
-		},
-		"@nrwl/angular:library": {
-			"style": "scss",
-			"linter": "eslint",
-			"unitTestRunner": "jest"
-		},
-		"@nrwl/angular:component": {
-			"style": "scss"
-		}
-	},
-	"defaultProject": "client-shell-app"
+  "version": 2,
+  "projects": {
+    "client-auth": {
+      "projectType": "library",
+      "root": "libs/client/auth",
+      "sourceRoot": "libs/client/auth/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/client/auth"
+          ],
+          "options": {
+            "jestConfig": "libs/client/auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/client/auth/src/**/*.ts",
+              "libs/client/auth/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ]
+    },
+    "client-auth-mfe": {
+      "projectType": "application",
+      "root": "apps/client/auth-mfe",
+      "sourceRoot": "apps/client/auth-mfe/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/angular:webpack-browser",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/client/auth-mfe",
+            "index": "apps/client/auth-mfe/src/index.html",
+            "main": "apps/client/auth-mfe/src/main.ts",
+            "polyfills": "apps/client/auth-mfe/src/polyfills.ts",
+            "tsConfig": "apps/client/auth-mfe/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/client/auth-mfe/src/favicon.ico",
+              "apps/client/auth-mfe/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/client/assets/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "apps/client/auth-mfe/src/styles.scss",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
+              "libs/client/assets/styles/styles.scss"
+            ],
+            "scripts": [],
+            "customWebpackConfig": {
+              "path": "apps/client/auth-mfe/webpack.config.js"
+            },
+            "buildLibsFromSource": false
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/client/auth-mfe/src/environments/environment.ts",
+                  "with": "apps/client/auth-mfe/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "customWebpackConfig": {
+                "path": "apps/client/auth-mfe/webpack.prod.config.js"
+              }
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "executor": "@nrwl/angular:webpack-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "client-auth-mfe:build:production"
+            },
+            "development": {
+              "browserTarget": "client-auth-mfe:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4201,
+            "publicHost": "http://localhost:4201"
+          }
+        },
+        "extract-i18n": {
+          "executor": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "client-auth-mfe:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/auth-mfe/src/**/*.ts",
+              "apps/client/auth-mfe/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/client/auth-mfe"
+          ],
+          "options": {
+            "jestConfig": "apps/client/auth-mfe/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": [
+        "scope:client",
+        "mfe:remote"
+      ]
+    },
+    "client-auth-mfe-e2e": {
+      "root": "apps/client/auth-mfe-e2e",
+      "sourceRoot": "apps/client/auth-mfe-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/client/auth-mfe-e2e/cypress.json",
+            "devServerTarget": "client-auth-mfe:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "client-auth-mfe:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/auth-mfe-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ],
+      "implicitDependencies": [
+        "client-auth-mfe"
+      ]
+    },
+    "client-common": {
+      "projectType": "library",
+      "root": "libs/client/common",
+      "sourceRoot": "libs/client/common/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/client/common"
+          ],
+          "options": {
+            "jestConfig": "libs/client/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/client/common/src/**/*.ts",
+              "libs/client/common/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ]
+    },
+    "client-config": {
+      "projectType": "library",
+      "root": "libs/client/config",
+      "sourceRoot": "libs/client/config/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/client/config"
+          ],
+          "options": {
+            "jestConfig": "libs/client/config/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/client/config/src/**/*.ts",
+              "libs/client/config/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ]
+    },
+    "client-core": {
+      "projectType": "library",
+      "root": "libs/client/core",
+      "sourceRoot": "libs/client/core/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/client/core"
+          ],
+          "options": {
+            "jestConfig": "libs/client/core/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/client/core/src/**/*.ts",
+              "libs/client/core/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ]
+    },
+    "client-dashboard-mfe": {
+      "projectType": "application",
+      "root": "apps/client/dashboard-mfe",
+      "sourceRoot": "apps/client/dashboard-mfe/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/angular:webpack-browser",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/client/dashboard-mfe",
+            "index": "apps/client/dashboard-mfe/src/index.html",
+            "main": "apps/client/dashboard-mfe/src/main.ts",
+            "polyfills": "apps/client/dashboard-mfe/src/polyfills.ts",
+            "tsConfig": "apps/client/dashboard-mfe/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/client/dashboard-mfe/src/favicon.ico",
+              "apps/client/dashboard-mfe/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/client/assets/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "apps/client/dashboard-mfe/src/styles.scss",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
+              "libs/client/assets/styles/styles.scss"
+            ],
+            "scripts": [],
+            "customWebpackConfig": {
+              "path": "apps/client/dashboard-mfe/webpack.config.js"
+            },
+            "buildLibsFromSource": false
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/client/dashboard-mfe/src/environments/environment.ts",
+                  "with": "apps/client/dashboard-mfe/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "customWebpackConfig": {
+                "path": "apps/client/dashboard-mfe/webpack.prod.config.js"
+              }
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "executor": "@nrwl/angular:webpack-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "client-dashboard-mfe:build:production"
+            },
+            "development": {
+              "browserTarget": "client-dashboard-mfe:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4202,
+            "publicHost": "http://localhost:4202"
+          }
+        },
+        "extract-i18n": {
+          "executor": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "client-dashboard-mfe:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/dashboard-mfe/src/**/*.ts",
+              "apps/client/dashboard-mfe/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/client/dashboard-mfe"
+          ],
+          "options": {
+            "jestConfig": "apps/client/dashboard-mfe/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": [
+        "scope:client",
+        "mfe:remote"
+      ]
+    },
+    "client-dashboard-mfe-e2e": {
+      "root": "apps/client/dashboard-mfe-e2e",
+      "sourceRoot": "apps/client/dashboard-mfe-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/client/dashboard-mfe-e2e/cypress.json",
+            "devServerTarget": "client-dashboard-mfe:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "client-dashboard-mfe:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/dashboard-mfe-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ],
+      "implicitDependencies": [
+        "client-dashboard-mfe"
+      ]
+    },
+    "client-fallbacks-mfe": {
+      "projectType": "application",
+      "root": "apps/client/fallbacks-mfe",
+      "sourceRoot": "apps/client/fallbacks-mfe/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/angular:webpack-browser",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/client/fallbacks-mfe",
+            "index": "apps/client/fallbacks-mfe/src/index.html",
+            "main": "apps/client/fallbacks-mfe/src/main.ts",
+            "polyfills": "apps/client/fallbacks-mfe/src/polyfills.ts",
+            "tsConfig": "apps/client/fallbacks-mfe/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/client/fallbacks-mfe/src/favicon.ico",
+              "apps/client/fallbacks-mfe/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/client/assets/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "apps/client/fallbacks-mfe/src/styles.scss",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
+              "libs/client/assets/styles/styles.scss"
+            ],
+            "scripts": [],
+            "customWebpackConfig": {
+              "path": "apps/client/fallbacks-mfe/webpack.config.js"
+            },
+            "buildLibsFromSource": false
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/client/fallbacks-mfe/src/environments/environment.ts",
+                  "with": "apps/client/fallbacks-mfe/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "customWebpackConfig": {
+                "path": "apps/client/fallbacks-mfe/webpack.prod.config.js"
+              }
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "executor": "@nrwl/angular:webpack-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "client-fallbacks-mfe:build:production"
+            },
+            "development": {
+              "browserTarget": "client-fallbacks-mfe:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4204,
+            "publicHost": "http://localhost:4204"
+          }
+        },
+        "extract-i18n": {
+          "executor": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "client-fallbacks-mfe:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/fallbacks-mfe/src/**/*.ts",
+              "apps/client/fallbacks-mfe/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/client/fallbacks-mfe"
+          ],
+          "options": {
+            "jestConfig": "apps/client/fallbacks-mfe/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": [
+        "mfe:remote"
+      ]
+    },
+    "client-fallbacks-mfe-e2e": {
+      "root": "apps/client/fallbacks-mfe-e2e",
+      "sourceRoot": "apps/client/fallbacks-mfe-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/client/fallbacks-mfe-e2e/cypress.json",
+            "devServerTarget": "client-fallbacks-mfe:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "client-fallbacks-mfe:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/fallbacks-mfe-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      },
+      "tags": [],
+      "implicitDependencies": [
+        "client-fallbacks-mfe"
+      ]
+    },
+    "client-forms": {
+      "projectType": "library",
+      "root": "libs/client/forms",
+      "sourceRoot": "libs/client/forms/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/client/forms"
+          ],
+          "options": {
+            "jestConfig": "libs/client/forms/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/client/forms/src/**/*.ts",
+              "libs/client/forms/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ]
+    },
+    "client-injector-container": {
+      "projectType": "library",
+      "root": "libs/client/injector-container",
+      "sourceRoot": "libs/client/injector-container/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/client/injector-container"
+          ],
+          "options": {
+            "jestConfig": "libs/client/injector-container/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/client/injector-container/src/**/*.ts",
+              "libs/client/injector-container/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ]
+    },
+    "client-loaders-mfe": {
+      "projectType": "application",
+      "root": "apps/client/loaders-mfe",
+      "sourceRoot": "apps/client/loaders-mfe/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/angular:webpack-browser",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/client/loaders-mfe",
+            "index": "apps/client/loaders-mfe/src/index.html",
+            "main": "apps/client/loaders-mfe/src/main.ts",
+            "polyfills": "apps/client/loaders-mfe/src/polyfills.ts",
+            "tsConfig": "apps/client/loaders-mfe/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/client/loaders-mfe/src/favicon.ico",
+              "apps/client/loaders-mfe/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/client/assets/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "apps/client/loaders-mfe/src/styles.scss",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
+              "libs/client/assets/styles/styles.scss"
+            ],
+            "scripts": [],
+            "customWebpackConfig": {
+              "path": "apps/client/loaders-mfe/webpack.config.js"
+            },
+            "buildLibsFromSource": false
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/client/loaders-mfe/src/environments/environment.ts",
+                  "with": "apps/client/loaders-mfe/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "customWebpackConfig": {
+                "path": "apps/client/loaders-mfe/webpack.prod.config.js"
+              }
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "executor": "@nrwl/angular:webpack-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "client-loaders-mfe:build:production"
+            },
+            "development": {
+              "browserTarget": "client-loaders-mfe:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4203,
+            "publicHost": "http://localhost:4203"
+          }
+        },
+        "extract-i18n": {
+          "executor": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "client-loaders-mfe:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/loaders-mfe/src/**/*.ts",
+              "apps/client/loaders-mfe/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/client/loaders-mfe"
+          ],
+          "options": {
+            "jestConfig": "apps/client/loaders-mfe/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": [
+        "mfe:remote"
+      ]
+    },
+    "client-loaders-mfe-e2e": {
+      "root": "apps/client/loaders-mfe-e2e",
+      "sourceRoot": "apps/client/loaders-mfe-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/client/loaders-mfe-e2e/cypress.json",
+            "devServerTarget": "client-loaders-mfe:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "client-loaders-mfe:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/loaders-mfe-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      },
+      "tags": [],
+      "implicitDependencies": [
+        "client-loaders-mfe"
+      ]
+    },
+    "client-mfe": {
+      "projectType": "library",
+      "root": "libs/client/mfe",
+      "sourceRoot": "libs/client/mfe/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/client/mfe"
+          ],
+          "options": {
+            "jestConfig": "libs/client/mfe/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/client/mfe/src/**/*.ts",
+              "libs/client/mfe/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ]
+    },
+    "client-shell-app": {
+      "projectType": "application",
+      "root": "apps/client/shell-app",
+      "sourceRoot": "apps/client/shell-app/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/angular:webpack-browser",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/client/shell-app",
+            "index": "apps/client/shell-app/src/index.html",
+            "main": "apps/client/shell-app/src/main.ts",
+            "polyfills": "apps/client/shell-app/src/polyfills.ts",
+            "tsConfig": "apps/client/shell-app/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/client/shell-app/src/favicon.ico",
+              "apps/client/shell-app/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/client/assets/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "apps/client/shell-app/src/styles.scss",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
+              "libs/client/assets/styles/styles.scss"
+            ],
+            "scripts": [],
+            "customWebpackConfig": {
+              "path": "apps/client/shell-app/webpack.config.js"
+            },
+            "buildLibsFromSource": false
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "any@nrwl/angular:webpack-browserComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/client/shell-app/src/environments/environment.ts",
+                  "with": "apps/client/shell-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "customWebpackConfig": {
+                "path": "apps/client/shell-app/webpack.prod.config.js"
+              }
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "executor": "@nrwl/angular:webpack-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "client-shell-app:build:production"
+            },
+            "development": {
+              "browserTarget": "client-shell-app:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4200,
+            "publicHost": "http://localhost:4200"
+          }
+        },
+        "extract-i18n": {
+          "executor": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "client-shell-app:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/shell-app/src/**/*.ts",
+              "apps/client/shell-app/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/client/shell-app"
+          ],
+          "options": {
+            "jestConfig": "apps/client/shell-app/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "serve-mfe": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx serve client-shell-app",
+              "nx serve client-auth-mfe",
+              "nx serve client-dashboard-mfe"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client",
+        "mfe:host"
+      ]
+    },
+    "client-shell-app-e2e": {
+      "root": "apps/client/shell-app-e2e",
+      "sourceRoot": "apps/client/shell-app-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/client/shell-app-e2e/cypress.json",
+            "devServerTarget": "client-shell-app:serve:development",
+            "tsConfig": "apps/client/shell-app-e2e/tsconfig.json"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "client-shell-app:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "apps/client/shell-app-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ],
+      "implicitDependencies": [
+        "client-shell-app"
+      ]
+    },
+    "client-token-manager": {
+      "projectType": "library",
+      "root": "libs/client/token-manager",
+      "sourceRoot": "libs/client/token-manager/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/client/token-manager"
+          ],
+          "options": {
+            "jestConfig": "libs/client/token-manager/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/client/token-manager/src/**/*.ts",
+              "libs/client/token-manager/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:client"
+      ]
+    },
+    "server": {
+      "root": "apps/server",
+      "sourceRoot": "apps/server/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:webpack",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/server",
+            "main": "apps/server/src/main.ts",
+            "tsConfig": "apps/server/tsconfig.app.json",
+            "assets": [
+              "apps/server/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/server/src/environments/environment.ts",
+                  "with": "apps/server/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:node",
+          "options": {
+            "buildTarget": "server:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "apps/server/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/server"
+          ],
+          "options": {
+            "jestConfig": "apps/server/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": [
+        "scope:server"
+      ]
+    },
+    "server-domains": {
+      "root": "libs/server/domains",
+      "sourceRoot": "libs/server/domains/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "libs/server/domains/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/server/domains"
+          ],
+          "options": {
+            "jestConfig": "libs/server/domains/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": [
+        "scope:server"
+      ]
+    },
+    "server-mailer": {
+      "root": "libs/server/mailer",
+      "sourceRoot": "libs/server/mailer/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "libs/server/mailer/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/server/mailer"
+          ],
+          "options": {
+            "jestConfig": "libs/server/mailer/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": [
+        "scope:server"
+      ]
+    },
+    "shared-data-access": {
+      "projectType": "library",
+      "root": "libs/shared/data-access",
+      "sourceRoot": "libs/shared/data-access/src",
+      "prefix": "nx-mfe",
+      "targets": {
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/shared/data-access"
+          ],
+          "options": {
+            "jestConfig": "libs/shared/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/data-access/src/**/*.ts",
+              "libs/shared/data-access/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": [
+        "scope:shared"
+      ]
+    },
+    "shared-utils": {
+      "root": "libs/shared/utils",
+      "sourceRoot": "libs/shared/utils/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/utils/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/shared/utils"
+          ],
+          "options": {
+            "jestConfig": "libs/shared/utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": [
+        "scope:shared"
+      ]
+    }
+  }
 }
