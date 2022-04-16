@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { ITokenManager, ITokenStorageService } from '../interfaces';
-import { TokenStorage } from '../token-storage';
+import { TokenStorage } from '../token-storages';
 import { TokenStorageService } from './token-storage.service';
 
 @Injectable({

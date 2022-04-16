@@ -1,4 +1,4 @@
-import { TokenStorage } from '../token-storage';
+import { TokenStorage } from '../token-storages';
 
 export interface ITokenStorageService {
 	/**

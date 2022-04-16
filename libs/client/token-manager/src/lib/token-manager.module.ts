@@ -1,7 +1,11 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { DEFAULT_AUTH_TOKEN_STORAGE, DEFAULT_TOKEN_STORAGE } from './injection-tokens';
+import {
+	CUSTOM_TOKEN_STORAGES,
+	DEFAULT_AUTH_TOKEN_STORAGE,
+	DEFAULT_TOKEN_STORAGE,
+} from './injection-tokens';
 import { ITokenManagerConfig } from './interfaces';
-import { TokenLocalStorage } from './token-storage';
+import { TokenLocalStorage } from './token-storages';
 
 @NgModule({})
 export class TokenManagerModule {
@@ -20,6 +24,10 @@ export class TokenManagerModule {
 				{
 					provide: DEFAULT_AUTH_TOKEN_STORAGE,
 					useClass: config?.defaultAuthTokenStorage ?? TokenLocalStorage,
+				},
+				{
+					provide: CUSTOM_TOKEN_STORAGES,
+					useValue: config?.customTokenStorages ?? [],
 				},
 			],
 		};
