@@ -1,4 +1,3 @@
-import { ETokenStorage } from '../enums';
 import { ITokenStorageService } from '../interfaces';
 import { TokenStorage, TokenStorageFactory } from '../token-storage';
 
@@ -16,13 +15,13 @@ export abstract class BaseTokenStorageService implements ITokenStorageService {
 		this._storage = this._rehydrate();
 	}
 
-	public setStorage(type: ETokenStorage): void {
-		this._storage = TokenStorageFactory.create(type);
-		this._hydrate(type);
+	public setStorage(storage: TokenStorage): void {
+		this._storage = storage;
+		this._hydrate(storage.constructor.name);
 	}
 
-	private _hydrate(type: ETokenStorage): void {
-		localStorage.setItem(this._tokenStorageKey, JSON.stringify(type));
+	private _hydrate(className: string): void {
+		localStorage.setItem(this._tokenStorageKey, JSON.stringify(className));
 	}
 
 	private _rehydrate(): TokenStorage {
@@ -30,7 +29,7 @@ export abstract class BaseTokenStorageService implements ITokenStorageService {
 
 		if (!tokenStorageName) return this._defaultTokenStorage;
 
-		const tokenStorage = JSON.parse(tokenStorageName) as ETokenStorage;
+		const tokenStorage = JSON.parse(tokenStorageName);
 
 		return TokenStorageFactory.create(tokenStorage);
 	}

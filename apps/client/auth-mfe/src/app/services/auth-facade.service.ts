@@ -3,8 +3,8 @@ import { AuthService } from '@nx-mfe/client/auth';
 import { HttpError } from '@nx-mfe/client/common';
 import {
 	AuthTokenStorageService,
-	ETokenStorage,
 	TokenCookiesStorage,
+	TokenSessionStorage,
 } from '@nx-mfe/client/token-manager';
 import {
 	Credentials,
@@ -90,7 +90,7 @@ export class AuthFacadeService implements OnDestroy {
 
 	public rememberMe(value: boolean): void {
 		this._authTokenStorage.setStorage(
-			value ? ETokenStorage.Cookies : ETokenStorage.SessionStorage
+			value ? new TokenCookiesStorage() : new TokenSessionStorage()
 		);
 	}
 }

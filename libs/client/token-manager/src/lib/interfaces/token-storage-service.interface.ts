@@ -1,4 +1,3 @@
-import { ETokenStorage } from '../enums';
 import { TokenStorage } from '../token-storage';
 
 export interface ITokenStorageService {
@@ -10,5 +9,5 @@ export interface ITokenStorageService {
 	 * Устанавливает стратегию хранения токена авторизации
 	 * @param type Хранилище токена
 	 */
-	setStorage(type: ETokenStorage): void;
+	setStorage(type: TokenStorage): void;
 }
