@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthTokenManager } from '@nx-mfe/client/token-manager';
@@ -62,7 +63,11 @@ export class AuthService {
 				this._authTokenManager.setAccessToken(authTokens.accessToken);
 				this._isLoggedIn$.next(this._isValidAccessToken);
 			}),
-			catchError((error) => {
+			catchError((error: HttpErrorResponse) => {
+				if (error.status === 401) {
+					this.logout();
+				}
+
 				this._isLoggedIn$.next(false);
 				return throwError(() => error);
 			})
