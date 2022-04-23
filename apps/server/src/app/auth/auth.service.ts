@@ -57,9 +57,10 @@ export class AuthService {
 
 		const user = await this._userService.create(credentials);
 
+		// TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
 		await this._mailService.sendRegisterConfirmationMail(
 			user.email,
-			`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirmation/${user.confirmationLink}`
+			`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirm/${user.confirmationLink}`
 		);
 	}
 

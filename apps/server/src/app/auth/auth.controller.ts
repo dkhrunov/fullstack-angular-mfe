@@ -34,7 +34,7 @@ export class AuthController {
 		return await this._authService.register(credentials);
 	}
 
-	@Get('/register/confirmation/:link')
+	@Get('/register/confirm/:link')
 	public async confirmRegistration(
 		@Param('link') link: string,
 		@Res() res: Response

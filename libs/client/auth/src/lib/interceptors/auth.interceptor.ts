@@ -31,17 +31,13 @@ export class AuthInterceptor implements HttpInterceptor {
 		request: HttpRequest<unknown>,
 		next: HttpHandler
 	): Observable<HttpEvent<unknown>> {
+		// TODO Use ApiUrlRegistry
+		if (request.url.includes('/auth')) return next.handle(request);
+
 		request = this._addAuthHeader(request);
 
 		return next.handle(request).pipe(
 			catchError((error: HttpErrorResponse) => {
-				// TODO Use ApiUrlRegistry
-				// FIXME: игнорируется 'auth/refresh'
-				// if (request.url.includes('/auth') && !request.url.includes('auth/refresh')) {
-				if (request.url.includes('/auth')) {
-					return throwError(() => error);
-				}
-
 				return this._handleResponseError(error, request, next);
 			})
 		);
