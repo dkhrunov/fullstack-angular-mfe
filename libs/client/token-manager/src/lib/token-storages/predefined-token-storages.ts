@@ -1,10 +1,11 @@
-import { TokenCookiesStorage } from './token-cookies-storage';
-import { TokenLocalStorage } from './token-local-storage';
-import { TokenSessionStorage } from './token-session-storage';
-import { TokenStorage } from './token-storage';
+import { CookiesTokenStorage } from './cookies-token-storage';
+import { InMemoryTokenStorage } from './in-memory-token-storage';
+import { LocalStorageTokenStorage } from './local-storage-token-storage';
+import { SessionStorageTokenStorage } from './session-storage-token-storage';
 
-export const PREDEFINED_TOKEN_STORAGES: TokenStorage[] = [
-	new TokenCookiesStorage(),
-	new TokenLocalStorage(),
-	new TokenSessionStorage(),
+export const PREDEFINED_TOKEN_STORAGES = [
+	new CookiesTokenStorage(),
+	new LocalStorageTokenStorage(),
+	new SessionStorageTokenStorage(),
+	new InMemoryTokenStorage(),
 ];

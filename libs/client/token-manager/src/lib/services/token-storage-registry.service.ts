@@ -1,29 +1,31 @@
 import { Inject, Injectable, Type } from '@angular/core';
-import { CUSTOM_TOKEN_STORAGES } from '../injection-tokens';
-import { PREDEFINED_TOKEN_STORAGES, TokenStorage } from '../token-storages';
+import { TOKEN_MANAGER_OPTIONS } from '../injection-tokens';
+import { TokenManagerOptions } from '../interfaces';
+import { BaseTokenStorage, PREDEFINED_TOKEN_STORAGES } from '../token-storages';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class TokenStorageRegistry {
-	private readonly _map = new Map<string, TokenStorage>();
+	private readonly _map = new Map<string, BaseTokenStorage>();
 
 	constructor(
-		@Inject(CUSTOM_TOKEN_STORAGES)
-		private readonly _customTokenStorages: TokenStorage[]
+		@Inject(TOKEN_MANAGER_OPTIONS)
+		private readonly _options: TokenManagerOptions
 	) {
 		// registers predefined token storages and user-provided token storages
-		PREDEFINED_TOKEN_STORAGES.concat(this._customTokenStorages).forEach((storage) =>
-			this.register(storage)
+		PREDEFINED_TOKEN_STORAGES.concat(this._options.customTokenStorages ?? []).forEach(
+			(storage) => this.register(storage)
 		);
 	}
 
 	/**
 	 * Register new token storage
-	 * @param storage instance of the `TokenStorage`
+	 *
+	 * @param storage instance of the `BaseTokenStorage`
 	 */
-	public register(storage: TokenStorage): void {
-		if (this.get(storage)) {
+	public register<T extends BaseTokenStorage>(storage: T): void {
+		if (this.isRegistered(storage)) {
 			throw new Error(
 				`Unable to register the '${storage.constructor.name}' because it is already registered`
 			);
@@ -34,13 +36,27 @@ export class TokenStorageRegistry {
 
 	/**
 	 * Gets the registered token store or undefined if the given store has not been registered
+	 *
 	 * @param storage the name of a class, instance, or the class itself
 	 */
-	public get(storage: string | TokenStorage | Type<TokenStorage>): TokenStorage | undefined {
+	public get<T extends BaseTokenStorage>(storage: string | T | Type<T>): T | undefined {
 		if (typeof storage === 'string') {
-			return this._map.get(storage);
+			return this._map.get(storage) as T;
 		}
 
-		return this._map.get(storage.constructor.name);
+		return this._map.get(storage.constructor.name) as T;
+	}
+
+	/**
+	 * Checks that given storage registered
+	 *
+	 * @param storage the name of a class, instance, or the class itself
+	 */
+	public isRegistered<T extends BaseTokenStorage>(storage: string | T | Type<T>): boolean {
+		if (typeof storage === 'string') {
+			return this._map.has(storage);
+		}
+
+		return this._map.has(storage.constructor.name);
 	}
 }

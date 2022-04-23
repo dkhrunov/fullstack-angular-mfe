@@ -5,22 +5,26 @@ import {
 	HttpInterceptor,
 	HttpRequest,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import { AuthTokenManager } from '@nx-mfe/client/token-manager';
 import { catchError, finalize, Observable, Subject, switchMap, tap, throwError } from 'rxjs';
-
 import { AuthService } from '../services';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 	private _refreshTokenInProgress = false;
-	private readonly _tokenRefreshed$ = new Subject<void>();
 
+	private readonly _tokenRefreshed$ = new Subject<void>();
 	public readonly tokenRefreshed$ = this._tokenRefreshed$.asObservable();
+
+	// Hack to avoid circular dependency
+	private get _authService(): AuthService {
+		return this._injector.get(AuthService);
+	}
 
 	constructor(
 		private readonly _authTokenManager: AuthTokenManager,
-		private readonly _authService: AuthService
+		@Inject(Injector) private readonly _injector: Injector
 	) {}
 
 	public intercept(
@@ -30,10 +34,12 @@ export class AuthInterceptor implements HttpInterceptor {
 		request = this._addAuthHeader(request);
 
 		return next.handle(request).pipe(
-			catchError((error) => {
+			catchError((error: HttpErrorResponse) => {
 				// TODO Use ApiUrlRegistry
+				// FIXME: игнорируется 'auth/refresh'
+				// if (request.url.includes('/auth') && !request.url.includes('auth/refresh')) {
 				if (request.url.includes('/auth')) {
-					return throwError(error);
+					return throwError(() => error);
 				}
 
 				return this._handleResponseError(error, request, next);
@@ -81,12 +87,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
 			return this._authService.refresh().pipe(
 				tap(() => this._tokenRefreshed$.next()),
-				catchError((error) => {
+				catchError((error: HttpErrorResponse) => {
 					if (error.status === 401) {
-						return this._authService.logout();
+						this._authService.logout();
 					}
 
-					return throwError(error);
+					return throwError(() => error);
 				}),
 				finalize(() => (this._refreshTokenInProgress = false))
 			);

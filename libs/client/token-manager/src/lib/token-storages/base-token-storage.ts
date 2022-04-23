@@ -1,6 +1,6 @@
 import { JwtDecoder } from '../helpers';
 
-export abstract class TokenStorage {
+export abstract class BaseTokenStorage {
 	/**
 	 * Получить токен из хранилища.
 	 * @param key Ключ под которым храниться токен.
@@ -31,9 +31,9 @@ export abstract class TokenStorage {
 			return false;
 		}
 
-		const expireIn = JwtDecoder.decode(token).exp;
+		const expireIn = JwtDecoder.expireIn(token);
 
-		const isInfiniteToken = expireIn === -1;
+		const isInfiniteToken = expireIn == -1;
 		if (isInfiniteToken) {
 			return true;
 		}

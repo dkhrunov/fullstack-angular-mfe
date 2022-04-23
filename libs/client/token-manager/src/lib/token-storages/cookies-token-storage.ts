@@ -1,8 +1,8 @@
 import { ESamesiteOption } from '../enums';
 import { CookieBuilder, JwtDecoder } from '../helpers';
-import { TokenStorage } from './token-storage';
+import { BaseTokenStorage } from './base-token-storage';
 
-export class TokenCookiesStorage extends TokenStorage {
+export class CookiesTokenStorage extends BaseTokenStorage {
 	/**
 	 * Получает значение кук по ключу.
 	 * @param key Ключ, по которому храниться куки.
@@ -24,11 +24,10 @@ export class TokenCookiesStorage extends TokenStorage {
 	 */
 	public set(key: string, token: string): void {
 		const cookie = encodeURIComponent(key) + '=' + encodeURIComponent(token);
-		const expireIn = JwtDecoder.decode(token).exp;
-
+		const tokenTtl = JwtDecoder.expireIn(token);
 		const tenYearsInMilliseconds = 10 * 365 * 24 * 60 * 60 * 1000;
 		const infiniteToken = Date.now() + tenYearsInMilliseconds;
-		const tokenExpireIn = expireIn === -1 ? new Date(infiniteToken) : new Date(expireIn * 1000);
+		const tokenExpireIn = tokenTtl === -1 ? new Date(infiniteToken) : new Date(tokenTtl * 1000);
 
 		document.cookie = CookieBuilder.instantiate(cookie)
 			.expires(tokenExpireIn)

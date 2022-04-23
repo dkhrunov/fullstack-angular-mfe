@@ -1,28 +1,28 @@
-import { TokenStorage } from './token-storage';
+import { BaseTokenStorage } from './base-token-storage';
 
-export class TokenSessionStorage extends TokenStorage {
+export class LocalStorageTokenStorage extends BaseTokenStorage {
 	/**
-	 * Получить токен из `sessionStorage`.
+	 * Получить токен из `localStorage`.
 	 * @param key Ключ, по которому будут храниться токен.
 	 */
 	public get(key: string): string | null {
-		return sessionStorage.getItem(key);
+		return localStorage.getItem(key);
 	}
 
 	/**
-	 * Сохранить токен в `sessionStorage`.
+	 * Сохранить токен в `localStorage`.
 	 * @param key Ключ, по которому будут храниться токен.
 	 * @param token Токен.
 	 */
 	public set(key: string, token: string): void {
-		sessionStorage.setItem(key, token);
+		localStorage.setItem(key, token);
 	}
 
 	/**
-	 * Удалить токен из `sessionStorage`.
+	 * Удалить токен из `localStorage`.
 	 * @param key Ключ, по которому будут храниться токен.
 	 */
 	public delete(key: string): void {
-		sessionStorage.removeItem(key);
+		localStorage.removeItem(key);
 	}
 }
