@@ -4,7 +4,6 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthTokensDto } from '@nx-mfe/shared/data-access';
 import { Repository } from 'typeorm';
-
 import { TokenEntity } from './token.entity';
 
 @Injectable()

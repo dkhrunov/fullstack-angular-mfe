@@ -1,17 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AuthService } from '@nx-mfe/client/auth';
 import { HttpError } from '@nx-mfe/client/common';
-import {
-	AuthTokenStorageService,
-	TokenCookiesStorage,
-	TokenSessionStorage,
-} from '@nx-mfe/client/token-manager';
-import {
-	Credentials,
-	DefaultHttpError,
-	RegistrationCredentials,
-	ServerErrorDto,
-} from '@nx-mfe/shared/data-access';
+import { DefaultHttpError, Login, Registration, ServerErrorDto } from '@nx-mfe/shared/data-access';
 import { BehaviorSubject, catchError, EMPTY, finalize, Subject, tap } from 'rxjs';
 
 @Injectable()
@@ -30,25 +20,18 @@ export class AuthFacadeService implements OnDestroy {
 
 	private readonly _destroy$ = new Subject<void>();
 
-	public get rememberMeValue(): boolean {
-		return this._authTokenStorage.storage instanceof TokenCookiesStorage;
-	}
-
-	constructor(
-		private readonly _authService: AuthService,
-		private readonly _authTokenStorage: AuthTokenStorageService
-	) {}
+	constructor(private readonly _authService: AuthService) {}
 
 	public ngOnDestroy(): void {
 		this._destroy$.next();
 		this._destroy$.complete();
 	}
 
-	public login(credentials: Credentials): void {
+	public login(data: Login): void {
 		this._isLogIn$.next(true);
 
 		this._authService
-			.login(credentials)
+			.login(data)
 			.pipe(
 				tap(() => this._loginError$.next(null)),
 				// TODO сделать сервис по обработке ошибок
@@ -66,11 +49,11 @@ export class AuthFacadeService implements OnDestroy {
 			.subscribe();
 	}
 
-	public register(credentials: RegistrationCredentials): void {
+	public register(data: Registration): void {
 		this._isRegistering$.next(true);
 
 		this._authService
-			.register(credentials)
+			.register(data)
 			.pipe(
 				tap(() => this._registerError$.next(null)),
 				// TODO сделать сервис по обработке ошибок
@@ -86,11 +69,5 @@ export class AuthFacadeService implements OnDestroy {
 				finalize(() => this._isRegistering$.next(false))
 			)
 			.subscribe();
-	}
-
-	public rememberMe(value: boolean): void {
-		this._authTokenStorage.setStorage(
-			value ? new TokenCookiesStorage() : new TokenSessionStorage()
-		);
 	}
 }

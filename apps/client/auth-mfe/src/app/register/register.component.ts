@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PASSWORD_REGEXP } from '@nx-mfe/client/auth';
+import { NzConfirmable } from '@nx-mfe/client/common';
 import { CustomValidators, Form, IfFormValid } from '@nx-mfe/client/forms';
-import { RegistrationCredentials } from '@nx-mfe/shared/data-access';
+import { Registration } from '@nx-mfe/shared/data-access';
 import { AuthFacadeService } from '../services/auth-facade.service';
 
 @Component({
@@ -23,8 +24,9 @@ export class RegisterComponent {
 	}
 
 	@IfFormValid()
+	@NzConfirmable()
 	public submitForm(): void {
-		const credentials = new RegistrationCredentials(this.form.value);
+		const credentials = new Registration(this.form.value);
 		this.authFacade.register(credentials);
 	}
 

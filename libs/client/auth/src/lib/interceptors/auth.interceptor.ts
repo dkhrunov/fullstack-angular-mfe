@@ -1,47 +1,49 @@
-import {
-	HttpErrorResponse,
-	HttpEvent,
-	HttpHandler,
-	HttpInterceptor,
-	HttpRequest,
-} from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
 import { AuthTokenManager } from '@nx-mfe/client/token-manager';
-import { catchError, finalize, Observable, Subject, switchMap, tap, throwError } from 'rxjs';
-
+import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from '../services';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 	private _refreshTokenInProgress = false;
-	private readonly _tokenRefreshed$ = new Subject<void>();
 
+	private readonly _tokenRefreshed$ = new Subject<void>();
 	public readonly tokenRefreshed$ = this._tokenRefreshed$.asObservable();
+
+	// Hack to avoid circular dependency
+	private get _authService(): AuthService {
+		return this._injector.get(AuthService);
+	}
 
 	constructor(
 		private readonly _authTokenManager: AuthTokenManager,
-		private readonly _authService: AuthService
+		@Inject(Injector) private readonly _injector: Injector
 	) {}
 
 	public intercept(
 		request: HttpRequest<unknown>,
 		next: HttpHandler
 	): Observable<HttpEvent<unknown>> {
-		request = this._addAuthHeader(request);
+		// Skip all `auth` endpoints to avoid circular
+		// calling refresh token if 401 error thrownagain
+		// TODO Use ApiUrlRegistry
+		if (request.url.includes('/auth')) return next.handle(request);
 
-		return next.handle(request).pipe(
-			catchError((error) => {
-				// TODO Use ApiUrlRegistry
-				if (request.url.includes('/auth')) {
-					return throwError(error);
-				}
+		if (!this._authTokenManager.isValidAccessToken()) {
+			return this._refreshToken().pipe(
+				switchMap(() => {
+					const requestWithToken = this._addAccessTokenToHeaders(request);
+					return next.handle(requestWithToken);
+				})
+			);
+		}
 
-				return this._handleResponseError(error, request, next);
-			})
-		);
+		const requestWithToken = this._addAccessTokenToHeaders(request);
+		return next.handle(requestWithToken);
 	}
 
-	private _addAuthHeader(request: HttpRequest<unknown>): HttpRequest<unknown> {
+	private _addAccessTokenToHeaders(request: HttpRequest<unknown>): HttpRequest<unknown> {
 		const accessToken = this._authTokenManager.getAccessToken();
 
 		return request.clone({
@@ -49,23 +51,6 @@ export class AuthInterceptor implements HttpInterceptor {
 				Authorization: `Bearer ${accessToken}`,
 			},
 		});
-	}
-
-	private _handleResponseError(
-		error: HttpErrorResponse,
-		request: HttpRequest<unknown>,
-		next: HttpHandler
-	): Observable<HttpEvent<unknown>> {
-		if (error.status === 401) {
-			return this._refreshToken().pipe(
-				switchMap(() => {
-					request = this._addAuthHeader(request);
-					return next.handle(request);
-				})
-			);
-		}
-
-		return throwError(() => error);
 	}
 
 	private _refreshToken(): Observable<unknown> {
@@ -81,13 +66,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
 			return this._authService.refresh().pipe(
 				tap(() => this._tokenRefreshed$.next()),
-				catchError((error) => {
-					if (error.status === 401) {
-						return this._authService.logout();
-					}
-
-					return throwError(error);
-				}),
 				finalize(() => (this._refreshTokenInProgress = false))
 			);
 		}

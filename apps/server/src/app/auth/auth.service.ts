@@ -11,10 +11,9 @@ import {
 	AuthTokenPayload,
 	AuthTokensDto,
 	CredentialsDto,
-	RegistrationCredentialsDto,
+	RegistrationDto,
 } from '@nx-mfe/shared/data-access';
 import * as bcrypt from 'bcrypt';
-
 import { MailService } from '../mail/mail.service';
 import { TokenService } from '../token/token.service';
 import { UserEntity } from '../user/user.entity';
@@ -50,7 +49,7 @@ export class AuthService {
 		return tokens;
 	}
 
-	public async register(credentials: RegistrationCredentialsDto): Promise<void> {
+	public async register(credentials: RegistrationDto): Promise<void> {
 		const candidate = await this._userService.getByEmail(credentials.email);
 		if (candidate) {
 			throw new ConflictException(`Пользователь с данным email уже зарегистрирован`);
@@ -58,9 +57,10 @@ export class AuthService {
 
 		const user = await this._userService.create(credentials);
 
+		// TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
 		await this._mailService.sendRegisterConfirmationMail(
 			user.email,
-			`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirmation/${user.confirmationLink}`
+			`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirm/${user.confirmationLink}`
 		);
 	}
 
@@ -83,10 +83,6 @@ export class AuthService {
 	}
 
 	public async refresh(refreshToken: string): Promise<AuthTokensDto> {
-		if (!refreshToken) {
-			throw new UnauthorizedException();
-		}
-
 		const token = new RefreshToken(refreshToken, this._jwtService);
 
 		try {
@@ -101,6 +97,7 @@ export class AuthService {
 		}
 
 		const tokens = this._generateAuthTokens(user);
+		// TODO: 1 сессия на 1 устройство
 		await this._tokenService.upsertRefreshToken(user.id, refreshToken, tokens.refreshToken);
 
 		return tokens;
