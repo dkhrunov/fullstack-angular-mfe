@@ -15,7 +15,7 @@ import { AuthApiService } from './services';
 			authHttpService: AuthApiService,
 			tokenStorage: LocalStorageTokenStorage,
 			authTokenStorage: InMemoryTokenStorage,
-			unsecuredUrls: ['/auth/login', '/auth/register', '/auth/refresh'],
+			unsecuredUrls: ['/auth'],
 			unAuthGuardRedirectUrl: '/',
 			authGuardRedirectUrl: '/auth/login',
 		}),

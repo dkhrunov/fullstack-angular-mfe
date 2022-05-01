@@ -39,8 +39,6 @@ export class AuthApiService extends BaseAuthHttpService {
 	}
 
 	public refresh(): Observable<AuthTokensDto> {
-		console.log(111);
-
 		return this._injector
 			.get(HttpClient)
 			.post<AuthTokensDto>(this._config.apiUrl + '/auth/refresh', null, {
