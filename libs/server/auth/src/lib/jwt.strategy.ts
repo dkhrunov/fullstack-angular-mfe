@@ -14,11 +14,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 	}
 
 	public async validate(payload: AuthTokenPayload): Promise<AuthTokenPayload> {
-		// TODO: проверка на отзыв токена
-		return {
+		return new AuthTokenPayload({
 			id: payload.id,
 			email: payload.email,
-			isConfirmed: payload.isConfirmed,
-		};
+		});
 	}
 }

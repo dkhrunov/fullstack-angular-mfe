@@ -2,13 +2,17 @@ import {
 	Body,
 	Controller,
 	Get,
+	Headers,
 	HttpCode,
+	Ip,
 	Param,
 	Post,
 	Req,
 	Res,
 	UnauthorizedException,
+	UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '@nx-mfe/server/auth';
 import { AuthTokensDto, LoginDto, RegistrationDto } from '@nx-mfe/shared/data-access';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -19,11 +23,14 @@ export class AuthController {
 
 	@Post('/login')
 	public async login(
-		@Res({ passthrough: true }) res: Response,
-		@Body() body: LoginDto
+		@Ip() ip: string,
+		@Headers('User-Agent') userAgent: string,
+		@Body() body: LoginDto,
+		@Res({ passthrough: true }) res: Response
 	): Promise<AuthTokensDto> {
 		const { session, ...credentials } = body;
-		const tokens = await this._authService.login(credentials);
+
+		const tokens = await this._authService.login(credentials, userAgent, ip);
 		this._setRefreshTokenInCookie(res, tokens.refreshToken, session);
 
 		return tokens;
@@ -44,6 +51,7 @@ export class AuthController {
 		return res.redirect(String(process.env.CLIENT_URL));
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Post('/logout')
 	@HttpCode(200)
 	public async logout(@Req() req: Request, @Res() res: Response): Promise<Response> {
@@ -54,7 +62,7 @@ export class AuthController {
 		}
 
 		await this._authService.logout(refreshToken);
-		res.clearCookie('refreshToken');
+		this._clearCookies(res);
 
 		return res.send();
 	}
@@ -62,35 +70,52 @@ export class AuthController {
 	@Post('/refresh')
 	@HttpCode(200)
 	public async refresh(
+		@Ip() ip: string,
+		@Headers('User-Agent') userAgent: string,
 		@Req() req: Request,
 		@Res() res: Response
 	): Promise<Response<AuthTokensDto>> {
-		const tokens = await this._authService.refresh(req.cookies.refreshToken);
+		const tokens = await this._authService.refresh(req.cookies.refreshToken, userAgent, ip);
 		this._setRefreshTokenInCookie(res, tokens.refreshToken, req.cookies.session);
 
 		return res.json(tokens);
 	}
 
+	private _clearCookies(res: Response): void {
+		res.clearCookie('refreshToken', {
+			domain: process.env.DOMAIN,
+			path: `/${process.env.GLOBAL_PREFIX || 'api'}/auth`,
+		});
+
+		res.clearCookie('session', {
+			domain: process.env.DOMAIN,
+			path: `/${process.env.GLOBAL_PREFIX || 'api'}/auth`,
+		});
+	}
+
 	private _setRefreshTokenInCookie(res: Response, refreshToken: string, session = false): void {
 		if (session) {
 			res.cookie('refreshToken', refreshToken, {
-				httpOnly: true,
+				domain: process.env.DOMAIN,
 				path: `/${process.env.GLOBAL_PREFIX || 'api'}/auth`,
+				httpOnly: true,
 			});
 		} else {
 			res.cookie('refreshToken', refreshToken, {
+				domain: process.env.DOMAIN,
+				path: `/${process.env.GLOBAL_PREFIX || 'api'}/auth`,
 				maxAge: Number(process.env.JWT_REFRESH_EXPIRES_IN) * 1000,
 				httpOnly: true,
-				path: `/${process.env.GLOBAL_PREFIX || 'api'}/auth`,
 			});
 		}
 
 		// Set flag that keep info about type of authorization
 		// If true when user select "Do not remember me"
 		res.cookie('session', session, {
+			domain: process.env.DOMAIN,
+			path: `/${process.env.GLOBAL_PREFIX || 'api'}/auth`,
 			maxAge: Number(process.env.JWT_REFRESH_EXPIRES_IN) * 1000,
 			httpOnly: true,
-			path: `/${process.env.GLOBAL_PREFIX || 'api'}/auth`,
 		});
 	}
 }

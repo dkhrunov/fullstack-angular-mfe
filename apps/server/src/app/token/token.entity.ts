@@ -1,5 +1,4 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-
 import { UserEntity } from '../user/user.entity';
 
 @Entity({ name: 'token' })
@@ -13,9 +12,29 @@ export class TokenEntity {
 	})
 	public refreshToken: string;
 
+	@Column({
+		type: 'varchar',
+		length: 15,
+		nullable: false,
+	})
+	public ip: string;
+
+	@Column({
+		type: 'bigint',
+		nullable: false,
+	})
+	public expiresIn: number;
+
+	@Column({
+		type: 'varchar',
+		length: 200,
+		nullable: false,
+	})
+	public userAgent: string;
+
 	@Column()
 	public userId: number;
 
-	@ManyToOne(() => UserEntity)
+	@ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
 	public user: UserEntity;
 }

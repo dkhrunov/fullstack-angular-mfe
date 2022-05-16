@@ -1,5 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { AuthService } from '@nx-mfe/client/auth';
+import { Router } from '@angular/router';
+import { JwtAuthService } from '@dekh/ngx-jwt-auth';
+import { AuthApiService } from '@nx-mfe/client/auth';
 import { HttpError } from '@nx-mfe/client/common';
 import { DefaultHttpError, Login, Registration, ServerErrorDto } from '@nx-mfe/shared/data-access';
 import { BehaviorSubject, catchError, EMPTY, finalize, Subject, tap } from 'rxjs';
@@ -20,7 +22,11 @@ export class AuthFacadeService implements OnDestroy {
 
 	private readonly _destroy$ = new Subject<void>();
 
-	constructor(private readonly _authService: AuthService) {}
+	constructor(
+		private readonly _router: Router,
+		private readonly _authApiService: AuthApiService,
+		private readonly _jwtAuthService: JwtAuthService
+	) {}
 
 	public ngOnDestroy(): void {
 		this._destroy$.next();
@@ -30,10 +36,13 @@ export class AuthFacadeService implements OnDestroy {
 	public login(data: Login): void {
 		this._isLogIn$.next(true);
 
-		this._authService
+		this._jwtAuthService
 			.login(data)
 			.pipe(
-				tap(() => this._loginError$.next(null)),
+				tap(() => {
+					this._router.navigate(['/']);
+					this._loginError$.next(null);
+				}),
 				// TODO сделать сервис по обработке ошибок
 				catchError((error: HttpError<ServerErrorDto>) => {
 					if (!error.error) {
@@ -52,7 +61,7 @@ export class AuthFacadeService implements OnDestroy {
 	public register(data: Registration): void {
 		this._isRegistering$.next(true);
 
-		this._authService
+		this._authApiService
 			.register(data)
 			.pipe(
 				tap(() => this._registerError$.next(null)),
