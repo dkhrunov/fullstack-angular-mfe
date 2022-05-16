@@ -1,5 +1,6 @@
-module.exports = {
-	displayName: 'client-forms',
+/* eslint-disable */
+export default {
+	displayName: 'client-mfe',
 	preset: '../../../jest.preset.js',
 	setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 	globals: {
@@ -8,7 +9,7 @@ module.exports = {
 			stringifyContentPathRegex: '\\.(html|svg)$',
 		},
 	},
-	coverageDirectory: '../../../coverage/libs/client/forms',
+	coverageDirectory: '../../../coverage/libs/client/mfe',
 	transform: {
 		'^.+.(ts|mjs|js|html)$': 'jest-preset-angular',
 	},

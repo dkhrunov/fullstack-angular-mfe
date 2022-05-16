@@ -1,5 +1,6 @@
-module.exports = {
-	displayName: 'client-config',
+/* eslint-disable */
+export default {
+	displayName: 'shared-data-access',
 	preset: '../../../jest.preset.js',
 	setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 	globals: {
@@ -8,7 +9,7 @@ module.exports = {
 			stringifyContentPathRegex: '\\.(html|svg)$',
 		},
 	},
-	coverageDirectory: '../../../coverage/libs/client/config',
+	coverageDirectory: '../../../coverage/libs/shared/data-access',
 	transform: {
 		'^.+.(ts|mjs|js|html)$': 'jest-preset-angular',
 	},
