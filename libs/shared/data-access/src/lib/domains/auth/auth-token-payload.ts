@@ -1,13 +1,11 @@
 export class AuthTokenPayload {
 	public id: number;
-
 	public email: string;
+	public readonly iat: number;
+	public readonly exp: number;
 
-	public isConfirmed: boolean;
-
-	constructor(user: { id: number; email: string; isConfirmed: boolean }) {
+	constructor(user: { id: number; email: string }) {
 		this.id = user.id;
 		this.email = user.email;
-		this.isConfirmed = user.isConfirmed;
 	}
 }

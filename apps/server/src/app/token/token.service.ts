@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthTokensDto } from '@nx-mfe/shared/data-access';
+import { AuthTokenPayload, AuthTokensDto } from '@nx-mfe/shared/data-access';
 import { Repository } from 'typeorm';
 import { TokenEntity } from './token.entity';
 
@@ -28,29 +28,34 @@ export class TokenService {
 		return new AuthTokensDto(accessToken, refreshToken);
 	}
 
-	public async upsertRefreshToken(
-		userId: number,
-		oldToken: string,
-		newToken: string
+	public async saveRefreshToken(
+		refreshToken: string,
+		userAgent: string,
+		ip: string
 	): Promise<TokenEntity> {
-		const token = await this._tokenRepository.findOne({ where: { refreshToken: oldToken } });
-		if (token) {
-			const updateResult = await this._tokenRepository.update(token.id, {
-				refreshToken: newToken,
-			});
-			return updateResult.raw[0] as TokenEntity;
-		}
-
-		return await this.saveRefreshToken(userId, newToken);
+		const { exp: expiresIn, id: userId } = this._jwtService.decode(
+			refreshToken
+		) as AuthTokenPayload;
+		const createdToken = this._tokenRepository.create({
+			refreshToken,
+			expiresIn,
+			userId,
+			userAgent,
+			ip,
+		});
+		return this._tokenRepository.save(createdToken);
 	}
 
-	public async saveRefreshToken(userId: number, refreshToken: string): Promise<TokenEntity> {
-		const createdToken = this._tokenRepository.create({ userId, refreshToken });
-		return this._tokenRepository.save(createdToken);
+	public async findRefreshToken(refreshToken: string): Promise<TokenEntity | undefined> {
+		return this._tokenRepository.findOne({ refreshToken });
 	}
 
 	public async deleteRefreshToken(refreshToken: string): Promise<void> {
 		await this._tokenRepository.delete({ refreshToken });
+	}
+
+	public async deleteAllRefreshTokensForDevice(userId: number, userAgent: string): Promise<void> {
+		await this._tokenRepository.delete({ userId, userAgent });
 	}
 
 	@Cron(CronExpression.EVERY_WEEK, { timeZone: 'Europe/Moscow' })

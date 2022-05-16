@@ -18,7 +18,7 @@
 		"@angular/platform-browser": "13.3.2",
 		"@angular/platform-browser-dynamic": "13.3.2",
 		"@angular/router": "13.3.2",
-		"@dekh/ngx-jwt-auth": "^0.0.8",
+		"@dekh/ngx-jwt-auth": "^1.0.0",
 		"@nestjs/common": "^8.0.0",
 		"@nestjs/core": "^8.0.0",
 		"@nestjs/jwt": "^8.0.0",

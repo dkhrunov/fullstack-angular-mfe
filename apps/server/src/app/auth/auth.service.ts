@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshToken } from '@nx-mfe/server/domains';
+import { MailerService } from '@nx-mfe/server/mailer';
 import {
 	AuthTokenPayload,
 	AuthTokensDto,
@@ -14,7 +15,7 @@ import {
 	RegistrationDto,
 } from '@nx-mfe/shared/data-access';
 import * as bcrypt from 'bcrypt';
-import { MailService } from '../mail/mail.service';
+import { SentMessageInfo } from 'nodemailer';
 import { TokenService } from '../token/token.service';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -23,12 +24,16 @@ import { UserService } from '../user/user.service';
 export class AuthService {
 	constructor(
 		private readonly _userService: UserService,
-		private readonly _mailService: MailService,
 		private readonly _tokenService: TokenService,
-		private readonly _jwtService: JwtService
+		private readonly _jwtService: JwtService,
+		private readonly _mailerService: MailerService
 	) {}
 
-	public async login(credentials: CredentialsDto): Promise<AuthTokensDto> {
+	public async login(
+		credentials: CredentialsDto,
+		userAgent: string,
+		ip: string
+	): Promise<AuthTokensDto> {
 		const user = await this._userService.getByEmail(credentials.email);
 		if (!user) {
 			throw new UnauthorizedException('Некорректная почта или пароль');
@@ -43,10 +48,10 @@ export class AuthService {
 			throw new UnauthorizedException('Требуется сначала подтвердить почту');
 		}
 
-		const tokens = this._generateAuthTokens(user);
-		await this._tokenService.saveRefreshToken(user.id, tokens.refreshToken);
+		const authTokens = this._generateAuthTokens(user);
+		await this._tokenService.saveRefreshToken(authTokens.refreshToken, userAgent, ip);
 
-		return tokens;
+		return authTokens;
 	}
 
 	public async register(credentials: RegistrationDto): Promise<void> {
@@ -58,7 +63,7 @@ export class AuthService {
 		const user = await this._userService.create(credentials);
 
 		// TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
-		await this._mailService.sendRegisterConfirmationMail(
+		await this._sendRegisterConfirmationMail(
 			user.email,
 			`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirm/${user.confirmationLink}`
 		);
@@ -67,7 +72,7 @@ export class AuthService {
 	public async confirmRegistration(confirmationLink: string): Promise<void> {
 		const user = await this._userService.getByConfirmationLink(confirmationLink);
 		if (!user) {
-			// TODO: редирект на страницу с ошибкой на фронте.
+			// TODO редирект на страницу с ошибкой на фронте.
 			throw new BadRequestException('Некорректная ссылка для подтверждения регистрации');
 		}
 
@@ -82,29 +87,66 @@ export class AuthService {
 		await this._tokenService.deleteRefreshToken(refreshToken);
 	}
 
-	public async refresh(refreshToken: string): Promise<AuthTokensDto> {
-		const token = new RefreshToken(refreshToken, this._jwtService);
+	public async refresh(
+		refreshToken: string,
+		userAgent: string,
+		ip: string
+	): Promise<AuthTokensDto> {
+		const tokenEntity = await this._tokenService.findRefreshToken(refreshToken);
+		if (!tokenEntity) {
+			throw new UnauthorizedException('Refresh token not found');
+		}
+
+		const _refreshToken = new RefreshToken(refreshToken, this._jwtService);
+		const refreshTokenPayload = _refreshToken.decode();
+
+		const isExpired = tokenEntity.expiresIn < Math.floor(Date.now() / 1000);
+		if (isExpired) {
+			await this._tokenService.deleteAllRefreshTokensForDevice(
+				refreshTokenPayload.id,
+				userAgent
+			);
+			throw new UnauthorizedException('Refresh token is expired');
+		}
 
 		try {
-			token.verify();
+			_refreshToken.verify();
 		} catch (error) {
 			throw new UnauthorizedException(error.message);
 		}
 
-		const user = await this._userService.getById(token.decode().id);
+		const user = await this._userService.getById(refreshTokenPayload.id);
 		if (!user) {
 			throw new NotFoundException(`Пользователь не найден`);
 		}
 
-		const tokens = this._generateAuthTokens(user);
-		// TODO: 1 сессия на 1 устройство
-		await this._tokenService.upsertRefreshToken(user.id, refreshToken, tokens.refreshToken);
+		const authTokens = this._generateAuthTokens(user);
+		await this._tokenService.deleteRefreshToken(refreshToken);
+		await this._tokenService.saveRefreshToken(authTokens.refreshToken, userAgent, ip);
 
-		return tokens;
+		return authTokens;
 	}
 
 	private _generateAuthTokens(user: UserEntity): AuthTokensDto {
 		const { ...payload } = new AuthTokenPayload(user);
 		return this._tokenService.generateTokens(payload);
+	}
+
+	private async _sendRegisterConfirmationMail(
+		to: string,
+		link: string
+	): Promise<SentMessageInfo> {
+		return await this._mailerService.sendMail({
+			to,
+			from: process.env.SMTP_USER,
+			subject: 'Confirm account',
+			text: '',
+			html: `
+					<div>
+						<h1>To confirm registration, follow the link</h1>
+						<a href="${link}">${link}</a>
+					</div>
+				`,
+		});
 	}
 }

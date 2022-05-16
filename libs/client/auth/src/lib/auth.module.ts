@@ -12,7 +12,7 @@ import { AuthApiService } from './services';
 	imports: [
 		HttpClientModule,
 		JwtAuthModule.forRoot({
-			authHttpService: AuthApiService,
+			authApiService: AuthApiService,
 			tokenStorage: LocalStorageTokenStorage,
 			authTokenStorage: InMemoryTokenStorage,
 			unsecuredUrls: ['/auth'],

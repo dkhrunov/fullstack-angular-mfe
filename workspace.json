@@ -1007,6 +1007,7 @@
 			},
 			"tags": ["scope:server"]
 		},
+		"server-auth": "libs/server/auth",
 		"server-domains": {
 			"root": "libs/server/domains",
 			"sourceRoot": "libs/server/domains/src",

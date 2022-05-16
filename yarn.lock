@@ -1620,10 +1620,10 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@dekh/ngx-jwt-auth@^0.0.8":
-  version "0.0.8"
-  resolved "http://localhost:8081/repository/npm-group/@dekh/ngx-jwt-auth/-/ngx-jwt-auth-0.0.8.tgz#2f0bdebb44da24644ec786c8ecb4c93c8609b621"
-  integrity sha512-jiD4x2YobSCIOL3M3a5P+AygEyqozxYzuNI6u18dcCUZGyeUa8U1WHsMDVavcmVegms0YHlKtu3w2hVL+NJZsw==
+"@dekh/ngx-jwt-auth@^1.0.0":
+  version "1.0.0"
+  resolved "http://localhost:8081/repository/npm-group/@dekh/ngx-jwt-auth/-/ngx-jwt-auth-1.0.0.tgz#513a79a74064a97b90b68d1998f1e42fa5ce9b7d"
+  integrity sha512-jQJkjuEoF1223N7SbVfTDVuQ4kecHaiMQgRSAy4o5ckwhC7MeQSrqxjYPSWFmzpzoepo7zXOq2OCRi+3qWrB8A==
   dependencies:
     tslib "^2.3.0"
 
