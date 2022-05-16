@@ -1620,6 +1620,13 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
+"@dekh/ngx-jwt-auth@^1.0.0":
+  version "1.0.0"
+  resolved "http://localhost:8081/repository/npm-group/@dekh/ngx-jwt-auth/-/ngx-jwt-auth-1.0.0.tgz#513a79a74064a97b90b68d1998f1e42fa5ce9b7d"
+  integrity sha512-jQJkjuEoF1223N7SbVfTDVuQ4kecHaiMQgRSAy4o5ckwhC7MeQSrqxjYPSWFmzpzoepo7zXOq2OCRi+3qWrB8A==
+  dependencies:
+    tslib "^2.3.0"
+
 "@discoveryjs/json-ext@0.5.6":
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.6.tgz#d5e0706cf8c6acd8c6032f8d54070af261bbbb2f"
@@ -10630,7 +10637,7 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@2.3.1, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1:
+tslib@2.3.1, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.3.1:
   version "2.3.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
@@ -10639,6 +10646,11 @@ tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
+tslib@^2.3.0:
+  version "2.4.0"
+  resolved "http://localhost:8081/repository/npm-group/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
+  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
 tslib@~2.1.0:
   version "2.1.0"

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { EAuthToken } from '../enums';
-import { IAuthTokens } from '../interfaces';
+import { AuthTokens } from '../interfaces';
 import { AuthTokenStorageManager } from './auth-token-storage-manager.service';
 import { BaseTokenManager } from './base-token-manager';
 import { BaseTokenStorageManager } from './base-token-storage-manager';
@@ -79,7 +79,7 @@ export class AuthTokenManager extends BaseTokenManager {
 	/**
 	 * Получить `accessToken` и `refreshToken`.
 	 */
-	public getAuthTokens(): Nullable<IAuthTokens> {
+	public getAuthTokens(): Nullable<AuthTokens> {
 		return {
 			accessToken: this.getAccessToken(),
 			refreshToken: this.getRefreshToken(),
@@ -90,7 +90,7 @@ export class AuthTokenManager extends BaseTokenManager {
 	 * Сохранить `accessToken` и `refreshToken`.
 	 * @param tokens Пара токенов.
 	 */
-	public setAuthTokens(tokens: IAuthTokens): void {
+	public setAuthTokens(tokens: AuthTokens): void {
 		this.setAccessToken(tokens.accessToken);
 		this.setRefreshToken(tokens.refreshToken);
 	}

@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nx-mfe/server/mailer';
-
 import { AuthModule } from './auth/auth.module';
-import { MailModule } from './mail/mail.module';
 import { TokenModule } from './token/token.module';
 import { UserModule } from './user/user.module';
 
@@ -22,6 +20,8 @@ import { UserModule } from './user/user.module';
 			synchronize: !JSON.parse(process.env.PRODUCTION || 'false'),
 			autoLoadEntities: true,
 		}),
+		// FIXME попробовать переместить в либу
+		// и экспортировать из либы сконфигурированный модуль
 		MailerModule.forRoot({
 			transport: {
 				host: process.env.SMTP_HOST,
@@ -37,7 +37,6 @@ import { UserModule } from './user/user.module';
 		AuthModule,
 		UserModule,
 		TokenModule,
-		MailModule,
 	],
 })
 export class AppModule {}

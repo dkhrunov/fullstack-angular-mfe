@@ -1,19 +1,29 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { TokenManagerModule } from '@nx-mfe/client/token-manager';
-import { AuthInterceptor } from './interceptors';
+import {
+	InMemoryTokenStorage,
+	JwtAuthInterceptor,
+	JwtAuthModule,
+	LocalStorageTokenStorage,
+} from '@dekh/ngx-jwt-auth';
+import { AuthApiService } from './services';
 
 @NgModule({
 	imports: [
 		HttpClientModule,
-		TokenManagerModule.forRoot({
-			expireInField: 'exp',
+		JwtAuthModule.forRoot({
+			authApiService: AuthApiService,
+			tokenStorage: LocalStorageTokenStorage,
+			authTokenStorage: InMemoryTokenStorage,
+			unsecuredUrls: ['/auth'],
+			unAuthGuardRedirectUrl: '/',
+			authGuardRedirectUrl: '/auth/login',
 		}),
 	],
 	providers: [
 		{
 			provide: HTTP_INTERCEPTORS,
-			useClass: AuthInterceptor,
+			useClass: JwtAuthInterceptor,
 			multi: true,
 		},
 	],

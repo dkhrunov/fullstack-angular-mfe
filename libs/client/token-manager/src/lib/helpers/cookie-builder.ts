@@ -1,5 +1,5 @@
 import { ESamesiteOption } from '../enums';
-import { ICookieBuilder } from '../interfaces';
+import { ICookieBuilder } from '../interfaces/cookie-builder.interface';
 
 export class CookieBuilder implements ICookieBuilder {
 	private readonly cookie: string;
