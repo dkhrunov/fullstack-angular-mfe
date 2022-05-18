@@ -1,0 +1,4 @@
+{
+	"client-first": "http://localhost:5201",
+	"client-second": "http://localhost:5202"
+}
