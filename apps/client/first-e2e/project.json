@@ -1,0 +1,27 @@
+{
+	"sourceRoot": "apps/client/first-e2e/src",
+	"projectType": "application",
+	"targets": {
+		"e2e": {
+			"executor": "@nrwl/cypress:cypress",
+			"options": {
+				"cypressConfig": "apps/client/first-e2e/cypress.json",
+				"devServerTarget": "client-first:serve:development"
+			},
+			"configurations": {
+				"production": {
+					"devServerTarget": "client-first:serve:production"
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["apps/client/first-e2e/**/*.{js,ts}"]
+			}
+		}
+	},
+	"tags": [],
+	"implicitDependencies": ["client-first"]
+}

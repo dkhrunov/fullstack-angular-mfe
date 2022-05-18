@@ -1,0 +1,27 @@
+{
+	"sourceRoot": "apps/client/fallbacks-mfe-e2e/src",
+	"projectType": "application",
+	"targets": {
+		"e2e": {
+			"executor": "@nrwl/cypress:cypress",
+			"options": {
+				"cypressConfig": "apps/client/fallbacks-mfe-e2e/cypress.json",
+				"devServerTarget": "client-fallbacks-mfe:serve:development"
+			},
+			"configurations": {
+				"production": {
+					"devServerTarget": "client-fallbacks-mfe:serve:production"
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["apps/client/fallbacks-mfe-e2e/**/*.{js,ts}"]
+			}
+		}
+	},
+	"tags": [],
+	"implicitDependencies": ["client-fallbacks-mfe"]
+}

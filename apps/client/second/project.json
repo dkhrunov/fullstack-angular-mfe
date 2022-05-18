@@ -1,0 +1,113 @@
+{
+	"projectType": "application",
+	"sourceRoot": "apps/client/second/src",
+	"prefix": "nx-mfe",
+	"targets": {
+		"build": {
+			"executor": "@nrwl/angular:webpack-browser",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/apps/client/second",
+				"index": "apps/client/second/src/index.html",
+				"main": "apps/client/second/src/main.ts",
+				"polyfills": "apps/client/second/src/polyfills.ts",
+				"tsConfig": "apps/client/second/tsconfig.app.json",
+				"inlineStyleLanguage": "scss",
+				"assets": ["apps/client/second/src/favicon.ico", "apps/client/second/src/assets"],
+				"styles": ["apps/client/second/src/styles.scss"],
+				"scripts": [],
+				"customWebpackConfig": {
+					"path": "apps/client/second/webpack.config.js"
+				}
+			},
+			"configurations": {
+				"production": {
+					"budgets": [
+						{
+							"type": "initial",
+							"maximumWarning": "500kb",
+							"maximumError": "1mb"
+						},
+						{
+							"type": "anyComponentStyle",
+							"maximumWarning": "2kb",
+							"maximumError": "4kb"
+						}
+					],
+					"fileReplacements": [
+						{
+							"replace": "apps/client/second/src/environments/environment.ts",
+							"with": "apps/client/second/src/environments/environment.prod.ts"
+						}
+					],
+					"outputHashing": "all",
+					"customWebpackConfig": {
+						"path": "apps/client/second/webpack.prod.config.js"
+					}
+				},
+				"development": {
+					"buildOptimizer": false,
+					"optimization": false,
+					"vendorChunk": true,
+					"extractLicenses": false,
+					"sourceMap": true,
+					"namedChunks": true
+				}
+			},
+			"defaultConfiguration": "production"
+		},
+		"serve": {
+			"executor": "@nrwl/angular:webpack-server",
+			"configurations": {
+				"production": {
+					"browserTarget": "client-second:build:production"
+				},
+				"development": {
+					"browserTarget": "client-second:build:development"
+				}
+			},
+			"defaultConfiguration": "development",
+			"options": {
+				"port": 5202,
+				"publicHost": "http://localhost:5202"
+			}
+		},
+		"extract-i18n": {
+			"executor": "@angular-devkit/build-angular:extract-i18n",
+			"options": {
+				"browserTarget": "client-second:build"
+			}
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["apps/client/second/**/*.ts", "apps/client/second/**/*.html"]
+			}
+		},
+		"test": {
+			"executor": "@nrwl/jest:jest",
+			"outputs": ["coverage/apps/client/second"],
+			"options": {
+				"jestConfig": "apps/client/second/jest.config.ts",
+				"passWithNoTests": true
+			}
+		},
+		"serve-static": {
+			"executor": "@nrwl/angular:file-server",
+			"defaultConfiguration": "development",
+			"options": {
+				"buildTarget": "client-second:build",
+				"port": 5202
+			},
+			"configurations": {
+				"development": {
+					"buildTarget": "client-second:build:development"
+				},
+				"production": {
+					"buildTarget": "client-second:build:production"
+				}
+			}
+		}
+	},
+	"tags": []
+}

@@ -1,0 +1,103 @@
+{
+	"projectType": "application",
+	"sourceRoot": "apps/client/host-app/src",
+	"prefix": "nx-mfe",
+	"targets": {
+		"build": {
+			"executor": "@nrwl/angular:webpack-browser",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/apps/client/host-app",
+				"index": "apps/client/host-app/src/index.html",
+				"main": "apps/client/host-app/src/main.ts",
+				"polyfills": "apps/client/host-app/src/polyfills.ts",
+				"tsConfig": "apps/client/host-app/tsconfig.app.json",
+				"inlineStyleLanguage": "scss",
+				"assets": [
+					"apps/client/host-app/src/favicon.ico",
+					"apps/client/host-app/src/assets"
+				],
+				"styles": ["apps/client/host-app/src/styles.scss"],
+				"scripts": [],
+				"customWebpackConfig": {
+					"path": "apps/client/host-app/webpack.config.js"
+				}
+			},
+			"configurations": {
+				"production": {
+					"budgets": [
+						{
+							"type": "initial",
+							"maximumWarning": "500kb",
+							"maximumError": "1mb"
+						},
+						{
+							"type": "anyComponentStyle",
+							"maximumWarning": "2kb",
+							"maximumError": "4kb"
+						}
+					],
+					"fileReplacements": [
+						{
+							"replace": "apps/client/host-app/src/environments/environment.ts",
+							"with": "apps/client/host-app/src/environments/environment.prod.ts"
+						}
+					],
+					"outputHashing": "all",
+					"customWebpackConfig": {
+						"path": "apps/client/host-app/webpack.prod.config.js"
+					}
+				},
+				"development": {
+					"buildOptimizer": false,
+					"optimization": false,
+					"vendorChunk": true,
+					"extractLicenses": false,
+					"sourceMap": true,
+					"namedChunks": true
+				}
+			},
+			"defaultConfiguration": "production"
+		},
+		"serve": {
+			"executor": "@nrwl/angular:module-federation-dev-server",
+			"configurations": {
+				"production": {
+					"browserTarget": "client-host-app:build:production"
+				},
+				"development": {
+					"browserTarget": "client-host-app:build:development"
+				}
+			},
+			"defaultConfiguration": "development",
+			"options": {
+				"port": 5200,
+				"publicHost": "http://localhost:5200"
+			}
+		},
+		"extract-i18n": {
+			"executor": "@angular-devkit/build-angular:extract-i18n",
+			"options": {
+				"browserTarget": "client-host-app:build"
+			}
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": [
+					"apps/client/host-app/**/*.ts",
+					"apps/client/host-app/**/*.html"
+				]
+			}
+		},
+		"test": {
+			"executor": "@nrwl/jest:jest",
+			"outputs": ["coverage/apps/client/host-app"],
+			"options": {
+				"jestConfig": "apps/client/host-app/jest.config.ts",
+				"passWithNoTests": true
+			}
+		}
+	},
+	"tags": []
+}
