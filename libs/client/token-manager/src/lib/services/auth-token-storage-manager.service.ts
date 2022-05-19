@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
+
 import { AUTH_TOKEN_STORAGE_KEY } from '../const';
 import { DEFAULT_AUTH_TOKEN_STORAGE } from '../injection-tokens';
 import { BaseTokenStorage } from '../token-storages';

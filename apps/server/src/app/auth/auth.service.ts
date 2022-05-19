@@ -16,6 +16,7 @@ import {
 } from '@nx-mfe/shared/data-access';
 import * as bcrypt from 'bcrypt';
 import { SentMessageInfo } from 'nodemailer';
+
 import { TokenService } from '../token/token.service';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';

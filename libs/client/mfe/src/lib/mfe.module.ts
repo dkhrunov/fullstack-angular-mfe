@@ -1,5 +1,6 @@
-import { loadRemoteEntry } from '@angular-architects/module-federation';
 import { ModuleWithProviders, NgModule } from '@angular/core';
+import { loadRemoteEntry } from '@angular-architects/module-federation';
+
 import { MfeOutletDirective } from './directives';
 import { validateMfeString } from './helpers';
 import { IMfeModuleOptions } from './interfaces';

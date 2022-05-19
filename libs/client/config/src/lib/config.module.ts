@@ -1,4 +1,5 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
+
 import { CONFIG } from './injection-tokens';
 import { IConfig } from './interfaces';
 

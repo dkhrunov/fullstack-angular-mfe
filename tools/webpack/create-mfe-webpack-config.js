@@ -1,6 +1,5 @@
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const sharedLibs = require('./shared-libs');
-const config = require('../../mfe-config.json');
 
 /**
  * Create Webpack config for Remote or Micro-frontend app.
@@ -8,34 +7,34 @@ const config = require('../../mfe-config.json');
  * @param exposes Map of exposed components and modules
  */
 module.exports = function (name, exposes) {
-	name = name.replace(/-/g, '_');
+  name = name.replace(/-/g, '_');
 
-	return {
-		output: {
-			uniqueName: name,
-			publicPath: 'auto',
-		},
-		optimization: {
-			runtimeChunk: false,
-			minimize: false,
-		},
-		experiments: {
-			outputModule: true,
-		},
-		resolve: {
-			alias: { ...sharedLibs.getAliases() },
-		},
-		plugins: [
-			new ModuleFederationPlugin({
-				name,
-				exposes,
-				filename: config.remoteEntryFileName,
-				shared: sharedLibs.getShared(),
-				library: {
-					type: 'module',
-				},
-			}),
-			sharedLibs.getPlugin(),
-		],
-	};
+  return {
+    output: {
+      uniqueName: name,
+      publicPath: 'auto',
+    },
+    optimization: {
+      runtimeChunk: false,
+      minimize: false,
+    },
+    experiments: {
+      outputModule: true,
+    },
+    resolve: {
+      alias: { ...sharedLibs.getAliases() },
+    },
+    plugins: [
+      new ModuleFederationPlugin({
+        name,
+        exposes,
+        filename: 'remoteEntry.mjs',
+        shared: sharedLibs.getShared(),
+        library: {
+          type: 'module',
+        },
+      }),
+      sharedLibs.getPlugin(),
+    ],
+  };
 };

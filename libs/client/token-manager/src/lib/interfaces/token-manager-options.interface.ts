@@ -1,4 +1,5 @@
 import { Type } from '@angular/core';
+
 import { BaseTokenStorage } from '../token-storages';
 
 export interface TokenManagerOptions {

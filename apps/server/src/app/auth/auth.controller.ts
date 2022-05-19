@@ -15,6 +15,7 @@ import {
 import { JwtAuthGuard } from '@nx-mfe/server/auth';
 import { AuthTokensDto, LoginDto, RegistrationDto } from '@nx-mfe/shared/data-access';
 import { Request, Response } from 'express';
+
 import { AuthService } from './auth.service';
 
 @Controller('auth')

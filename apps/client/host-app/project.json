@@ -99,5 +99,5 @@
 			}
 		}
 	},
-	"tags": []
+	"tags": ["scope:client", "mfe:host"]
 }

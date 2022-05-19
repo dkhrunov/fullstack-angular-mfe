@@ -1,4 +1,5 @@
 import { Injector, ModuleWithProviders, NgModule } from '@angular/core';
+
 import {
 	DEFAULT_AUTH_TOKEN_STORAGE,
 	DEFAULT_TOKEN_STORAGE,

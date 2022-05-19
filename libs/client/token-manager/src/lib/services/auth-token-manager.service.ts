@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
+
 import { EAuthToken } from '../enums';
 import { AuthTokens } from '../interfaces';
 import { AuthTokenStorageManager } from './auth-token-storage-manager.service';

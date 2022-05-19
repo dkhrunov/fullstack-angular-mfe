@@ -15,6 +15,7 @@ import {
 	ViewContainerRef,
 } from '@angular/core';
 import { EChangesStrategy, TrackChanges } from '@nx-mfe/client/common';
+
 import { validateMfeString } from '../helpers';
 import { IMfeModuleOptions } from '../interfaces';
 import {

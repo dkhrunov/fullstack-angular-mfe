@@ -119,7 +119,9 @@
 				"commands": [
 					"nx serve client-shell-app",
 					"nx serve client-auth-mfe",
-					"nx serve client-dashboard-mfe"
+					"nx serve client-dashboard-mfe",
+					"nx serve client-fallbacks-mfe",
+					"nx serve client-loaders-mfe"
 				]
 			}
 		}

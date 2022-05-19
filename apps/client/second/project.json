@@ -109,5 +109,5 @@
 			}
 		}
 	},
-	"tags": []
+	"tags": ["scope:client", "mfe:remote"]
 }

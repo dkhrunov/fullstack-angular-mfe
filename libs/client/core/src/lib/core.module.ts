@@ -3,6 +3,7 @@ import { AuthModule } from '@nx-mfe/client/auth';
 import { CONFIG, ConfigModule, IConfig } from '@nx-mfe/client/config';
 import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 import { MfeModule } from '@nx-mfe/client/mfe';
+
 import { microfrontend as mfeConfig } from './microfrontends';
 
 /**
