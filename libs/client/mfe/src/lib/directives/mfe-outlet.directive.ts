@@ -15,8 +15,9 @@ import {
 	ViewContainerRef,
 } from '@angular/core';
 import { EChangesStrategy, TrackChanges } from '@nx-mfe/client/common';
+
 import { validateMfeString } from '../helpers';
-import { IMfeModuleRootOptions } from '../interfaces';
+import { IMfeModuleOptions } from '../interfaces';
 import {
 	DynamicComponentBinding,
 	MfeComponentFactoryResolver,
@@ -121,7 +122,7 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	 * @default options.delay, if not set, then 0
 	 */
 	@Input('mfeOutletLoaderDelay')
-	public loaderDelay = this._options.delay ?? 0;
+	public loaderDelay = this._options.loaderDelay ?? 0;
 
 	/**
 	 * TemplateRef or MFE string or TemplateRef or Component class.
@@ -162,7 +163,7 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		private readonly _cache: MfeComponentsCache,
 		private readonly _mcfr: MfeComponentFactoryResolver,
 		private readonly _binding: DynamicComponentBinding,
-		@Inject(OPTIONS) private readonly _options: IMfeModuleRootOptions
+		@Inject(OPTIONS) private readonly _options: IMfeModuleOptions
 	) {}
 
 	@TrackChanges('mfe', 'render', {

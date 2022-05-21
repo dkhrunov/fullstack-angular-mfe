@@ -7,6 +7,7 @@ import {
 	Type,
 } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
+
 import { loadMfe, LoadMfeOptions, validateMfeString } from '../helpers';
 import { MfeComponentsCache } from './mfe-components-cache.service';
 

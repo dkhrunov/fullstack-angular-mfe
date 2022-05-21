@@ -1,4 +1,5 @@
 import { Inject, Injectable, Type } from '@angular/core';
+
 import { TOKEN_MANAGER_OPTIONS } from '../injection-tokens';
 import { TokenManagerOptions } from '../interfaces';
 import { BaseTokenStorage, PREDEFINED_TOKEN_STORAGES } from '../token-storages';

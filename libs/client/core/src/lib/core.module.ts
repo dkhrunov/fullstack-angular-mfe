@@ -3,10 +3,8 @@ import { AuthModule } from '@nx-mfe/client/auth';
 import { CONFIG, ConfigModule, IConfig } from '@nx-mfe/client/config';
 import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 import { MfeModule } from '@nx-mfe/client/mfe';
-// FIXME могут быть проблемы во время сборки
-import * as mfeConfig from '../../../../../mfe-config.json';
-// FIXME могут быть проблемы во время сборки
-import * as workspaceConfig from '../../../../../workspace.json';
+
+import { microfrontend as mfeConfig } from './microfrontends';
 
 /**
  * Provides core functionality of apps and micro-frontends.
@@ -18,10 +16,8 @@ import * as workspaceConfig from '../../../../../workspace.json';
 		InjectorContainerModule,
 		MfeModule.forRoot({
 			mfeConfig,
-			workspaceConfig,
-			mfeProjectPattern: /^client-.+-mfe$/g,
 			preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
-			delay: 500,
+			loaderDelay: 500,
 			loader: 'client-loaders-mfe/spinner',
 			fallback: 'client-fallbacks-mfe/mfe-fallback',
 		}),

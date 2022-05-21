@@ -1,4 +1,4 @@
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import {
 	InMemoryTokenStorage,
@@ -6,6 +6,7 @@ import {
 	JwtAuthModule,
 	LocalStorageTokenStorage,
 } from '@dekh/ngx-jwt-auth';
+
 import { AuthApiService } from './services';
 
 @NgModule({

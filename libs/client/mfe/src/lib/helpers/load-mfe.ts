@@ -1,7 +1,8 @@
-import { loadRemoteModule, LoadRemoteModuleOptions } from '@angular-architects/module-federation';
 import { Type } from '@angular/core';
-import { validateMfeString } from '.';
+import { loadRemoteModule, LoadRemoteModuleOptions } from '@angular-architects/module-federation';
+
 import { MfeRegistry } from '../registry';
+import { validateMfeString } from '.';
 
 /**
  *  List of options the `loadMfe` function.

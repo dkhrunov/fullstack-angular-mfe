@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard, UnAuthGuard } from '@dekh/ngx-jwt-auth';
+import { loadRemoteModule } from '@nrwl/angular/mfe';
 import { loadMfe } from '@nx-mfe/client/mfe';
 
 const routes: Routes = [
@@ -23,7 +24,8 @@ const routes: Routes = [
 	},
 	{
 		path: 'dashboard',
-		loadChildren: () => loadMfe('client-dashboard-mfe/entry'),
+		loadChildren: () =>
+			loadRemoteModule('client-dashboard-mfe', 'Entry').then((m) => m.EntryModule),
 		canLoad: [AuthGuard],
 		canActivate: [AuthGuard],
 	},

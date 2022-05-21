@@ -1,0 +1,6 @@
+{
+	"client-auth-mfe": "http://localhost:4201",
+	"client-dashboard-mfe": "http://localhost:4202",
+	"client-loaders-mfe": "http://localhost:4203",
+	"client-fallbacks-mfe": "http://localhost:4204"
+}
