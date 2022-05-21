@@ -1,5 +1,5 @@
-import { baseProdConfig, IConfig } from '@nx-mfe/client/config';
+import { environmentProd, IEnvironment } from '@nx-mfe/client/environment';
 
-export const environment: IConfig = {
-	...baseProdConfig,
+export const environment: IEnvironment = {
+	...environmentProd,
 };

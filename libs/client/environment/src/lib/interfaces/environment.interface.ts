@@ -1,4 +1,4 @@
-export interface IConfig {
+export interface IEnvironment {
 	production: boolean;
 	apiUrl: string;
 }

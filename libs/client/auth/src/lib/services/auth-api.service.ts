@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { BaseAuthApiService } from '@dekh/ngx-jwt-auth';
-import { CONFIG, IConfig } from '@nx-mfe/client/config';
+import { ENVIRONMENT, IEnvironment } from '@nx-mfe/client/environment';
 import { AuthTokensDto, Login, Registration } from '@nx-mfe/shared/data-access';
 import { Observable } from 'rxjs';
 
@@ -11,14 +11,14 @@ import { Observable } from 'rxjs';
 export class AuthApiService extends BaseAuthApiService {
 	constructor(
 		private readonly _httpClient: HttpClient,
-		@Inject(CONFIG) private readonly _config: IConfig
+		@Inject(ENVIRONMENT) private readonly _environment: IEnvironment
 	) {
 		super();
 	}
 
 	public login(credentials: Login): Observable<AuthTokensDto> {
 		return this._httpClient.post<AuthTokensDto>(
-			this._config.apiUrl + '/auth/login',
+			this._environment.apiUrl + '/auth/login',
 			credentials,
 			{
 				withCredentials: true,
@@ -27,18 +27,25 @@ export class AuthApiService extends BaseAuthApiService {
 	}
 
 	public register(credentials: Registration): Observable<void> {
-		return this._httpClient.post<void>(this._config.apiUrl + '/auth/register', credentials);
+		return this._httpClient.post<void>(
+			this._environment.apiUrl + '/auth/register',
+			credentials
+		);
 	}
 
 	public logout(): Observable<void> {
-		return this._httpClient.post<void>(this._config.apiUrl + '/auth/logout', null, {
+		return this._httpClient.post<void>(this._environment.apiUrl + '/auth/logout', null, {
 			withCredentials: true,
 		});
 	}
 
 	public refresh(): Observable<AuthTokensDto> {
-		return this._httpClient.post<AuthTokensDto>(this._config.apiUrl + '/auth/refresh', null, {
-			withCredentials: true,
-		});
+		return this._httpClient.post<AuthTokensDto>(
+			this._environment.apiUrl + '/auth/refresh',
+			null,
+			{
+				withCredentials: true,
+			}
+		);
 	}
 }

@@ -2,10 +2,10 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `workspace.json`.
 
-import { baseConfig, IConfig } from '@nx-mfe/client/config';
+import { environmentDev, IEnvironment } from '@nx-mfe/client/environment';
 
-export const environment: IConfig = {
-	...baseConfig,
+export const environment: IEnvironment = {
+	...environmentDev,
 };
 
 /*

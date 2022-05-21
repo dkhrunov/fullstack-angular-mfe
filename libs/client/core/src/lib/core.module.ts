@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { AuthModule } from '@nx-mfe/client/auth';
-import { CONFIG, ConfigModule, IConfig } from '@nx-mfe/client/config';
+import { ENVIRONMENT, IEnvironment } from '@nx-mfe/client/environment';
 import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 import { MfeModule } from '@nx-mfe/client/mfe';
 
@@ -12,7 +12,6 @@ import { microfrontend as mfeConfig } from './microfrontends';
 @NgModule({
 	imports: [
 		AuthModule,
-		ConfigModule,
 		InjectorContainerModule,
 		MfeModule.forRoot({
 			mfeConfig,
@@ -34,15 +33,15 @@ export class CoreModule {
 	 * then the remote micro-frontend will always use the config obtained
 	 * from the host micro-frontend (shell) inside which it is used.
 	 *
-	 * @param config Application configuration object (environment config file).
+	 * @param environment Application environment file.
 	 */
-	public static forRoot(config: IConfig): ModuleWithProviders<CoreModule> {
+	public static forRoot(environment: IEnvironment): ModuleWithProviders<CoreModule> {
 		return {
 			ngModule: CoreModule,
 			providers: [
 				{
-					provide: CONFIG,
-					useValue: config,
+					provide: ENVIRONMENT,
+					useValue: environment,
 				},
 			],
 		};
