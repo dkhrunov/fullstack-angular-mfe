@@ -1,3 +1,3 @@
-const createAppWebpackConfig = require('../../../tools/webpack/create-app-webpack-config');
-
-module.exports = createAppWebpackConfig('client-shell-app');
+const { withModuleFederation } = require('@nrwl/angular/module-federation');
+const config = require('./module-federation.config');
+module.exports = withModuleFederation(config);

@@ -6,8 +6,7 @@
 			"executor": "@nrwl/cypress:cypress",
 			"options": {
 				"cypressConfig": "apps/client/shell-app-e2e/cypress.json",
-				"devServerTarget": "client-shell-app:serve:development",
-				"tsConfig": "apps/client/shell-app-e2e/tsconfig.json"
+				"devServerTarget": "client-shell-app:serve:development"
 			},
 			"configurations": {
 				"production": {
@@ -23,6 +22,6 @@
 			}
 		}
 	},
-	"tags": ["scope:client"],
+	"tags": ["scope:client", "mfe:host"],
 	"implicitDependencies": ["client-shell-app"]
 }

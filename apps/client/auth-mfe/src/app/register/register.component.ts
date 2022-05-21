@@ -4,6 +4,7 @@ import { PASSWORD_REGEXP } from '@nx-mfe/client/auth';
 import { NzConfirmable } from '@nx-mfe/client/common';
 import { CustomValidators, Form, IfFormValid } from '@nx-mfe/client/forms';
 import { Registration } from '@nx-mfe/shared/data-access';
+
 import { AuthFacadeService } from '../services/auth-facade.service';
 
 @Component({
@@ -31,7 +32,7 @@ export class RegisterComponent {
 	}
 
 	public validateConfirmPassword(): void {
-		this.form.controls.confirm.updateValueAndValidity();
+		this.form.controls['confirm'].updateValueAndValidity();
 	}
 
 	private _createForm(): void {
