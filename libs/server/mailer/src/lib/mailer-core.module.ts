@@ -1,8 +1,8 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
 
-import { MAILER_OPTIONS_TOKEN } from './injection-tokens/mailer-options.token';
 import { IMailerOptions } from './interfaces/mailer-options.interface';
 import { MailerService } from './mailer.service';
+import { MAILER_OPTIONS_TOKEN } from './tokens/mailer-options.token';
 
 @Global()
 @Module({})

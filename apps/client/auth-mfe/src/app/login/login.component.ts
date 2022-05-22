@@ -19,6 +19,8 @@ export class LoginComponent implements OnDestroy {
 
 	public text$ = new BehaviorSubject<string>('Test string');
 
+	private _passwordVisible$ = new BehaviorSubject<boolean>(false);
+	public passwordVisible$ = this._passwordVisible$.asObservable();
 	public passwordVisible = false;
 
 	private readonly _destroy$ = new Subject<void>();
@@ -43,6 +45,10 @@ export class LoginComponent implements OnDestroy {
 
 	public onClick(bool: MouseEvent): void {
 		console.log('login', bool);
+	}
+
+	public tooglePasswordVisibility(): void {
+		this.passwordVisible = !this.passwordVisible;
 	}
 
 	private _createForm(): void {

@@ -1,6 +1,7 @@
 {
 	"version": 2,
 	"projects": {
+		"client-assets": "libs/client/assets",
 		"client-auth": "libs/client/auth",
 		"client-auth-mfe": "apps/client/auth-mfe",
 		"client-auth-mfe-e2e": "apps/client/auth-mfe-e2e",
@@ -18,7 +19,7 @@
 		"client-mfe": "libs/client/mfe",
 		"client-shell-app": "apps/client/shell-app",
 		"client-shell-app-e2e": "apps/client/shell-app-e2e",
-		"client-token-manager": "libs/client/token-manager",
+		"client-styles": "libs/client/styles",
 		"server": "apps/server",
 		"server-auth": "libs/server/auth",
 		"server-domains": "libs/server/domains",

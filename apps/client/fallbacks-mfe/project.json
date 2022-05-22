@@ -17,21 +17,12 @@
 					"apps/client/fallbacks-mfe/src/favicon.ico",
 					"apps/client/fallbacks-mfe/src/assets",
 					{
+						"input": "libs/client/assets/src/lib",
 						"glob": "**/*",
-						"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-						"output": "/assets/"
-					},
-					{
-						"glob": "**/*",
-						"input": "./libs/client/assets/",
-						"output": "/assets/"
+						"output": "assets"
 					}
 				],
-				"styles": [
-					"apps/client/fallbacks-mfe/src/styles.scss",
-					"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
-					"libs/client/assets/styles/styles.scss"
-				],
+				"styles": ["apps/client/fallbacks-mfe/src/styles.scss"],
 				"scripts": [],
 				"customWebpackConfig": {
 					"path": "apps/client/fallbacks-mfe/webpack.config.js"
@@ -114,5 +105,6 @@
 			}
 		}
 	},
-	"tags": ["scope:client", "mfe:remote"]
+	"tags": ["scope:client"],
+	"implicitDependencies": ["client-styles", "client-assets"]
 }

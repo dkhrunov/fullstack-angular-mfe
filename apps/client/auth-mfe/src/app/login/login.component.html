@@ -1,4 +1,4 @@
-<h1 nz-typography>Login</h1>
+<!-- <h1 nz-typography>Login</h1>
 
 <nz-alert
 	*ngIf="authFacade.loginError$ | async as errorMessage"
@@ -101,13 +101,181 @@
 	<div>loading...</div>
 </ng-template>
 
-<ng-container *mfeOutlet="'client-dashboard-mfe/entry'"></ng-container>
+<ng-container *mfeOutlet="'client-dashboard-mfe/entry'"></ng-container> -->
 
 <!-- <ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 0"></ng-container>
 <ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 20000"></ng-container> -->
 
-<p>Not existend MFE 'aaaa/bbb':</p>
+<!-- <p>Not existend MFE 'aaaa/bbb':</p>
 <ng-container *mfeOutlet="'aaaa/bbb'"></ng-container>
 
 <p>Not existend MFE 2 'aaaa/bbb':</p>
-<ng-container *mfeOutlet="'aaaa/bbb'"></ng-container>
+<ng-container *mfeOutlet="'aaaa/bbb'"></ng-container> -->
+
+<div ibmGrid>
+	<div ibmRow [condensed]="true">
+		<div ibmCol [columnNumbers]="{ sm: 4, md: 8, lg: 3 }" class="form">
+			<ibm-tile class="card">
+				<div class="card__header">
+					<h2 class="card__title">Login</h2>
+				</div>
+
+				<div class="card__content">
+					<form [formGroup]="form" (ngSubmit)="login()">
+						<div class="form-item" *ngIf="form.get('email') as control">
+							<ibm-label
+								labelInputID="email"
+								[invalid]="control.touched && control.invalid"
+								[invalidText]="invalidText"
+							>
+								E-mail
+								<input
+									ibmText
+									id="email"
+									type="email"
+									formControlName="email"
+									placeholder="Input your E-mail"
+									[invalid]="control.touched && control.invalid"
+								/>
+								<ng-template #invalidText>
+									<ng-container
+										*ngIf="control.touched && control.hasError('required')"
+									>
+										Please input your E-mail!
+									</ng-container>
+									<ng-container *ngIf="control.hasError('email')">
+										The input is not valid E-mail!
+									</ng-container>
+								</ng-template>
+							</ibm-label>
+						</div>
+
+						<div class="form-item" *ngIf="form.get('password') as control">
+							<ibm-label
+								labelInputID="password"
+								[invalid]="control.touched && control.invalid"
+								[invalidText]="invalidText"
+							>
+								Password
+								<div class="input-wrapper">
+									<input
+										ibmText
+										id="password"
+										formControlName="password"
+										class="password-input"
+										placeholder="Input your password"
+										[type]="passwordVisible ? 'text' : 'password'"
+										[invalid]="control.touched && control.invalid"
+									/>
+									<button
+										class="input__suffix"
+										type="button"
+										ibmButton="ghost"
+										size="field"
+										[iconOnly]="true"
+										(click)="tooglePasswordVisibility()"
+									>
+										<svg
+											*ngIf="passwordVisible"
+											class="bx--btn__icon"
+											ibmIcon="view--off"
+											size="16"
+										></svg>
+										<svg
+											*ngIf="!passwordVisible"
+											class="bx--btn__icon"
+											ibmIcon="view"
+											size="16"
+										></svg>
+									</button>
+								</div>
+								<ng-template #invalidText>
+									<ng-container
+										*ngIf="control.touched && control?.hasError('required')"
+									>
+										Please input your password!
+									</ng-container>
+								</ng-template>
+							</ibm-label>
+						</div>
+
+						<div ibmRow class="form-item" *ngIf="form.get('session') as control">
+							<div ibmCol>
+								<ibm-checkbox formControlName="session">
+									Do not remember
+								</ibm-checkbox>
+							</div>
+							<div ibmCol style="align-self: center">
+								<a ibmLink> Forgot password </a>
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="card__footer">
+					<ibm-button-set>
+						<button ibmButton="secondary">Forgot password</button>
+						<button
+							ibmButton="primary"
+							type="submit"
+							[disabled]="authFacade.isLogIn$ | async"
+							(click)="login()"
+						>
+							Log In
+
+							<ibm-loading
+								*ngIf="authFacade.isLogIn$ | async; else icon"
+								class="bx--btn__icon"
+								size="sm"
+							></ibm-loading>
+							<ng-template #icon>
+								<svg class="bx--btn__icon" ibmIcon="arrow--right" size="16"></svg>
+							</ng-template>
+						</button>
+					</ibm-button-set>
+
+					<p>
+						Dont haven`t an account yet?
+						<a ibmLink [routerLink]="['../register']"> Register </a>
+					</p>
+				</div>
+			</ibm-tile>
+
+			<div class="loader">
+				<div class="box box0">
+					<div></div>
+				</div>
+				<div class="box box1">
+					<div></div>
+				</div>
+				<div class="box box2">
+					<div></div>
+				</div>
+				<div class="box box3">
+					<div></div>
+				</div>
+				<div class="box box4">
+					<div></div>
+				</div>
+				<div class="box box5">
+					<div></div>
+				</div>
+				<div class="box box6">
+					<div></div>
+				</div>
+				<div class="box box7">
+					<div></div>
+				</div>
+				<div class="ground">
+					<div></div>
+				</div>
+			</div>
+		</div>
+		<div
+			ibmCol
+			[offsets]="{ sm: 0, md: 0, lg: 1 }"
+			[columnNumbers]="{ sm: 0, md: 0, lg: 8 }"
+			class="illustration"
+		></div>
+	</div>
+</div>

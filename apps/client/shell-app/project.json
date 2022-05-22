@@ -17,21 +17,12 @@
 					"apps/client/shell-app/src/favicon.ico",
 					"apps/client/shell-app/src/assets",
 					{
+						"input": "libs/client/assets/src/lib",
 						"glob": "**/*",
-						"input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-						"output": "/assets/"
-					},
-					{
-						"glob": "**/*",
-						"input": "./libs/client/assets/",
-						"output": "/assets/"
+						"output": "assets"
 					}
 				],
-				"styles": [
-					"apps/client/shell-app/src/styles.scss",
-					"node_modules/ng-zorro-antd/ng-zorro-antd.dark.min.css",
-					"libs/client/assets/styles/styles.scss"
-				],
+				"styles": ["apps/client/shell-app/src/styles.scss"],
 				"scripts": [],
 				"customWebpackConfig": {
 					"path": "apps/client/shell-app/webpack.config.js"
@@ -126,5 +117,6 @@
 			}
 		}
 	},
-	"tags": ["scope:client", "mfe:host"]
+	"tags": ["scope:client"],
+	"implicitDependencies": ["client-styles", "client-assets"]
 }

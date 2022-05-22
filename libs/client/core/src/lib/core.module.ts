@@ -1,8 +1,22 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
+// @ts-ignore
+import ArrowRight16 from '@carbon/icons/es/arrow--right/16';
+// @ts-ignore
+import ArrowRight20 from '@carbon/icons/es/arrow--right/20';
+// @ts-ignore
+import View16 from '@carbon/icons/es/view/16';
+// @ts-ignore
+import View20 from '@carbon/icons/es/view/20';
+// @ts-ignore
+import ViewOff16 from '@carbon/icons/es/view--off/16';
+// @ts-ignore
+import ViewOff20 from '@carbon/icons/es/view--off/20';
 import { AuthModule } from '@nx-mfe/client/auth';
 import { ENVIRONMENT, IEnvironment } from '@nx-mfe/client/environment';
 import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
 import { MfeModule } from '@nx-mfe/client/mfe';
+import { IconModule } from 'carbon-components-angular';
+import { IconService } from 'carbon-components-angular';
 
 import { microfrontend as mfeConfig } from './microfrontends';
 
@@ -13,6 +27,7 @@ import { microfrontend as mfeConfig } from './microfrontends';
 	imports: [
 		AuthModule,
 		InjectorContainerModule,
+		IconModule,
 		MfeModule.forRoot({
 			mfeConfig,
 			preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
@@ -45,5 +60,9 @@ export class CoreModule {
 				},
 			],
 		};
+	}
+
+	constructor(protected iconService: IconService) {
+		iconService.registerAll([View16, View20, ViewOff16, ViewOff20, ArrowRight16, ArrowRight20]);
 	}
 }

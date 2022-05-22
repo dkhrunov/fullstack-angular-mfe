@@ -1,0 +1,20 @@
+@use '../../utilities/convert' as *;
+@use '../../utilities/keyframes' as *;
+
+.bx--form-item:not(:where(ibm-checkbox *)) {
+	padding-bottom: rem(20px);
+	position: relative;
+}
+
+.bx--form-requirement {
+	position: absolute;
+	bottom: 0;
+	animation: 200ms ease-out 0s 1 fadeInDown;
+}
+
+.bx--text-input__field-wrapper .bx--text-input__invalid-icon {
+	position: absolute;
+	top: 50%;
+	right: rem(16px);
+	transform: translateY(-50%);
+}

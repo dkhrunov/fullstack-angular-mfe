@@ -3,6 +3,16 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MfeModule } from '@nx-mfe/client/mfe';
+import {
+	ButtonModule,
+	CheckboxModule,
+	GridModule,
+	IconModule,
+	InputModule,
+	LinkModule,
+	LoadingModule,
+	TilesModule,
+} from 'carbon-components-angular';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -31,6 +41,14 @@ import { LoginComponent } from './login.component';
 		NzCheckboxModule,
 		NzAlertModule,
 		NzTypographyModule,
+		GridModule,
+		InputModule,
+		CheckboxModule,
+		ButtonModule,
+		IconModule,
+		LinkModule,
+		LoadingModule,
+		TilesModule,
 	],
 	declarations: [LoginComponent],
 	exports: [LoginComponent],
