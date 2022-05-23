@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { Login } from '@nx-mfe/shared/data-access';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 import { AuthFacadeService } from '../services/auth-facade.service';
 
@@ -27,6 +27,10 @@ export class LoginComponent implements OnDestroy {
 
 	constructor(public readonly authFacade: AuthFacadeService, private readonly _fb: FormBuilder) {
 		this._createForm();
+
+		this.authFacade.loginError$
+			.pipe(takeUntil(this._destroy$))
+			.subscribe(() => this.form.get('password')?.setValue(null));
 
 		setTimeout(() => this.text$.next('Test string changed in Subject'), 2000);
 		setTimeout(() => this.text$.next('Test string changed 2x in Subject'), 3000);

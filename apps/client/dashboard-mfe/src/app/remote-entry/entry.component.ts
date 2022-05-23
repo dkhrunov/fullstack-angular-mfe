@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
 @Component({
 	selector: 'nx-mfe-dashboard-entry',
@@ -26,13 +25,9 @@ export class EntryComponent {
 	@Output()
 	public click = new EventEmitter<boolean>();
 
-	constructor(private readonly _drawerService: NzDrawerService) {}
+	constructor() {}
 
 	public open(): void {
-		this._drawerService.create({
-			nzTitle: 'Template',
-			nzFooter: 'Footer',
-		});
 		this.click.emit(true);
 	}
 }

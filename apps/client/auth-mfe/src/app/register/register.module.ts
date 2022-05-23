@@ -3,12 +3,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MfeModule } from '@nx-mfe/client/mfe';
-import { NzAlertModule } from 'ng-zorro-antd/alert';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 import { RegisterComponent } from './register.component';
 
@@ -23,12 +17,6 @@ import { RegisterComponent } from './register.component';
 		]),
 		ReactiveFormsModule,
 		MfeModule,
-		NzButtonModule,
-		NzFormModule,
-		NzInputModule,
-		NzTypographyModule,
-		NzIconModule,
-		NzAlertModule,
 	],
 	declarations: [RegisterComponent],
 	exports: [RegisterComponent],

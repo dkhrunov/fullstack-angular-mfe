@@ -9,9 +9,9 @@
 .light-theme {
 }
 
-$carbon--theme: $carbon--theme--g100;
+// $carbon--theme: $carbon--theme--g100;
 // $carbon--theme: $carbon--theme--g90;
-// $carbon--theme: $carbon--theme--g10;
+$carbon--theme: $carbon--theme--g10;
 
 @import '~carbon-components/scss/globals/scss/styles';
-@import './override';
+@import './override/carbon';

@@ -1,34 +1,28 @@
 @use 'libs/client/styles/src/lib/utilities/convert' as *;
 @use 'libs/client/styles/src/lib/utilities/bemify' as *;
-@use 'libs/client/styles/src/lib/carbon-theme' as carbon;
+@use '@carbon/layout';
 
 .illustration {
+	// background-image: url(/assets/svg/login.svg);
+	// background-size: contain;
 	background-image: url(/assets/illustrations/illustration-4.png);
 	background-position: bottom;
 	background-repeat: no-repeat;
-	// background-image: url(/assets/svg/login.svg);
-	// background-size: contain;
-	margin-bottom: 5vh;
 }
 
 :host-context(.dark-theme) {
 	.illustration {
-		background-image: url(/assets/illustrations/illustration-8.png);
 		// background-image: url(/assets/svg/login.svg);
+		background-image: url(/assets/illustrations/illustration-8.png);
 		background-position: bottom;
 		background-repeat: no-repeat;
 		background-size: contain;
 		opacity: 0.5;
-		margin-bottom: 20vh;
 	}
 }
 
 .form {
 	min-height: 100vh;
-}
-
-.form-item {
-	margin-top: rem(8px);
 }
 
 .input-wrapper {
@@ -47,10 +41,12 @@
 }
 
 @include block(card) {
-	min-width: rem(380px);
-
 	@include element(header) {
-		margin-bottom: rem(16px);
+		margin-bottom: layout.$spacing-08;
+	}
+
+	@include element(title) {
+		margin-bottom: layout.$spacing-02;
 	}
 
 	@include element(footer) {
@@ -58,250 +54,18 @@
 	}
 }
 
-// test
-
-.loader {
-	--duration: 4s;
-	--primary: rgba(39, 94, 254, 1);
-	--primary-light: #2f71ff;
-	--primary-rgba: rgba(39, 94, 254, 0);
-	width: 200px;
-	height: 320px;
-	position: relative;
-	transform-style: preserve-3d;
-	@media (max-width: 480px) {
-		zoom: 0.44;
-	}
-	&:before,
-	&:after {
-		--r: 20.5deg;
-		content: '';
-		width: 320px;
-		height: 140px;
-		position: absolute;
-		right: 32%;
-		bottom: -11px;
-		background: carbon.$background;
-		transform: translateZ(200px) rotate(var(--r));
-		animation: mask var(--duration) linear forwards infinite;
-	}
-	&:after {
-		--r: -20.5deg;
-		right: auto;
-		left: 32%;
-	}
-	.ground {
-		position: absolute;
-		left: -50px;
-		bottom: -120px;
-		transform-style: preserve-3d;
-		transform: rotateY(-47deg) rotateX(-15deg) rotateZ(15deg) scale(1);
-		div {
-			transform: rotateX(90deg) rotateY(0deg) translate(-48px, -120px) translateZ(100px)
-				scale(0);
-			width: 200px;
-			height: 200px;
-			background: var(--primary);
-			background: linear-gradient(
-				45deg,
-				var(--primary) 0%,
-				var(--primary) 50%,
-				var(--primary-light) 50%,
-				var(--primary-light) 100%
-			);
-			transform-style: preserve-3d;
-			animation: ground var(--duration) linear forwards infinite;
-			&:before,
-			&:after {
-				--rx: 90deg;
-				--ry: 0deg;
-				--x: 44px;
-				--y: 162px;
-				--z: -50px;
-				content: '';
-				width: 156px;
-				height: 300px;
-				opacity: 0;
-				background: linear-gradient(var(--primary), var(--primary-rgba));
-				position: absolute;
-				transform: rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--x), var(--y))
-					translateZ(var(--z));
-				animation: ground-shine var(--duration) linear forwards infinite;
-			}
-			&:after {
-				--rx: 90deg;
-				--ry: 90deg;
-				--x: 0;
-				--y: 177px;
-				--z: 150px;
-			}
-		}
-	}
-	.box {
-		--x: 0;
-		--y: 0;
-		position: absolute;
-		animation: var(--duration) linear forwards infinite;
-		transform: translate(var(--x), var(--y));
-		div {
-			background-color: var(--primary);
-			width: 48px;
-			height: 48px;
-			position: relative;
-			transform-style: preserve-3d;
-			animation: var(--duration) ease forwards infinite;
-			transform: rotateY(-47deg) rotateX(-15deg) rotateZ(15deg) scale(0);
-			&:before,
-			&:after {
-				--rx: 90deg;
-				--ry: 0deg;
-				--z: 24px;
-				--y: -24px;
-				--x: 0;
-				content: '';
-				position: absolute;
-				background-color: inherit;
-				width: inherit;
-				height: inherit;
-				transform: rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--x), var(--y))
-					translateZ(var(--z));
-				filter: brightness(var(--b, 1.2));
-			}
-			&:after {
-				--rx: 0deg;
-				--ry: 90deg;
-				--x: 24px;
-				--y: 0;
-				--b: 1.4;
-			}
-		}
-		&.box0 {
-			--x: -220px;
-			--y: -120px;
-			left: 58px;
-			top: 108px;
-		}
-		&.box1 {
-			--x: -260px;
-			--y: 120px;
-			left: 25px;
-			top: 120px;
-		}
-		&.box2 {
-			--x: 120px;
-			--y: -190px;
-			left: 58px;
-			top: 64px;
-		}
-		&.box3 {
-			--x: 280px;
-			--y: -40px;
-			left: 91px;
-			top: 120px;
-		}
-		&.box4 {
-			--x: 60px;
-			--y: 200px;
-			left: 58px;
-			top: 132px;
-		}
-		&.box5 {
-			--x: -220px;
-			--y: -120px;
-			left: 25px;
-			top: 76px;
-		}
-		&.box6 {
-			--x: -260px;
-			--y: 120px;
-			left: 91px;
-			top: 76px;
-		}
-		&.box7 {
-			--x: -240px;
-			--y: 200px;
-			left: 58px;
-			top: 87px;
-		}
-	}
-	$i: 0;
-	@while $i < 8 {
-		.box#{$i} {
-			animation-name: box-move#{$i};
-			div {
-				animation-name: box-scale#{$i};
-			}
-		}
-		$i: $i + 1;
-	}
+.divider {
+	border-bottom: 1px solid #8d8d8d;
+	margin-bottom: layout.$spacing-05;
+	display: block;
 }
 
-$i: 0;
-@while $i < 8 {
-	$delay: $i * 4;
-	@keyframes box-move#{$i} {
-		#{12 + $delay}% {
-			transform: translate(var(--x), var(--y));
-		}
-		#{25 + $delay}%,
-		52% {
-			transform: translate(0, 0);
-		}
-		80% {
-			transform: translate(0, -32px);
-		}
-		90%,
-		100% {
-			transform: translate(0, 188px);
-		}
-	}
-	@keyframes box-scale#{$i} {
-		#{6 + $delay}% {
-			transform: rotateY(-47deg) rotateX(-15deg) rotateZ(15deg) scale(0);
-		}
-		#{14 + $delay}%,
-		100% {
-			transform: rotateY(-47deg) rotateX(-15deg) rotateZ(15deg) scale(1);
-		}
-	}
-	$i: $i + 1;
+.next-button {
+	width: 100%;
+	margin-bottom: layout.$spacing-06;
 }
 
-@keyframes ground {
-	0%,
-	65% {
-		transform: rotateX(90deg) rotateY(0deg) translate(-48px, -120px) translateZ(100px) scale(0);
-	}
-	75%,
-	90% {
-		transform: rotateX(90deg) rotateY(0deg) translate(-48px, -120px) translateZ(100px) scale(1);
-	}
-	100% {
-		transform: rotateX(90deg) rotateY(0deg) translate(-48px, -120px) translateZ(100px) scale(0);
-	}
-}
-
-@keyframes ground-shine {
-	0%,
-	70% {
-		opacity: 0;
-	}
-	75%,
-	87% {
-		opacity: 0.2;
-	}
-	100% {
-		opacity: 0;
-	}
-}
-
-@keyframes mask {
-	0%,
-	65% {
-		opacity: 0;
-	}
-	66%,
-	100% {
-		opacity: 1;
-	}
+.session-checkbox {
+	display: flex;
+	margin-bottom: layout.$spacing-08;
 }

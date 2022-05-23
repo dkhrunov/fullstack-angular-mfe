@@ -1,6 +1,5 @@
 import { Injector, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NzModalModule } from 'ng-zorro-antd/modal';
 
 /**
  * Container of providers, that can get without constructor DI.
@@ -13,7 +12,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
  * const fb = InjectorContainerModule.injector.get(FormBuilder);
  */
 @NgModule({
-	imports: [FormsModule, NzModalModule],
+	imports: [FormsModule],
 })
 export class InjectorContainerModule {
 	public static injector: Injector;

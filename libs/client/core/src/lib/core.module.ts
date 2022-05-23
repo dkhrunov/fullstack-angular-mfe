@@ -4,6 +4,10 @@ import ArrowRight16 from '@carbon/icons/es/arrow--right/16';
 // @ts-ignore
 import ArrowRight20 from '@carbon/icons/es/arrow--right/20';
 // @ts-ignore
+import Information16 from '@carbon/icons/es/information/16';
+// @ts-ignore
+import Information20 from '@carbon/icons/es/information/20';
+// @ts-ignore
 import View16 from '@carbon/icons/es/view/16';
 // @ts-ignore
 import View20 from '@carbon/icons/es/view/20';
@@ -28,6 +32,8 @@ import { microfrontend as mfeConfig } from './microfrontends';
 		AuthModule,
 		InjectorContainerModule,
 		IconModule,
+		// FIXME подумать что можно с этим сделат, проблема с тем что в Remote не нужны зависимости из preload
+		// как варик можно выпилить отсюда и объявлять не посредственно в нужных модулях
 		MfeModule.forRoot({
 			mfeConfig,
 			preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
@@ -63,6 +69,15 @@ export class CoreModule {
 	}
 
 	constructor(protected iconService: IconService) {
-		iconService.registerAll([View16, View20, ViewOff16, ViewOff20, ArrowRight16, ArrowRight20]);
+		iconService.registerAll([
+			View16,
+			View20,
+			ViewOff16,
+			ViewOff20,
+			ArrowRight16,
+			ArrowRight20,
+			Information16,
+			Information20,
+		]);
 	}
 }

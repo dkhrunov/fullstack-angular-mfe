@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 
 import { EntryComponent } from './entry.component';
 
@@ -14,7 +13,6 @@ import { EntryComponent } from './entry.component';
 				component: EntryComponent,
 			},
 		]),
-		NzDrawerModule,
 	],
 	declarations: [EntryComponent],
 	exports: [EntryComponent],
