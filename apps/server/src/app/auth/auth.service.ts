@@ -2,6 +2,7 @@ import {
 	BadRequestException,
 	ConflictException,
 	Injectable,
+	InternalServerErrorException,
 	NotFoundException,
 	UnauthorizedException,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
 } from '@nx-mfe/shared/data-access';
 import * as bcrypt from 'bcrypt';
 import { SentMessageInfo } from 'nodemailer';
+import { Connection } from 'typeorm';
 
 import { TokenService } from '../token/token.service';
 import { UserEntity } from '../user/user.entity';
@@ -24,6 +26,7 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class AuthService {
 	constructor(
+		private readonly _connection: Connection,
 		private readonly _userService: UserService,
 		private readonly _tokenService: TokenService,
 		private readonly _jwtService: JwtService,
@@ -61,13 +64,25 @@ export class AuthService {
 			throw new ConflictException(`Пользователь с данным email уже зарегистрирован`);
 		}
 
-		const user = await this._userService.create(credentials);
+		const queryRunner = this._connection.createQueryRunner();
 
-		// TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
-		await this._sendRegisterConfirmationMail(
-			user.email,
-			`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirm/${user.confirmationLink}`
-		);
+		await queryRunner.connect();
+		await queryRunner.startTransaction();
+		try {
+			const user = await this._userService.create(credentials);
+			await queryRunner.manager.save<UserEntity>(user);
+			// TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
+			await this._sendRegisterConfirmationMail(
+				user.email,
+				`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirm/${user.confirmationLink}`
+			);
+			await queryRunner.commitTransaction();
+		} catch (error) {
+			await queryRunner.rollbackTransaction();
+			throw new InternalServerErrorException();
+		} finally {
+			await queryRunner.release();
+		}
 	}
 
 	public async confirmRegistration(confirmationLink: string): Promise<void> {
@@ -144,8 +159,8 @@ export class AuthService {
 			text: '',
 			html: `
 					<div>
-						<h1>To confirm registration, follow the link</h1>
-						<a href="${link}">${link}</a>
+						<h2>Welcome to the application.</h2>
+	          <p>To confirm the email address, click here: <a href="${link}">confirm email</a></p>
 					</div>
 				`,
 		});
