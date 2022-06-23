@@ -1,0 +1,10 @@
+@use '@carbon/layout';
+@use './prefix' as *;
+
+.#{$prefix}--checkbox-label-text {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	gap: layout.$spacing-03;
+}

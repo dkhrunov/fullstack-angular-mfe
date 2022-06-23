@@ -13,7 +13,12 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '@nx-mfe/server/auth';
-import { AuthTokensDto, LoginDto, RegistrationDto } from '@nx-mfe/shared/data-access';
+import {
+	AuthTokensResponse,
+	LoginRequest,
+	RegistrationRequest,
+	ResendRegistrationConfirmationMailRequest,
+} from '@nx-mfe/shared/data-access';
 import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
@@ -26,9 +31,9 @@ export class AuthController {
 	public async login(
 		@Ip() ip: string,
 		@Headers('User-Agent') userAgent: string,
-		@Body() body: LoginDto,
+		@Body() body: LoginRequest,
 		@Res({ passthrough: true }) res: Response
-	): Promise<AuthTokensDto> {
+	): Promise<AuthTokensResponse> {
 		const { session, ...credentials } = body;
 
 		const tokens = await this._authService.login(credentials, userAgent, ip);
@@ -38,11 +43,19 @@ export class AuthController {
 	}
 
 	@Post('/register')
-	public async register(@Body() credentials: RegistrationDto): Promise<void> {
+	public async register(@Body() credentials: RegistrationRequest): Promise<void> {
 		return await this._authService.register(credentials);
 	}
 
-	@Get('/register/confirm/:link')
+	@Post('/registration/confirmation/resend')
+	@HttpCode(200)
+	public async resendRegistrationConfirmationMail(
+		@Body() { email }: ResendRegistrationConfirmationMailRequest
+	): Promise<void> {
+		return await this._authService.resendRegistrationConfirmationMail(email);
+	}
+
+	@Get('/registration/confirm/:link')
 	public async confirmRegistration(
 		@Param('link') link: string,
 		@Res() res: Response
@@ -75,7 +88,7 @@ export class AuthController {
 		@Headers('User-Agent') userAgent: string,
 		@Req() req: Request,
 		@Res() res: Response
-	): Promise<Response<AuthTokensDto>> {
+	): Promise<Response<AuthTokensResponse>> {
 		const tokens = await this._authService.refresh(req.cookies.refreshToken, userAgent, ip);
 		this._setRefreshTokenInCookie(res, tokens.refreshToken, req.cookies.session);
 

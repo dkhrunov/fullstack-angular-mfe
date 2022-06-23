@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { LoadingModule } from 'carbon-components-angular';
+import { LoadingModule } from 'carbon-components-angular/loading';
 
 import { SpinnerComponent } from './spinner.component';
 

@@ -1,0 +1,10 @@
+@use '../../utilities/convert' as *;
+@use './prefix' as *;
+@use '@carbon/layout';
+
+.#{$prefix}--text-input__field-wrapper .#{$prefix}--text-input__invalid-icon {
+	position: absolute;
+	top: 50%;
+	right: layout.$spacing-05;
+	transform: translateY(-50%);
+}

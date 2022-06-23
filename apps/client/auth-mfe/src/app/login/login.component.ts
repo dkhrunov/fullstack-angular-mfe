@@ -1,39 +1,98 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+	AfterViewInit,
+	ChangeDetectionStrategy,
+	Component,
+	ElementRef,
+	OnDestroy,
+	ViewChild,
+} from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Form, IfFormValid } from '@nx-mfe/client/forms';
-import { Login } from '@nx-mfe/shared/data-access';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { PasswordInputComponent } from '@nx-mfe/client/ui';
+import { LoginRequest } from '@nx-mfe/shared/data-access';
+import { plainToClass } from 'class-transformer';
+import { BehaviorSubject, filter, Subject, takeUntil, timer } from 'rxjs';
 
-import { AuthFacadeService } from '../services/auth-facade.service';
+import { LoginFacadeService } from './login-facade.service';
 
 @Component({
 	selector: 'nx-mfe-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
-	providers: [AuthFacadeService],
+	providers: [LoginFacadeService],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	animations: [
+		trigger('slideLeft', [
+			state('*', style({ opacity: 0, transform: 'translate3d(100%, 0, 0)' })),
+			state('in', style({ opacity: 1, transform: 'translate3d(0, 0, 0)' })),
+			state('out', style({ opacity: 0, transform: 'translate3d(-100%, 0, 0)' })),
+
+			// fade in when created. this could also be written as transition('void => *')
+			transition(':enter', [animate('300ms 50ms ease-out')]),
+
+			// fade out when destroyed. this could also be written as transition('void => *')
+			transition(':leave', animate('300ms 0ms ease-in')),
+		]),
+		trigger('slideRight', [
+			state('*', style({ opacity: 0, transform: 'translate3d(-100%, 0, 0)' })),
+			state('in', style({ opacity: 1, transform: 'translate3d(0, 0, 0)' })),
+			state('out', style({ opacity: 0, transform: 'translate3d(100%, 0, 0)' })),
+
+			// fade in when created. this could also be written as transition('void => *')
+			transition(':enter', [animate('300ms 50ms ease-out')]),
+
+			// fade out when destroyed. this could also be written as transition('void => *')
+			transition(':leave', animate('300ms 0ms ease-in')),
+		]),
+	],
 })
-export class LoginComponent implements OnDestroy {
+export class LoginComponent implements AfterViewInit, OnDestroy {
 	@Form()
 	public form: FormGroup;
 
-	public text$ = new BehaviorSubject<string>('Test string');
+	@ViewChild('emailInput')
+	public emailInput: ElementRef<HTMLInputElement>;
 
-	private _passwordVisible$ = new BehaviorSubject<boolean>(false);
-	public passwordVisible$ = this._passwordVisible$.asObservable();
-	public passwordVisible = false;
+	@ViewChild('passwordInput')
+	public passwordInput: PasswordInputComponent;
+
+	// TODO удалить тестовые данные
+	public readonly text$ = new BehaviorSubject<string>('Test string');
+
+	private readonly _logInStep$ = new BehaviorSubject<number>(0);
+	public readonly logInStep$ = this._logInStep$.asObservable();
 
 	private readonly _destroy$ = new Subject<void>();
 
-	constructor(public readonly authFacade: AuthFacadeService, private readonly _fb: FormBuilder) {
+	public get emailControl(): AbstractControl | null {
+		return this.form.get('email');
+	}
+	public get passwordControl(): AbstractControl | null {
+		return this.form.get('password');
+	}
+
+	constructor(
+		public readonly loginFacade: LoginFacadeService,
+		private readonly _fb: FormBuilder
+	) {
 		this._createForm();
 
-		this.authFacade.loginError$
-			.pipe(takeUntil(this._destroy$))
-			.subscribe(() => this.form.get('password')?.setValue(null));
+		this.loginFacade.logInError$
+			.pipe(
+				filter((x) => !!x),
+				takeUntil(this._destroy$)
+			)
+			.subscribe(() => this.backToEmail());
 
+		// TODO удалить тестовые данные
 		setTimeout(() => this.text$.next('Test string changed in Subject'), 2000);
+		// TODO удалить тестовые данные
 		setTimeout(() => this.text$.next('Test string changed 2x in Subject'), 3000);
+	}
+
+	public ngAfterViewInit(): void {
+		this.emailInput.nativeElement.focus();
 	}
 
 	public ngOnDestroy(): void {
@@ -41,18 +100,45 @@ export class LoginComponent implements OnDestroy {
 		this._destroy$.complete();
 	}
 
-	@IfFormValid()
-	public login(): void {
-		const credentials = new Login(this.form.value);
-		this.authFacade.login(credentials);
-	}
-
+	// TODO удалить тестовые данные
 	public onClick(bool: MouseEvent): void {
 		console.log('login', bool);
 	}
 
-	public tooglePasswordVisibility(): void {
-		this.passwordVisible = !this.passwordVisible;
+	@IfFormValid()
+	public logIn(): void {
+		const credentials = plainToClass(LoginRequest, this.form.value);
+		this.loginFacade.logIn(credentials);
+	}
+
+	public forwardToPassword(): void {
+		if (this.emailControl?.valid) {
+			this._nextStep();
+			// HACK 400ms - animation delay
+			timer(400).subscribe(() => this.passwordInput.focus());
+		} else {
+			this.emailControl?.markAsTouched();
+		}
+	}
+
+	public backToEmail(): void {
+		this._prevStep();
+		this.passwordControl?.reset();
+
+		// HACK 400ms - animation delay
+		timer(400).subscribe(() => {
+			this.emailInput.nativeElement.focus();
+			this.emailInput.nativeElement.select();
+		});
+	}
+
+	private _prevStep(): void {
+		if (this._logInStep$.value === 0) return;
+		this._logInStep$.next(this._logInStep$.value - 1);
+	}
+
+	private _nextStep(): void {
+		this._logInStep$.next(this._logInStep$.value + 1);
 	}
 
 	private _createForm(): void {

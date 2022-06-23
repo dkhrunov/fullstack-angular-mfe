@@ -1,6 +1,8 @@
+@use './prefix' as *;
+
 // ----------------
 // Button Set
 // ----------------
-.bx--btn-set .bx--btn {
+.#{$prefix}--btn-set .bx--btn {
 	flex: 1;
 }

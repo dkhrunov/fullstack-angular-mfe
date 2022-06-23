@@ -1,2 +1,2 @@
-export * from './lib/domains';
-export * from './lib/dto';
+export * from './lib/requests';
+export * from './lib/responses';

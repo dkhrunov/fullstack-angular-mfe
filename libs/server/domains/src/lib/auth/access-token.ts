@@ -1,6 +1,6 @@
 import { JwtVerifyOptions } from '@nestjs/jwt';
-import { AuthTokenPayload } from '@nx-mfe/shared/data-access';
 
+import { AuthTokenPayload } from './auth-token-payload';
 import { JwtToken } from './jwt-token';
 
 export class AccessToken extends JwtToken<AuthTokenPayload> {

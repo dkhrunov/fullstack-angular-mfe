@@ -1,28 +1,18 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-// @ts-ignore
-import ArrowRight16 from '@carbon/icons/es/arrow--right/16';
-// @ts-ignore
-import ArrowRight20 from '@carbon/icons/es/arrow--right/20';
-// @ts-ignore
-import Information16 from '@carbon/icons/es/information/16';
-// @ts-ignore
-import Information20 from '@carbon/icons/es/information/20';
-// @ts-ignore
-import View16 from '@carbon/icons/es/view/16';
-// @ts-ignore
-import View20 from '@carbon/icons/es/view/20';
-// @ts-ignore
-import ViewOff16 from '@carbon/icons/es/view--off/16';
-// @ts-ignore
-import ViewOff20 from '@carbon/icons/es/view--off/20';
 import { AuthModule } from '@nx-mfe/client/auth';
 import { ENVIRONMENT, IEnvironment } from '@nx-mfe/client/environment';
 import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
-import { MfeModule } from '@nx-mfe/client/mfe';
-import { IconModule } from 'carbon-components-angular';
-import { IconService } from 'carbon-components-angular';
+import { IMfeModuleOptions, MfeModule } from '@nx-mfe/client/mfe';
 
 import { microfrontend as mfeConfig } from './microfrontends';
+
+const DEFAULT_MFE_OPTIONS: IMfeModuleOptions = {
+	mfeConfig,
+	preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
+	loaderDelay: 500,
+	loader: 'client-loaders-mfe/spinner',
+	fallback: 'client-fallbacks-mfe/mfe-fallback',
+};
 
 /**
  * Provides core functionality of apps and micro-frontends.
@@ -31,16 +21,9 @@ import { microfrontend as mfeConfig } from './microfrontends';
 	imports: [
 		AuthModule,
 		InjectorContainerModule,
-		IconModule,
-		// FIXME подумать что можно с этим сделат, проблема с тем что в Remote не нужны зависимости из preload
+		// FIXME подумать что можно с этим сделать, проблема с тем что в Remote не нужны зависимости из preload
 		// как варик можно выпилить отсюда и объявлять не посредственно в нужных модулях
-		MfeModule.forRoot({
-			mfeConfig,
-			preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
-			loaderDelay: 500,
-			loader: 'client-loaders-mfe/spinner',
-			fallback: 'client-fallbacks-mfe/mfe-fallback',
-		}),
+		MfeModule.forRoot(DEFAULT_MFE_OPTIONS),
 	],
 })
 export class CoreModule {
@@ -66,18 +49,5 @@ export class CoreModule {
 				},
 			],
 		};
-	}
-
-	constructor(protected iconService: IconService) {
-		iconService.registerAll([
-			View16,
-			View20,
-			ViewOff16,
-			ViewOff20,
-			ArrowRight16,
-			ArrowRight20,
-			Information16,
-			Information20,
-		]);
 	}
 }

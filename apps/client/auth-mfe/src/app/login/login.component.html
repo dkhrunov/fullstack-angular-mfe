@@ -1,93 +1,195 @@
-<!-- <h1 nz-typography>Login</h1>
+<div ibmGrid>
+	<div ibmRow>
+		<div
+			ibmCol
+			[offsets]="{ sm: 0, md: 0, lg: 0 }"
+			[columnNumbers]="{ sm: 0, md: 0, lg: 7 }"
+			class="illustration"
+		></div>
+		<div
+			ibmCol
+			[offsets]="{ sm: 0, md: 0, lg: 1 }"
+			[columnNumbers]="{ sm: 4, md: 8, lg: 4 }"
+			class="log-in"
+		>
+			<div class="illustration illustration--inline"></div>
 
-<nz-alert
-	*ngIf="authFacade.loginError$ | async as errorMessage"
-	nzType="error"
-	[nzMessage]="errorMessage"
-	nzShowIcon
->
-</nz-alert>
+			<div class="log-in__wrapper">
+				<div
+					*ngIf="(logInStep$ | async) === 0"
+					[@slideLeft]="(logInStep$ | async) === 0 ? 'in' : 'out'"
+					class="log-in__email-section"
+				>
+					<ui-card theme="light">
+						<ui-card-header>
+							<ui-card-title> Log In </ui-card-title>
+							<ui-card-subtitle>
+								Don't have an account?&nbsp;
+								<a ibmLink [routerLink]="['../register']"> Create an Account </a>
+							</ui-card-subtitle>
+						</ui-card-header>
+						<ui-card-content>
+							<ui-divider></ui-divider>
+							<form [formGroup]="form" (submit)="forwardToPassword()">
+								<ng-container *ngIf="emailControl as control">
+									<ibm-label
+										labelState="success"
+										labelInputID="email"
+										[invalid]="control.touched && control.invalid"
+										[invalidText]="invalidText"
+									>
+										<p class="label-content">
+											<span>Continue with email</span>
+											<!-- TODO поправить ссылку -->
+											<a ibmLink [routerLink]="['../register']">
+												Forgot email?
+											</a>
+										</p>
+										<input
+											#emailInput
+											ibmText
+											id="email"
+											type="email"
+											formControlName="email"
+											placeholder="Input email"
+											[invalid]="control.touched && control.invalid"
+										/>
+										<ng-template #invalidText>
+											<ng-container
+												*ngIf="
+													control.touched && control.hasError('required')
+												"
+											>
+												Email is required
+											</ng-container>
+											<ng-container *ngIf="control.hasError('email')">
+												Enter a valid email address
+											</ng-container>
+										</ng-template>
+									</ibm-label>
+								</ng-container>
 
-<form nz-form [formGroup]="form" (ngSubmit)="login()">
-	<nz-form-item>
-		<nz-form-label [nzSpan]="24" nzFor="email">E-mail</nz-form-label>
-		<nz-form-control nzHasFeedback [nzErrorTip]="emailErrorTpl">
-			<nz-input-group nzPrefixIcon="mail">
-				<input
-					nz-input
-					id="email"
-					type="email"
-					formControlName="email"
-					placeholder="Input your e-mail"
-				/>
-			</nz-input-group>
-		</nz-form-control>
-		<ng-template #emailErrorTpl let-control>
-			<ng-container *ngIf="control.hasError('required')">
-				Please input your E-mail!
-			</ng-container>
-			<ng-container *ngIf="control.hasError('email')">
-				The input is not valid E-mail!
-			</ng-container>
-		</ng-template>
-	</nz-form-item>
+								<ng-container *ngIf="form.get('session') as control">
+									<ibm-checkbox
+										formControlName="session"
+										class="session-checkbox"
+									>
+										<span>Do not remember</span>
+										<ibm-tooltip-icon
+											alignment="center"
+											content="Session will be cleared when the browser is closed"
+										>
+											<svg ibmIcon="information" size="16"></svg>
+										</ibm-tooltip-icon>
+									</ibm-checkbox>
+								</ng-container>
 
-	<nz-form-item>
-		<nz-form-label [nzSpan]="24" nzFor="password">Password</nz-form-label>
-		<nz-form-control [nzErrorTip]="passwordErrorTpl">
-			<nz-input-group nzPrefixIcon="lock" [nzSuffix]="togglePasswordVisibilityTpl">
-				<input
-					nz-input
-					formControlName="password"
-					id="password"
-					class="password-input"
-					placeholder="Input your password"
-					[type]="passwordVisible ? 'text' : 'password'"
-				/>
-				<ng-template #togglePasswordVisibilityTpl>
-					<i
-						nz-icon
-						[nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
-						(click)="passwordVisible = !passwordVisible"
-					></i>
+								<ibm-notification
+									*ngIf="loginFacade.logInError$ | async as error"
+									[notificationObj]="{
+										type: 'error',
+										title: 'Error:',
+										message: error
+									}"
+									(close)="loginFacade.resetLogInError()"
+								>
+								</ibm-notification>
+							</form>
+						</ui-card-content>
+						<ui-card-footer>
+							<button ibmButton="primary" (click)="forwardToPassword()">
+								Continue
+								<svg class="bx--btn__icon" ibmIcon="arrow--right" size="16"></svg>
+							</button>
+						</ui-card-footer>
+					</ui-card>
+					<ng-container *ngTemplateOutlet="help"></ng-container>
+				</div>
+
+				<div
+					*ngIf="(logInStep$ | async) === 1"
+					[@slideRight]="(logInStep$ | async) === 1 ? 'in' : 'out'"
+					class="log-in__password-section"
+				>
+					<ui-card theme="light">
+						<ui-card-header>
+							<ui-card-title> Log In </ui-card-title>
+							<ui-card-subtitle>
+								Logging in as {{ emailControl?.value }}&nbsp;
+								<a ibmLink (click)="backToEmail()"> Not you? </a>
+							</ui-card-subtitle>
+						</ui-card-header>
+						<ui-card-content>
+							<ui-divider></ui-divider>
+							<form [formGroup]="form" (submit)="logIn()">
+								<ng-container *ngIf="passwordControl as control">
+									<ibm-label
+										labelInputID="password"
+										[invalid]="control.touched && control.invalid"
+										[invalidText]="invalidText"
+									>
+										Password
+										<div uiPasswordInputWrapper>
+											<ui-password-input
+												#passwordInput
+												id="password"
+												formControlName="password"
+												placeholder="Input password"
+												[invalid]="control.touched && control.invalid"
+											>
+											</ui-password-input>
+										</div>
+										<ng-template #invalidText>
+											<ng-container
+												*ngIf="
+													control.touched && control?.hasError('required')
+												"
+											>
+												Password is required
+											</ng-container>
+										</ng-template>
+									</ibm-label>
+								</ng-container>
+							</form>
+						</ui-card-content>
+						<ui-card-footer>
+							<button
+								ibmButton="primary"
+								[disabled]="loginFacade.isLogIn$ | async"
+								(click)="logIn()"
+							>
+								Log in
+								<svg
+									*ngIf="!(loginFacade.isLogIn$ | async); else loading"
+									class="bx--btn__icon"
+									ibmIcon="arrow--right"
+									size="16"
+								></svg>
+								<ng-template #loading>
+									<ibm-loading class="bx--btn__icon" size="sm"></ibm-loading>
+								</ng-template>
+							</button>
+						</ui-card-footer>
+					</ui-card>
+					<ng-container *ngTemplateOutlet="help"></ng-container>
+				</div>
+
+				<ng-template #help>
+					<p class="help">
+						Need help?
+						<a ibmLink href="mailto:therealpanda98@gmail.com?subject=I have problem">
+							Contant me
+						</a>
+					</p>
 				</ng-template>
-			</nz-input-group>
-		</nz-form-control>
-		<ng-template #passwordErrorTpl let-control>
-			<ng-container *ngIf="control.hasError('required')">
-				Please input your Password!
-			</ng-container>
-		</ng-template>
-	</nz-form-item>
-
-	<nz-form-item>
-		<nz-form-control>
-			<div nz-row class="session-checkbock">
-				<div nz-col [nzSpan]="12">
-					<label nz-checkbox formControlName="session">
-						<span>Do not remember</span>
-					</label>
-				</div>
-				<div nz-col [nzSpan]="12">
-					<a class="login-form-forgot">Forgot password</a>
-				</div>
 			</div>
+		</div>
+	</div>
+</div>
 
-			<button
-				nz-button
-				nzBlock
-				class="submit-button"
-				nzType="primary"
-				[nzLoading]="authFacade.isLogIn$ | async"
-			>
-				Log in
-			</button>
-			<span>Dont haven`t an account yet? <a [routerLink]="['../register']">Register</a></span>
-		</nz-form-control>
-	</nz-form-item>
-</form>
+<!-- TODO удалить тестовые данные -->
 
-<ng-container
+<!-- <ng-container
 	*mfeOutlet="
 		'client-dashboard-mfe/entry';
 		inputs: { text: text$ | async };
@@ -111,160 +213,3 @@
 
 <p>Not existend MFE 2 'aaaa/bbb':</p>
 <ng-container *mfeOutlet="'aaaa/bbb'"></ng-container> -->
-
-<!-- <div
-  ibmGrid
-  class="bx--grid--full-width"
-> -->
-<div ibmGrid>
-	<div ibmRow [condensed]="true">
-		<div ibmCol [columnNumbers]="{ sm: 4, md: 8, lg: 3 }" class="form">
-			<ibm-tile class="card" theme="light">
-				<div class="card__header">
-					<h2 class="card__title">Login</h2>
-					<p>
-						Don't have an account?
-						<a ibmLink [routerLink]="['../register']"> Create an new account </a>
-					</p>
-				</div>
-
-				<div class="divider"></div>
-
-				<div class="card__content">
-					<form [formGroup]="form" (ngSubmit)="login()">
-						<ng-container *ngIf="form.get('email') as control">
-							<ibm-label
-								labelInputID="email"
-								[invalid]="control.touched && control.invalid"
-								[invalidText]="invalidText"
-							>
-								<span>
-									<span>Continue with email</span>
-									<a ibmLink [routerLink]="['../register']"> Forgot email? </a>
-								</span>
-								<input
-									ibmText
-									id="email"
-									type="email"
-									formControlName="email"
-									placeholder="Input email"
-									[invalid]="control.touched && control.invalid"
-								/>
-								<ng-template #invalidText>
-									<ng-container
-										*ngIf="control.touched && control.hasError('required')"
-									>
-										Email is required
-									</ng-container>
-									<ng-container *ngIf="control.hasError('email')">
-										Enter a valid email address
-									</ng-container>
-								</ng-template>
-							</ibm-label>
-						</ng-container>
-
-						<button type="button" ibmButton="primary" class="next-button">
-							Continue
-							<svg class="bx--btn__icon" ibmIcon="arrow--right" size="16"></svg>
-						</button>
-
-						<ng-container *ngIf="form.get('session') as control">
-							<ibm-checkbox formControlName="session" class="session-checkbox">
-								Do not remember
-								<ibm-tooltip-icon
-									alignment="center"
-									content="Session will be cleared when the browser is closed"
-								>
-									<svg ibmIcon="information" size="16"></svg>
-								</ibm-tooltip-icon>
-							</ibm-checkbox>
-						</ng-container>
-
-						<div class="divider"></div>
-					</form>
-				</div>
-
-				<!-- <ng-container *ngIf="form.get('password') as control">
-              <ibm-label
-                labelInputID="password"
-                [invalid]="control.touched && control.invalid"
-                [invalidText]="invalidText"
-              >
-                Password
-                <div class="input-wrapper">
-                  <input
-                    ibmText
-                    id="password"
-                    formControlName="password"
-                    class="password-input"
-                    placeholder="Input password"
-                    [type]="passwordVisible ? 'text' : 'password'"
-                    [invalid]="control.touched && control.invalid"
-                  />
-                  <button
-                    class="input__suffix"
-                    type="button"
-                    ibmButton="ghost"
-                    size="field"
-                    tabindex="-1"
-                    [iconOnly]="true"
-                    (click)="tooglePasswordVisibility()"
-                  >
-                    <svg
-                      *ngIf="passwordVisible"
-                      class="bx--btn__icon"
-                      ibmIcon="view--off"
-                      size="16"
-                    ></svg>
-                    <svg
-                      *ngIf="!passwordVisible"
-                      class="bx--btn__icon"
-                      ibmIcon="view"
-                      size="16"
-                    ></svg>
-                  </button>
-                </div>
-                <ng-template #invalidText>
-                  <ng-container *ngIf="control.touched && control?.hasError('required')">
-                    Password is required
-                  </ng-container>
-                </ng-template>
-              </ibm-label>
-            </ng-container>
-          </form>
-        </div>
-
-        <div class="card__footer">
-          <button
-            ibmButton="primary"
-            type="submit"
-            [disabled]="authFacade.isLogIn$ | async"
-            (click)="login()"
-            style="width: 100%;"
-          >
-            Continue
-            <ibm-loading
-              *ngIf="authFacade.isLogIn$ | async; else icon"
-              class="bx--btn__icon"
-              size="sm"
-            ></ibm-loading>
-            <ng-template #icon>
-              <svg
-                class="bx--btn__icon"
-                ibmIcon="arrow--right"
-                size="16"
-              ></svg>
-            </ng-template>
-          </button>
-        </div> -->
-			</ibm-tile>
-		</div>
-
-		<div
-			ibmCol
-			[offsets]="{ sm: 0, md: 0, lg: 1 }"
-			[columnNumbers]="{ sm: 0, md: 0, lg: 8 }"
-			class="illustration"
-		></div>
-	</div>
-</div>

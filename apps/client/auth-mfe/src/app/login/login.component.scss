@@ -1,71 +1,107 @@
-@use 'libs/client/styles/src/lib/utilities/convert' as *;
-@use 'libs/client/styles/src/lib/utilities/bemify' as *;
+@use 'utilities/convert' as *;
+@use 'utilities/bemify' as *;
 @use '@carbon/layout';
+@use '@carbon/type';
+@use '@carbon/grid';
 
-.illustration {
-	// background-image: url(/assets/svg/login.svg);
-	// background-size: contain;
-	background-image: url(/assets/illustrations/illustration-4.png);
-	background-position: bottom;
+// .light-theme
+// .illustration {
+//   background-image: url(/assets/illustrations/illustration-4.png);
+//   background-position: bottom;
+//   background-repeat: no-repeat;
+//   height: 100vh;
+// }
+
+// .dark-theme
+@include block(illustration) {
+	background-image: url(/assets/illustrations/illustration-5.png);
+	background-position: 50% 75%;
 	background-repeat: no-repeat;
-}
-
-:host-context(.dark-theme) {
-	.illustration {
-		// background-image: url(/assets/svg/login.svg);
-		background-image: url(/assets/illustrations/illustration-8.png);
-		background-position: bottom;
-		background-repeat: no-repeat;
-		background-size: contain;
-		opacity: 0.5;
-	}
-}
-
-.form {
-	min-height: 100vh;
-}
-
-.input-wrapper {
-	flex: 1;
-
-	.bx--text-input {
-		padding-right: rem(40px);
-	}
-
-	.input__suffix {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		background-color: transparent;
-	}
-}
-
-@include block(card) {
-	@include element(header) {
-		margin-bottom: layout.$spacing-08;
-	}
-
-	@include element(title) {
-		margin-bottom: layout.$spacing-02;
-	}
-
-	@include element(footer) {
-		margin-top: rem(16px);
-	}
-}
-
-.divider {
-	border-bottom: 1px solid #8d8d8d;
-	margin-bottom: layout.$spacing-05;
-	display: block;
-}
-
-.next-button {
+	background-size: contain;
+	opacity: 0.7;
+	height: 100vh;
 	width: 100%;
+
+	@include modifier(inline) {
+		background-position: 50% 50%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -1;
+		opacity: 0.25;
+	}
+}
+
+@include block(log-in) {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	position: relative;
+	overflow: hidden;
+	align-items: center;
+	position: relative;
+
+	@include element(wrapper) {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		max-width: 500px;
+		width: 100%;
+		height: 100%;
+		position: relative;
+
+		@include grid.breakpoint(lg) {
+			justify-content: flex-start;
+			margin-top: 25%;
+		}
+	}
+
+	.illustration {
+		display: none;
+	}
+
+	@include grid.breakpoint-between(md, lg) {
+		.illustration {
+			display: block;
+		}
+	}
+
+	@include element(email-section) {
+		position: absolute;
+		width: 100%;
+	}
+
+	@include element(password-section) {
+		position: absolute;
+		width: 100%;
+	}
+}
+
+ui-card-header {
 	margin-bottom: layout.$spacing-06;
 }
 
-.session-checkbox {
+form {
+	margin-bottom: layout.$spacing-07;
+
+	& > * {
+		margin-bottom: layout.$spacing-05;
+	}
+}
+
+.label-content {
 	display: flex;
-	margin-bottom: layout.$spacing-08;
+	justify-content: space-between;
+	align-items: center;
+	flex: 1;
+}
+
+.session-checkbox {
+	display: block;
+}
+
+.help {
+	margin-top: layout.$spacing-05;
+	@include type.type-style('body-01');
 }

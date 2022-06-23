@@ -1,0 +1,46 @@
+@use 'utilities/convert' as *;
+@use 'utilities/bemify' as *;
+@use '@carbon/layout';
+@use '@carbon/type';
+
+@include block(ui-card) {
+	display: block;
+	padding: 0;
+
+	@include element(header) {
+		display: block;
+		padding: layout.$spacing-05 layout.$spacing-05 0 layout.$spacing-05;
+	}
+
+	@include element(title) {
+		display: flex;
+		margin-bottom: layout.$spacing-02;
+		@include type.type-style('heading-05');
+	}
+
+	@include element(subtitle) {
+		display: flex;
+		@include type.type-style('body-01');
+	}
+
+	@include element(content) {
+		display: flex;
+		flex-direction: column;
+		margin: 0 layout.$spacing-05;
+	}
+
+	@include element(footer) {
+		display: flex;
+		justify-content: flex-end;
+		height: 4rem;
+		width: 100%;
+		bottom: 0;
+		left: 0;
+
+		button {
+			flex: 0 1 50%;
+			height: 4rem;
+			max-width: none;
+		}
+	}
+}
