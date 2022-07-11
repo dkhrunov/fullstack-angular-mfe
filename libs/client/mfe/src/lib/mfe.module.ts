@@ -2,7 +2,6 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { loadRemoteEntry } from '@angular-architects/module-federation';
 
 import { MfeOutletDirective } from './directives';
-import { validateMfeString } from './helpers';
 import { IMfeModuleOptions } from './interfaces';
 import { MfeRegistry } from './registry';
 import { OPTIONS } from './tokens';
@@ -27,9 +26,6 @@ export class MfeModule {
 	public static forRoot(options: IMfeModuleOptions): ModuleWithProviders<MfeModule> {
 		const mfeRegistry = MfeRegistry.getInstance(options.mfeConfig);
 		const loadMfeBundle = loadMfeBundleWithMfeRegistry(mfeRegistry);
-
-		if (options.loader) validateMfeString(options.loader);
-		if (options.fallback) validateMfeString(options.fallback);
 
 		if (options.preload) {
 			options.preload.map((mfe) => loadMfeBundle(mfe));

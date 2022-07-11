@@ -1,4 +1,5 @@
 import { MfeConfig } from './mfe-config.interface';
+import { RemoteComponent } from './remote-component.interface';
 
 /**
  * Global options.
@@ -26,7 +27,7 @@ export interface IMfeModuleOptions {
 	 *
 	 * For better UX, add this micro-frontend to {@link preload} array.
 	 */
-	loader?: string;
+	loader?: RemoteComponent;
 	/**
 	 * Fallback micro-frontend.
 	 *
@@ -35,5 +36,5 @@ export interface IMfeModuleOptions {
 	 *
 	 * For better UX, add this micro-frontend to {@link preload} array.
 	 */
-	fallback?: string;
+	fallback?: RemoteComponent;
 }

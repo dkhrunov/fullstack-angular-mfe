@@ -1,7 +1,6 @@
 import {
 	AfterViewInit,
 	ChangeDetectorRef,
-	ComponentFactory,
 	ComponentRef,
 	Directive,
 	EmbeddedViewRef,
@@ -11,64 +10,100 @@ import {
 	OnChanges,
 	OnDestroy,
 	TemplateRef,
-	Type,
 	ViewContainerRef,
 } from '@angular/core';
 import { EChangesStrategy, TrackChanges } from '@nx-mfe/client/common';
 
-import { validateMfeString } from '../helpers';
-import { IMfeModuleOptions } from '../interfaces';
+import { LoadMfeOptions } from '../helpers';
 import {
-	DynamicComponentBinding,
-	MfeComponentFactoryResolver,
-	MfeComponentFactoryResolverOptions,
-	MfeComponentsCache,
-} from '../services';
+	IMfeModuleOptions,
+	isStandaloneRemoteComponent,
+	ModularRemoteComponent,
+	RemoteComponent,
+	StandaloneRemoteComponent,
+} from '../interfaces';
+import { DynamicComponentBinding, MfeComponentsCache, MfeService } from '../services';
 import { OPTIONS } from '../tokens';
 import { MfeOutletInputs, MfeOutletOutputs } from '../types';
 
 const delay = <T>(time: number) => new Promise<T>((resolve) => setTimeout(resolve, time));
 
-type CreationElement = string | TemplateRef<unknown> | Type<unknown>;
-
-type CreatedElementRef = EmbeddedViewRef<unknown> | ComponentRef<unknown>;
-
 /**
  * Micro-frontend directive for plugin-based approach.
  * -------------
  *
- * This directive allows you to load micro-frontend inside in HTML template.
+ * This directive give you to load micro-frontend inside in HTML template.
  *
- * @example
- * <!-- Loads entry component from dashboard micro-frontend app. -->
- * <ng-container *mfeOutlet="'dashboard-mfe/entry'"></ng-container>
- *
- * @example
- * <!--
- *   Loads micro-frontend named - entry from dashboard app with custom loader and custom fallback.
- *   And set input text to micro-frontend component.
- * -->
+ * @example Loads remote component and show as embed view or as a plugin.
+ * ```html
+ * <!-- Loads EntryComponent that declared in EntryModule from dashboard micro-frontend app. -->
  * <ng-container *mfeOutlet="
- *     'dashboard/entry';
- *     inputs: { text: text$ | async };
- *     loader: loader;
- *     fallback: fallback
+ *    'dashboard';
+ *    module: 'EntryModule';
+ *    component: 'EntryComponent';
  * ">
  * </ng-container>
  *
- * <ng-template #loader><div>loading...</div></ng-template>
- * <ng-template #fallback><div>ops! Something went wrong</div></ng-template>
+ * <!-- Or you can use ng-template, next example works same as previous example -->
+ * <ng-template
+ *    mfeOutlet="dashboard"
+ *    mfeOutletModule="EntryModule"
+ *    mfeOutletComponent="EntryComponent"
+ * >
+ * </ng-template>
+ * ```
  *
- * @example
- * <!--
- *    Loads micro-frontend named - entry from dashboard app with
- *    custom fallback specified as micro-frontend component too.
- * -->
+ * @example Loads standalone remote component. Standalone component - it is a component that does not depend on anything and does not need dependencies from other modules.
+ * ```html
+ * <!-- You can load a standalone component without declaring a module in the mfeOutletModule prop. -->
+ * <ng-template
+ *    mfeOutlet="dashboard"
+ *    mfeOutletComponent="EntryComponent"
+ * >
+ * </ng-template>
+ * ```
+ *
+ * @example You can sets Inputs and sets handlers for Output events of the Remote component.
+ * ```html
  * <ng-container *mfeOutlet="
- *     'client-dashboard-mfe/entry';
- *     fallback: 'fallback-mfe/default'
+ *    'dashboard';
+ *    module: 'EntryModule';
+ *    component: 'EntryComponent';
+ *    inputs: { text: text$ | async };
+ *    outputs: { click: onClick }
  * ">
  * </ng-container>
+ *```
+ *
+ * @example Loads remote component and sets custom loader, same approach for fallback view.
+ * ```html
+ * <ng-template
+ *    mfeOutlet="dashboard"
+ *    mfeOutletModule="EntryModule"
+ *    mfeOutletComponent="EntryComponent"
+ *    [mfeOutletLoader]="loaderMfe"
+ *    [mfeOutletLoaderDelay]="2000"
+ * >
+ * </ng-template>
+ *
+ * <!-- You can specify simple HTML content or declare another MFE component, like in the example below. -->
+ * <ng-template #loaderMfe>
+ *    <!-- For loader Mfe you should set mfeOutletLoader to undefined, and mfeOutletLoaderDelay to 0. For better UX. -->
+ *    <ng-template
+ *      mfeOutlet="loaders"
+ *      mfeOutletModule="SpinnerModule"
+ *      mfeOutletComponent="SpinnerComponent"
+ *      [mfeOutletLoader]="undefined"
+ *      [mfeOutletLoaderDelay]="0"
+ *    >
+ *    </ng-template>
+ * </ng-template>
+ *
+ * <!-- Simple HTML content. -->
+ * <ng-template #loader>
+ *    <div>loading...</div>
+ * </ng-template>
+ * ```
  */
 @Directive({
 	// eslint-disable-next-line @angular-eslint/directive-selector
@@ -78,21 +113,24 @@ type CreatedElementRef = EmbeddedViewRef<unknown> | ComponentRef<unknown>;
 })
 export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	/**
-	 * Micro-frontend string. First half it is app name (remote app)
-	 * and second half after slash '/' symbol it is name of exposed component.
-	 *
-	 * **Notice**
-	 *
-	 * From micro-frontend app should be exposed both module class and component class.
-	 *
-	 * @example
-	 * // loader-mfe - it is app name
-	 * // spinner - exposed component.
-	 * // From loader-mfe should be exposed SpinnerComponent and SpinnerModule.
-	 * 'loaded-mfe/spinner'
+	 * Sets the Remote app name.
 	 */
 	@Input('mfeOutlet')
-	public mfe: string;
+	public mfeApp?: string;
+
+	/**
+	 * Sets the Remote compoennt.
+	 */
+	// eslint-disable-next-line @angular-eslint/no-input-rename
+	@Input('mfeOutletComponent')
+	public mfeComponent?: string;
+
+	/**
+	 * Sets the Remote module where declared Remote component (```mfeOutletComponent```)
+	 */
+	// eslint-disable-next-line @angular-eslint/no-input-rename
+	@Input('mfeOutletModule')
+	public mfeModule?: string;
 
 	/**
 	 * A map of Inputs for a micro-frontend component.
@@ -108,11 +146,22 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 
 	/**
 	 * Custom injector for micro-frontend component.
-	 *
 	 * @default current injector
 	 */
 	@Input('mfeOutletInjector')
 	public injector?: Injector = this._injector;
+
+	/**
+	 * MFE RemoteComponent or TemplateRef.
+	 * Displayed when loading the micro-frontend.
+	 *
+	 * **Overrides the loader specified in the global library settings.**
+	 * @default options.loader
+	 */
+	@Input('mfeOutletLoader')
+	public set loader(value: TemplateRef<unknown> | undefined) {
+		this._loader = value;
+	}
 
 	/**
 	 * The delay between displaying the contents of the bootloader and the micro-frontend .
@@ -125,48 +174,66 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	public loaderDelay = this._options.loaderDelay ?? 0;
 
 	/**
-	 * TemplateRef or MFE string or TemplateRef or Component class.
-	 * Displayed when loading the micro-frontend.
-	 *
-	 * **Overrides the loader specified in the global library settings.**
-	 *
-	 * @default options.loader
-	 */
-	@Input('mfeOutletLoader')
-	public loader?: CreationElement = this._options.loader;
-
-	/**
-	 * TemplateRef or MFE string or TemplateRef or Component class.
-	 * Displayed when loading or compiling a micro-frontend with an error.
+	 * MFE RemoteComponent or TemplateRef.
+	 * Displayed when loaded or compiled a micro-frontend with an error.
 	 *
 	 * **Overrides fallback the specified in the global library settings.**
-	 *
 	 * @default options.fallback
 	 */
 	@Input('mfeOutletFallback')
-	public fallback?: CreationElement = this._options.fallback;
+	public set fallback(value: TemplateRef<unknown> | undefined) {
+		this._fallback = value;
+	}
 
 	/**
-	 * Custom options for MfeComponentFactoryResolver.
+	 * Custom options for loading Mfe.
 	 */
 	@Input('mfeOutletOptions')
-	public options?: MfeComponentFactoryResolverOptions;
+	public options?: LoadMfeOptions;
 
-	private _mfeComponentFactory?: ComponentFactory<unknown>;
+	private _loader?: RemoteComponent | TemplateRef<unknown> = this._options.loader;
+	private _fallback?: RemoteComponent | TemplateRef<unknown> = this._options.fallback;
+
 	private _mfeComponentRef?: ComponentRef<unknown>;
 	private _loaderComponentRef?: ComponentRef<unknown> | EmbeddedViewRef<unknown>;
 	private _fallbackComponentRef?: ComponentRef<unknown> | EmbeddedViewRef<unknown>;
 
+	/**
+	 * Remote component object.
+	 */
+	private get _remoteComponent(): RemoteComponent {
+		if (this.mfeModule) {
+			return {
+				app: this.mfeApp,
+				component: this.mfeComponent,
+				module: this.mfeModule,
+			} as ModularRemoteComponent;
+		}
+
+		return {
+			app: this.mfeApp,
+			component: this.mfeComponent,
+		} as StandaloneRemoteComponent;
+	}
+
 	constructor(
 		private readonly _vcr: ViewContainerRef,
 		private readonly _injector: Injector,
-		private readonly _cache: MfeComponentsCache,
-		private readonly _mcfr: MfeComponentFactoryResolver,
-		private readonly _binding: DynamicComponentBinding,
+		private readonly _mfeCache: MfeComponentsCache,
+		private readonly _mfeService: MfeService,
+		private readonly _dynamicBinding: DynamicComponentBinding,
 		@Inject(OPTIONS) private readonly _options: IMfeModuleOptions
 	) {}
 
-	@TrackChanges('mfe', 'render', {
+	@TrackChanges('mfeRemote', 'renderMfe', {
+		compare: true,
+		strategy: EChangesStrategy.NonFirst,
+	})
+	@TrackChanges('mfeComponent', 'renderMfe', {
+		compare: true,
+		strategy: EChangesStrategy.NonFirst,
+	})
+	@TrackChanges('mfeModule', 'renderMfe', {
 		compare: true,
 		strategy: EChangesStrategy.NonFirst,
 	})
@@ -174,49 +241,28 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 		strategy: EChangesStrategy.NonFirst,
 		compare: true,
 	})
-	@TrackChanges('mfe', 'validateMfeString', { compare: true })
-	@TrackChanges('loader', 'validateMfeString', { compare: true })
-	@TrackChanges('fallback', 'validateMfeString', { compare: true })
 	public ngOnChanges(): void {
 		return;
+	}
+
+	public ngAfterViewInit(): void {
+		this.renderMfe();
 	}
 
 	public ngOnDestroy(): void {
 		this._clearView();
 	}
 
-	public ngAfterViewInit(): void {
-		this.render();
-	}
-
-	/**
-	 * Checks that value of Input is correct micro-frontend string.
-	 *
-	 * @param value Setted value
-	 *
-	 * @internal
-	 */
-	protected validateMfeString(value: string | undefined): void {
-		if (typeof value === 'string') {
-			validateMfeString(value);
-		}
-	}
-
 	/**
 	 * Transfer MfeOutletInputs to micro-frontend component.
 	 *
 	 * Used when changing input "inputs" of this directive.
-	 *
 	 * @internal
 	 */
 	protected transferInputs(): void {
-		if (!this._mfeComponentRef || !this._mfeComponentFactory) return;
+		if (!this._mfeComponentRef) return;
 
-		this._binding.bindInputs(
-			this._mfeComponentFactory.inputs,
-			this.inputs ?? {},
-			this._mfeComponentRef?.instance
-		);
+		this._dynamicBinding.bindInputs(this._mfeComponentRef, this.inputs ?? {});
 
 		// Workaround for bug related to Angular and dynamic components.
 		// Link - https://github.com/angular/angular/issues/36667#issuecomment-926526405
@@ -224,21 +270,20 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 	}
 
 	/**
-	 * Rerender micro-frontend component.
+	 * Render micro-frontend component.
 	 *
 	 * While loading bundle of micro-frontend showing loader.
 	 * If error occur then showing fallback.
 	 *
 	 * Used when changing input "mfe" of this directive.
-	 *
 	 * @internal
 	 */
-	protected async render(): Promise<void> {
+	protected async renderMfe(): Promise<void> {
 		try {
 			// If some component already rendered then need to unbind outputs
-			if (this._mfeComponentFactory) this._binding.unbindOutputs();
+			if (this._mfeComponentRef) this._dynamicBinding.unbindOutputs();
 
-			if (this._cache.isRegistered(this.mfe)) {
+			if (this._mfeCache.isRegistered(this._remoteComponent)) {
 				this._showMfe();
 			} else {
 				await this._showLoader();
@@ -253,13 +298,12 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 
 	/**
 	 * Shows micro-frontend component.
-	 *
 	 * @internal
 	 */
 	private async _showMfe(): Promise<void> {
 		try {
-			if (this.mfe) {
-				this._mfeComponentRef = await this._displayComponent(this.mfe, true, this.options);
+			if (this.mfeApp) {
+				this._mfeComponentRef = await this._createView(this._remoteComponent, this.options);
 				this._bindMfeData();
 			}
 		} catch (error) {
@@ -270,13 +314,12 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 
 	/**
 	 * Shows loader content.
-	 *
 	 * @internal
 	 */
 	private async _showLoader(): Promise<void> {
 		try {
-			if (this.loader) {
-				this._loaderComponentRef = await this._displayComponent(this.loader);
+			if (this._loader) {
+				this._loaderComponentRef = await this._createView(this._loader);
 			}
 		} catch (error) {
 			console.error(error);
@@ -286,103 +329,118 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 
 	/**
 	 * Shows fallback content.
-	 *
 	 * @internal
 	 */
 	private async _showFallback(): Promise<void> {
-		if (this.fallback) {
-			this._fallbackComponentRef = await this._displayComponent(this.fallback);
+		if (this._fallback) {
+			this._fallbackComponentRef = await this._createView(this._fallback);
 		}
 	}
 
 	/**
-	 * Shows MFE | TemlateRer | Component content.
-	 *
-	 * @param templateRefOrMfeString MFE string or TemlateRef or Component.
-	 * @param saveComponentFactory If true saves componentFactory to this._mfeComponentFactory property.
+	 * Shows MFE Component or TemlateRef.
+	 * @param content MFE (Remote component) or TemlateRef.
 	 * @param options Custom options for MfeComponentFactoryResolver.
-	 *
 	 * @internal
 	 */
-	private async _displayComponent<TComponent = unknown>(
-		mfeString: string,
-		saveComponentFactory?: boolean,
-		options?: MfeComponentFactoryResolverOptions
-	): Promise<ComponentRef<TComponent>>;
-	private async _displayComponent<TContext = unknown>(
+	private async _createView<TContext = unknown>(
 		templateRef: TemplateRef<TContext>
 	): Promise<EmbeddedViewRef<TContext>>;
-	private async _displayComponent<TComponent = unknown>(
-		component: Type<TComponent>
+
+	private async _createView<TComponent = unknown>(
+		remoteComponent: RemoteComponent,
+		options?: LoadMfeOptions
 	): Promise<ComponentRef<TComponent>>;
-	private async _displayComponent<TComponent = unknown>(
-		content: CreationElement,
-		saveComponentFactory?: boolean,
-		options?: MfeComponentFactoryResolverOptions
-	): Promise<CreatedElementRef>;
-	private async _displayComponent<TComponent = unknown>(
-		content: CreationElement,
-		saveComponentFactory: boolean = false,
-		options?: MfeComponentFactoryResolverOptions
-	): Promise<CreatedElementRef> {
-		// MFE
-		if (typeof content === 'string') {
-			const componentFactory = await this._mcfr.resolveComponentFactory<TComponent>(
-				content,
-				this.injector,
-				options
-			);
 
-			if (saveComponentFactory) {
-				this._mfeComponentFactory = componentFactory;
-			}
+	private async _createView<T = unknown>(
+		remoteComponentOrTemplateRef: RemoteComponent | TemplateRef<T>,
+		options?: LoadMfeOptions
+	): Promise<EmbeddedViewRef<T> | ComponentRef<T>>;
 
+	private async _createView<T = unknown>(
+		content: RemoteComponent | TemplateRef<T>,
+		options?: LoadMfeOptions
+	): Promise<EmbeddedViewRef<T> | ComponentRef<T>> {
+		// TemplateRef
+		if (content instanceof TemplateRef) {
 			this._clearView();
+			return this._vcr.createEmbeddedView<T>(content);
+		}
+		// MFE (Remote Component)
+		else {
+			const componentRef: ComponentRef<T> = isStandaloneRemoteComponent(content)
+				? // for Angular v13+
+				  await this._createStandaloneRemoteComponent(content, options)
+				: // for Angular under v13 with componentFactory
+				  await this._createModularRemoteComponent(content, options);
 
-			const componentRef = this._vcr.createComponent(
-				componentFactory,
-				undefined,
-				this.injector
-			);
 			componentRef.changeDetectorRef.detectChanges();
 			return componentRef;
 		}
-		// TemplateRef
-		else if (content instanceof TemplateRef) {
-			this._clearView();
+	}
 
-			return this._vcr.createEmbeddedView(content);
-		}
-		// Component
-		else {
-			this._clearView();
+	/**
+	 * Create view for standalone remote component.
+	 * @param remoteComponent MFE remote component
+	 * @param options (Optional) object of options.
+	 */
+	private async _createStandaloneRemoteComponent<TComponent>(
+		remoteComponent: StandaloneRemoteComponent,
+		options?: LoadMfeOptions
+	): Promise<ComponentRef<TComponent>> {
+		const componentType = await this._mfeService.loadStandaloneComponent<TComponent>(
+			remoteComponent,
+			options
+		);
 
-			return this._vcr.createComponent(content, { injector: this.injector });
-		}
+		this._clearView();
+
+		const componentRef = this._vcr.createComponent<TComponent>(componentType, {
+			injector: this.injector,
+		});
+
+		return componentRef;
+	}
+
+	/**
+	 * Create view for modular remote component.
+	 * @param remoteComponent MFE remote component
+	 * @param options (Optional) object of options.
+	 */
+	private async _createModularRemoteComponent<TComponent>(
+		remoteComponent: ModularRemoteComponent,
+		options?: LoadMfeOptions
+	): Promise<ComponentRef<TComponent>> {
+		const componentFactory = await this._mfeService.loadModularComponent<unknown, TComponent>(
+			remoteComponent,
+			this._injector,
+			options
+		);
+
+		this._clearView();
+
+		const componentRef = this._vcr.createComponent<TComponent>(
+			componentFactory,
+			undefined,
+			this.injector
+		);
+
+		return componentRef;
 	}
 
 	/**
 	 * Binding the initial data of the micro-frontend.
-	 *
 	 * @internal
 	 */
 	private _bindMfeData(): void {
-		if (!this._mfeComponentRef || !this._mfeComponentFactory) {
+		if (!this._mfeComponentRef) {
 			throw new Error(
-				`_bindMfeData method must be called after micro-frontend component "${this.mfe}" has been initialized.`
+				`_bindMfeData method must be called after micro-frontend component "${this.mfeApp}" has been initialized.`
 			);
 		}
 
-		this._binding.bindInputs(
-			this._mfeComponentFactory.inputs,
-			this.inputs ?? {},
-			this._mfeComponentRef?.instance
-		);
-		this._binding.bindOutputs(
-			this._mfeComponentFactory.outputs,
-			this.outputs ?? {},
-			this._mfeComponentRef?.instance
-		);
+		this._dynamicBinding.bindInputs(this._mfeComponentRef, this.inputs ?? {});
+		this._dynamicBinding.bindOutputs(this._mfeComponentRef, this.outputs ?? {});
 
 		// Workaround for bug related to Angular and dynamic components.
 		// Link - https://github.com/angular/angular/issues/36667#issuecomment-926526405
@@ -391,7 +449,6 @@ export class MfeOutletDirective implements OnChanges, AfterViewInit, OnDestroy {
 
 	/**
 	 * Destroy all displayed components.
-	 *
 	 * @internal
 	 */
 	private _clearView() {
