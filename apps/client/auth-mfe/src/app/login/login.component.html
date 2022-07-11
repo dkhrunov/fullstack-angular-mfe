@@ -89,25 +89,58 @@
 
 <ng-container
 	*mfeOutlet="
-		'client-dashboard-mfe/entry';
+		'client-dashboard-mfe';
+		module: 'EntryModule';
+		component: 'EntryComponent';
 		inputs: { text: text$ | async };
 		outputs: { click: onClick };
 		loader: loader
 	"
->
-</ng-container>
+></ng-container>
 
 <ng-template #loader>
 	<div>loading...</div>
 </ng-template>
 
-<ng-container *mfeOutlet="'client-dashboard-mfe/entry'"></ng-container>
+<ng-template
+	mfeOutlet="client-dashboard-mfe"
+	mfeOutletModule="EntryModule"
+	mfeOutletComponent="EntryComponent"
+	[mfeOutletLoader]="loaderMfe"
+	[mfeOutletLoaderDelay]="1000"
+></ng-template>
 
-<!-- <ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 0"></ng-container>
-<ng-container *mfeOutlet="'client-fallbacks-mfe/mfe-fallback'; loaderDelay: 20000"></ng-container> -->
+<ng-template #loaderMfe>
+	<ng-template
+		mfeOutlet="client-loaders-mfe"
+		mfeOutletModule="SpinnerModule"
+		mfeOutletComponent="SpinnerComponent"
+		[mfeOutletLoader]="undefined"
+		[mfeOutletLoaderDelay]="0"
+	>
+	</ng-template>
+</ng-template>
+
+<!-- <ng-template
+  mfeOutlet="client-dashboard-mfe"
+  mfeOutletModule="EntryModule"
+  mfeOutletComponent="EntryComponent"
+></ng-template>
+
+<ng-template
+  mfeOutlet="client-dashboard-mfe"
+  mfeOutletModule="EntryModule"
+  mfeOutletComponent="EntryComponent"
+  [mfeOutletLoader]="{ remote: 'client-loaders-mfe', component: 'SpinnerComponent', module: 'SpinnerModule'}"
+  [mfeOutletLoaderDelay]="2000"
+></ng-template> -->
+
+<!-- <ng-container *mfeOutlet="'client-fallbacks-mfe/MfeFallbackComponent'; loaderDelay: 0"></ng-container>
+<ng-container *mfeOutlet="'client-fallbacks-mfe/MfeFallbackComponent'; loaderDelay: 20000"></ng-container> -->
 
 <p>Not existend MFE 'aaaa/bbb':</p>
-<ng-container *mfeOutlet="'aaaa/bbb'"></ng-container>
-
-<p>Not existend MFE 2 'aaaa/bbb':</p>
-<ng-container *mfeOutlet="'aaaa/bbb'"></ng-container>
+<ng-template
+	mfeOutlet="not-existing-app"
+	mfeOutletModule="EntryModule"
+	mfeOutletComponent="EntryComponent"
+></ng-template>

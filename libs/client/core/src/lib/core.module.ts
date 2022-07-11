@@ -17,8 +17,16 @@ import { microfrontend as mfeConfig } from './microfrontends';
 			mfeConfig,
 			preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
 			loaderDelay: 500,
-			loader: 'client-loaders-mfe/spinner',
-			fallback: 'client-fallbacks-mfe/mfe-fallback',
+			loader: {
+				app: 'client-loaders-mfe',
+				module: 'SpinnerModule',
+				component: 'SpinnerComponent',
+			},
+			fallback: {
+				app: 'client-fallbacks-mfe',
+				module: 'MfeFallbackModule',
+				component: 'MfeFallbackComponent',
+			},
 		}),
 	],
 })

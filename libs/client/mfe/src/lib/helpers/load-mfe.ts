@@ -8,36 +8,38 @@ import { MfeRegistry } from '../registry';
  */
 export type LoadMfeOptions = {
 	/**
+	 * Set custom exposed module name, by default module name = exposedItem + 'Module'.
+	 */
+	moduleName?: string;
+	/**
 	 * Type of loaded module as a ```script``` or as a ```module```.
 	 */
 	type?: LoadRemoteModuleOptions['type'];
 };
 
+const loadMfeDefaultOptions: LoadMfeOptions = { type: 'module' };
+
 /**
  * Loads remote module.
  *
  * @param remoteApp The name of the micro-frontend app decalred in ModuleFederationPlugin.
- * @param exposedFile  The key of the exposed module decalred in ModuleFederationPlugin.
+ * @param exposedModule  The key of the exposed module decalred in ModuleFederationPlugin.
  * @param options (Optional) object of options.
  */
 export async function loadMfe<T = unknown>(
 	remoteApp: string,
-	exposedFile: string,
-	options: LoadMfeOptions = { type: 'module' }
+	exposedModule: string,
+	options: LoadMfeOptions = loadMfeDefaultOptions
 ): Promise<Type<T>> {
+	const _options: LoadMfeOptions = { ...loadMfeDefaultOptions, ...options };
 	const remoteEntry = MfeRegistry.getInstance().getMfeRemoteEntry(remoteApp);
-
 	const loadRemoteModuleOptions: LoadRemoteModuleOptions =
-		options.type === 'module'
-			? { type: options.type, remoteEntry, exposedModule: exposedFile }
-			: {
-					type: options.type,
-					remoteEntry,
-					exposedModule: exposedFile,
-					remoteName: remoteApp,
-			  };
+		_options.type === 'module'
+			? { type: _options.type, remoteEntry, exposedModule }
+			: { type: _options.type, remoteEntry, exposedModule, remoteName: remoteApp };
 
 	const bundle = await loadRemoteModule(loadRemoteModuleOptions);
+	const moduleName = _options.moduleName ?? exposedModule;
 
-	return bundle[exposedFile];
+	return bundle[moduleName];
 }

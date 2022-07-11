@@ -10,13 +10,13 @@ const routes: Routes = [
 		children: [
 			{
 				path: 'login',
-				loadChildren: () => loadMfe('client-auth-mfe/login'),
+				loadChildren: () => loadMfe('client-auth-mfe', 'LoginModule'),
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},
 			{
 				path: 'register',
-				loadChildren: () => loadMfe('client-auth-mfe/register'),
+				loadChildren: () => loadMfe('client-auth-mfe', 'LoginModule'),
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},
@@ -25,7 +25,7 @@ const routes: Routes = [
 	{
 		path: 'dashboard',
 		loadChildren: () =>
-			loadRemoteModule('client-dashboard-mfe', 'Entry').then((m) => m.EntryModule),
+			loadRemoteModule('client-dashboard-mfe', 'EntryModule').then((m) => m.EntryModule),
 		canLoad: [AuthGuard],
 		canActivate: [AuthGuard],
 	},
@@ -36,7 +36,7 @@ const routes: Routes = [
 	},
 	{
 		path: '**',
-		loadChildren: () => loadMfe('client-fallbacks-mfe/not-found'),
+		loadChildren: () => loadMfe('client-fallbacks-mfe', 'NotFoundModule'),
 	},
 ];
 
