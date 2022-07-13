@@ -1,1 +1,1 @@
-# This lib is full copy of the [ngx-mfe]()(https://github.com/dkhrunov/ngx-mfe)
+# This lib is full copy of the [ngx-mfe](https://github.com/dkhrunov/ngx-mfe)
