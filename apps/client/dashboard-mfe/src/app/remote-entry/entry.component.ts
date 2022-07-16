@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { EntryService } from './entry.service';
 
 @Component({
 	selector: 'nx-mfe-dashboard-entry',
 	template: `
 		<div class="remote-entry">
-			<h2 (click)="open()">{{ text ? text : 'dashboard Remote Entry Component' }}</h2>
+			<h2 (click)="open()">{{ text ? text : 'Dashboard Remote Entry Component' }}</h2>
 		</div>
 	`,
 	styles: [
@@ -25,7 +26,9 @@ export class EntryComponent {
 	@Output()
 	public click = new EventEmitter<boolean>();
 
-	constructor() {}
+	constructor(private readonly _service: EntryService) {
+		console.log('Value from provider, that was provided to EntryModule', this._service.data);
+	}
 
 	public open(): void {
 		this.click.emit(true);

@@ -16,7 +16,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'register',
-				loadChildren: () => loadMfe('client-auth-mfe', 'LoginModule'),
+				loadChildren: () => loadMfe('client-auth-mfe', 'RegisterModule'),
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { EntryComponent } from './entry.component';
+import { EntryService } from './entry.service';
 
 @NgModule({
 	imports: [
@@ -14,6 +15,7 @@ import { EntryComponent } from './entry.component';
 			},
 		]),
 	],
+	providers: [EntryService],
 	declarations: [EntryComponent],
 	exports: [EntryComponent],
 })
