@@ -26,11 +26,7 @@ export class RegisterFacadeService implements OnDestroy {
 	constructor(
 		private readonly _authApiService: AuthApiService,
 		private readonly _modalService: ModalService
-	) {
-		setTimeout(() => {
-			this._showConfirmRegistrationModal('den.uru@mail.ru');
-		}, 200);
-	}
+	) {}
 
 	public ngOnDestroy(): void {
 		this._destroy$.next();
