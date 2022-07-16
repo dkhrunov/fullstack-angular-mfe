@@ -3,7 +3,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
 	selector: 'nx-mfe-not-found',
 	template: `
-		<nz-result
+		<p>Sorry, the page you visited does not exist.</p>
+		<!-- <nz-result
 			nzStatus="404"
 			nzTitle="404"
 			nzSubTitle="Sorry, the page you visited does not exist."
@@ -11,7 +12,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 			<div nz-result-extra>
 				<button nz-button nzType="primary" routerLink="/">Back Home</button>
 			</div>
-		</nz-result>
+		</nz-result> -->
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
