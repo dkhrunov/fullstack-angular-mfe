@@ -1,12 +1,14 @@
-import { ComponentFactory, Injectable, Type } from '@angular/core';
+import { Injectable, Type } from '@angular/core';
 import { AsyncSubject, lastValueFrom } from 'rxjs';
 
 import {
-	isModularRemoteComponent,
-	ModularRemoteComponent,
+	isRemoteComponentWithModule,
+	isStandaloneRemoteComponent,
 	RemoteComponent,
+	RemoteComponentWithModule,
 	StandaloneRemoteComponent,
 } from '../interfaces';
+import { ComponentWithNgModuleRef } from '../types';
 
 /**
  * Cache of the loaded micro-frontend apps.
@@ -18,8 +20,11 @@ import {
 @Injectable({
 	providedIn: 'root',
 })
-export class MfeComponentsCache {
-	private readonly _map = new Map<string, AsyncSubject<ComponentFactory<any> | Type<any>>>();
+export class RemoteComponentsCache {
+	private readonly _map = new Map<
+		string,
+		AsyncSubject<ComponentWithNgModuleRef<any, any> | Type<any>>
+	>();
 
 	/**
 	 * Register a new micro-frontend cache.
@@ -29,7 +34,7 @@ export class MfeComponentsCache {
 		if (this.isRegistered(remoteComponent)) return;
 
 		const key = this.generateKey(remoteComponent);
-		this._map.set(key, new AsyncSubject<ComponentFactory<any> | Type<any>>());
+		this._map.set(key, new AsyncSubject<ComponentWithNgModuleRef<any, any> | Type<any>>());
 	}
 
 	/**
@@ -53,13 +58,13 @@ export class MfeComponentsCache {
 	}
 
 	/**
-	 * Set to cache ComponentFactory of micro-frontend.
+	 * Set to cache ComponentWithNgModuleRef of micro-frontend.
 	 * @param remoteComponent Mfe Remote Component
-	 * @param value ComponentFactory for that micro-frontend
+	 * @param value ComponentWithNgModuleRef for that micro-frontend
 	 */
-	public setValue<TComponent>(
-		remoteComponent: ModularRemoteComponent,
-		value: ComponentFactory<TComponent>
+	public setValue<TComponent, TModule>(
+		remoteComponent: RemoteComponentWithModule,
+		value: ComponentWithNgModuleRef<TComponent, TModule>
 	): void;
 
 	public setValue<TComponent>(
@@ -67,9 +72,9 @@ export class MfeComponentsCache {
 		value: Type<TComponent>
 	): void;
 
-	public setValue<TComponent>(
+	public setValue<TComponent, TModule>(
 		remoteComponent: RemoteComponent,
-		value: ComponentFactory<TComponent> | Type<TComponent>
+		value: ComponentWithNgModuleRef<TComponent, TModule> | Type<TComponent>
 	): void {
 		if (!this.isRegistered(remoteComponent)) {
 			throw new Error(
@@ -79,14 +84,15 @@ export class MfeComponentsCache {
 			);
 		}
 
-		if (isModularRemoteComponent(remoteComponent)) {
+		if (isStandaloneRemoteComponent(remoteComponent)) {
 			const cache = this.getCache<TComponent>(remoteComponent);
-			cache.next(value as ComponentFactory<TComponent>);
+			cache.next(value as Type<TComponent>);
 			cache.complete();
+			return;
 		}
 
-		const cache = this.getCache<TComponent>(remoteComponent);
-		cache.next(value as Type<TComponent>);
+		const cache = this.getCache<TComponent, TModule>(remoteComponent);
+		cache.next(value as ComponentWithNgModuleRef<TComponent, TModule>);
 		cache.complete();
 	}
 
@@ -110,30 +116,30 @@ export class MfeComponentsCache {
 	}
 
 	/**
-	 * Gets ComponentFactory or Component Class of the micro-frontend.
+	 * Gets ComponentWithNgModuleRef or Component Class of the micro-frontend.
 	 *
 	 * ---------------------
-	 * Returns ComponentFactory of MFE for modular component,
-	 * and in other hand returns Component Class of MFE for standalone component.
+	 * Returns ComponentWithNgModuleRef of MFE for component with module,
+	 * or returns Component Class of MFE for standalone component.
 	 * @param remoteComponent Mfe Remote Component
 	 */
-	public getValue<TComponent>(
-		remoteComponent: ModularRemoteComponent
-	): Promise<ComponentFactory<TComponent>>;
+	public getValue<TComponent, TModule>(
+		remoteComponent: RemoteComponentWithModule
+	): Promise<ComponentWithNgModuleRef<TComponent, TModule>>;
 
 	public getValue<TComponent>(
 		remoteComponent: StandaloneRemoteComponent
 	): Promise<Type<TComponent>>;
 
-	public getValue<TComponent>(
+	public getValue<TComponent, TModule>(
 		remoteComponent: RemoteComponent
-	): Promise<Type<TComponent>> | Promise<ComponentFactory<TComponent>> {
-		if (isModularRemoteComponent(remoteComponent)) {
+	): Promise<ComponentWithNgModuleRef<TComponent, TModule>> | Promise<Type<TComponent>> {
+		if (isStandaloneRemoteComponent(remoteComponent)) {
 			const cache = this.getCache<TComponent>(remoteComponent);
 			return lastValueFrom(cache);
 		}
 
-		const cache = this.getCache<TComponent>(remoteComponent);
+		const cache = this.getCache<TComponent, TModule>(remoteComponent);
 		return lastValueFrom(cache);
 	}
 
@@ -141,17 +147,19 @@ export class MfeComponentsCache {
 	 * Gets the AsyncSubject cache value from Map
 	 * @param remoteComponent Mfe Remote Component
 	 */
-	protected getCache<TComponent>(
-		remoteComponent: ModularRemoteComponent
-	): AsyncSubject<ComponentFactory<TComponent>>;
+	protected getCache<TComponent, TModule>(
+		remoteComponent: RemoteComponentWithModule
+	): AsyncSubject<ComponentWithNgModuleRef<TComponent, TModule>>;
 
 	protected getCache<TComponent>(
 		remoteComponent: StandaloneRemoteComponent
 	): AsyncSubject<Type<TComponent>>;
 
-	protected getCache<TComponent>(
+	protected getCache<TComponent, TModule>(
 		remoteComponent: RemoteComponent
-	): AsyncSubject<Type<TComponent>> | AsyncSubject<ComponentFactory<TComponent>> {
+	):
+		| AsyncSubject<ComponentWithNgModuleRef<TComponent, TModule>>
+		| AsyncSubject<Type<TComponent>> {
 		const key = this.generateKey(remoteComponent);
 		const value = this._map.get(key);
 
@@ -160,11 +168,11 @@ export class MfeComponentsCache {
 				`Error MFE "${JSON.stringify(remoteComponent)}" does not exist in cache`
 			);
 
-		if (isModularRemoteComponent(remoteComponent)) {
-			return value as AsyncSubject<ComponentFactory<TComponent>>;
+		if (isStandaloneRemoteComponent(remoteComponent)) {
+			return value as AsyncSubject<Type<TComponent>>;
 		}
 
-		return value as AsyncSubject<Type<TComponent>>;
+		return value as AsyncSubject<ComponentWithNgModuleRef<TComponent, TModule>>;
 	}
 
 	/**
@@ -172,9 +180,10 @@ export class MfeComponentsCache {
 	 * @param remoteComponent Mfe Remote Component
 	 */
 	protected generateKey(remoteComponent: RemoteComponent): string {
-		if (isModularRemoteComponent(remoteComponent)) {
+		if (isRemoteComponentWithModule(remoteComponent)) {
 			return `${remoteComponent.app}/${remoteComponent.component}/${remoteComponent.module}`;
 		}
+
 		return `${remoteComponent.app}/${remoteComponent.component}`;
 	}
 }
