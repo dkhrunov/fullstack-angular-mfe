@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard, UnAuthGuard } from '@dekh/ngx-jwt-auth';
-import { loadRemoteModule } from '@nrwl/angular/mfe';
+import { loadRemoteModule } from '@nrwl/angular/mf';
 import { loadMfe } from '@nx-mfe/client/mfe';
 
 const routes: Routes = [
