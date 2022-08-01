@@ -5,7 +5,7 @@
 	"scripts": {
 		"lint:affected": "nx affected:lint --fix --parallel --maxParallel=5",
 		"test:affected": "nx affected:test --parallel --maxParallel=5",
-		"postinstall": "ngcc --properties es2015 browser module main"
+		"postinstall": "ngcc --properties es2020 browser module main"
 	},
 	"private": true,
 	"dependencies": {
