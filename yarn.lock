@@ -236,7 +236,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/cli@14.1.0":
+"@angular/cli@^14.0.0":
   version "14.1.0"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-14.1.0.tgz#15085e007f642d58461b7b9251b9256645c998a3"
   integrity sha512-W/t2PkGHu9r87po1ZXQRYU81VtjzNMuGsP5tmoW1pGuibK7Kj+25G+jrXK/WADTi+pjTMXHNXYn8PlMNAIrZ/w==
