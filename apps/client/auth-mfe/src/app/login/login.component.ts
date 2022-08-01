@@ -86,7 +86,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 			.subscribe(() => this.backToEmail());
 
 		// TODO удалить тестовые данные
-		setTimeout(() => this.text$.next('Test string changed in Subject'), 2000);
+		setTimeout(() => this.text$.next('Test string changed 1x in Subject'), 2000);
 		// TODO удалить тестовые данные
 		setTimeout(() => this.text$.next('Test string changed 2x in Subject'), 3000);
 	}

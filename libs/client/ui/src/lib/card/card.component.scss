@@ -4,7 +4,8 @@
 @use '@carbon/type';
 
 @include block(ui-card) {
-	display: block;
+	display: flex;
+	flex-direction: column;
 	padding: 0;
 
 	@include element(header) {
@@ -25,8 +26,9 @@
 
 	@include element(content) {
 		display: flex;
+		flex: 1;
 		flex-direction: column;
-		margin: 0 layout.$spacing-05;
+		margin: layout.$spacing-06 layout.$spacing-05;
 	}
 
 	@include element(footer) {

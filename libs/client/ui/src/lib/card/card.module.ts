@@ -8,9 +8,10 @@ import { CardFooterDirective } from './card-footer.directive';
 import { CardHeaderDirective } from './card-header.directive';
 import { CardSubtitleDirective } from './card-subtitle.directive';
 import { CardTitleDirective } from './card-title.directive';
+import { DividerModule } from '../divider';
 
 @NgModule({
-	imports: [CommonModule, TilesModule],
+	imports: [CommonModule, TilesModule, DividerModule],
 	declarations: [
 		CardComponent,
 		CardHeaderDirective,

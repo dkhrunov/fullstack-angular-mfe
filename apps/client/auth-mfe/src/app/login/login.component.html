@@ -40,10 +40,13 @@
 									>
 										<p class="label-content">
 											<span>Continue with email</span>
-											<!-- TODO поправить ссылку -->
-											<a ibmLink [routerLink]="['../register']">
-												Forgot email?
-											</a>
+											<!-- TODO добавить функционал по востановлению пароля как на бэке так и на клиенте -->
+											<!-- <a
+                        ibmLink
+                        [routerLink]="['../register']"
+                      >
+                        Forgot email?
+                      </a> -->
 										</p>
 										<input
 											#emailInput
@@ -189,19 +192,23 @@
 
 <!-- TODO удалить тестовые данные -->
 
-<!-- <ng-container
-	*mfeOutlet="
-		'client-dashboard-mfe';
-		module: 'EntryModule';
-		component: 'EntryComponent';
-		inputs: { text: text$ | async };
-		outputs: { click: onClick };
-		loader: loader
-	"
-></ng-container>
+<!-- <ng-template
+  mfeOutlet="client-dashboard-mfe"
+  mfeOutletModule="EntryModule"
+  mfeOutletComponent="EntryComponent"
+  [mfeOutletInputs]="{ text: text$ | async }"
+  [mfeOutletOutputs]="{ click: onClick }"
+></ng-template>
 
-<ng-template #loader>
-	<div>loading...</div>
+<ng-template
+  mfeOutlet="client-dashboard-mfe"
+  mfeOutletModule="EntryModule"
+  mfeOutletComponent="EntryComponent"
+  [mfeOutletLoader]="loaderRef"
+></ng-template>
+
+<ng-template #loaderRef>
+  <div style="display: flex; flex: 1; justify-content: center;">loading...</div>
 </ng-template>
 
 <ng-template
@@ -223,26 +230,27 @@
 	</ng-template>
 </ng-template>
 
-<!-- <ng-template
+<ng-template
   mfeOutlet="client-dashboard-mfe"
   mfeOutletModule="EntryModule"
   mfeOutletComponent="EntryComponent"
+></ng-template> -->
+
+<!-- <ng-template
+  mfeOutlet="client-fallbacks-mfe"
+  mfeOutletComponent="MfeFallbackComponent"
+  [mfeOutletLoaderDelay]="0"
 ></ng-template>
 
 <ng-template
-  mfeOutlet="client-dashboard-mfe"
-  mfeOutletModule="EntryModule"
-  mfeOutletComponent="EntryComponent"
-  [mfeOutletLoader]="{ remote: 'client-loaders-mfe', component: 'SpinnerComponent', module: 'SpinnerModule'}"
-  [mfeOutletLoaderDelay]="2000"
+  mfeOutlet="client-fallbacks-mfe"
+  mfeOutletComponent="MfeFallbackComponent"
+  [mfeOutletLoaderDelay]="5000"
 ></ng-template> -->
-
-<!-- <ng-container *mfeOutlet="'client-fallbacks-mfe/MfeFallbackComponent'; loaderDelay: 0"></ng-container>
-<ng-container *mfeOutlet="'client-fallbacks-mfe/MfeFallbackComponent'; loaderDelay: 20000"></ng-container> -->
 
 <!-- <p>Not existend MFE 'aaaa/bbb':</p>
 <ng-template
-	mfeOutlet="not-existing-app"
-	mfeOutletModule="EntryModule"
-	mfeOutletComponent="EntryComponent"
+  mfeOutlet="not-existing-app"
+  mfeOutletModule="EntryModule"
+  mfeOutletComponent="EntryComponent"
 ></ng-template> -->
