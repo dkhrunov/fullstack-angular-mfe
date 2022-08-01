@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 import { generateMetadataKey, validateForm } from './helpers';
 
@@ -30,9 +30,9 @@ export function IfFormValid(formId?: string | symbol | number): MethodDecorator 
 		const originalMethod = descriptor.value;
 
 		descriptor.value = function (...args: unknown[]) {
-			const form: FormGroup = target[metadataKey];
+			const form: UntypedFormGroup = target[metadataKey];
 
-			if (!(form instanceof FormGroup)) {
+			if (!(form instanceof UntypedFormGroup)) {
 				throw new Error('Form property must be a FormGroup');
 			}
 

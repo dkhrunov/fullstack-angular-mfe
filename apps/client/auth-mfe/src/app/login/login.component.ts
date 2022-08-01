@@ -7,7 +7,7 @@ import {
 	OnDestroy,
 	ViewChild,
 } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { PasswordInputComponent } from '@nx-mfe/client/ui';
 import { LoginRequest } from '@nx-mfe/shared/data-access';
@@ -49,7 +49,7 @@ import { LoginFacadeService } from './login-facade.service';
 })
 export class LoginComponent implements AfterViewInit, OnDestroy {
 	@Form()
-	public form: FormGroup;
+	public form: UntypedFormGroup;
 
 	@ViewChild('emailInput')
 	public emailInput: ElementRef<HTMLInputElement>;
@@ -74,7 +74,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
 	constructor(
 		public readonly loginFacade: LoginFacadeService,
-		private readonly _fb: FormBuilder
+		private readonly _fb: UntypedFormBuilder
 	) {
 		this._createForm();
 

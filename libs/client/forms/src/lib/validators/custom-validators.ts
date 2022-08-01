@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export class CustomValidators {
 	public static confirm(compareWith: string): ValidatorFn {
@@ -10,7 +10,7 @@ export function confirmValidator(compareWith: string): ValidatorFn {
 	return (control: AbstractControl): ValidationErrors | null => {
 		if (
 			!!control.parent &&
-			control.parent instanceof FormGroup &&
+			control.parent instanceof UntypedFormGroup &&
 			control.parent.get(compareWith)?.value !== control.value
 		) {
 			return { confirm: true, error: true };
