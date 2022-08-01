@@ -45,5 +45,6 @@
 			"style": "scss"
 		}
 	},
-	"defaultProject": "client-shell-app"
+	"defaultProject": "client-shell-app",
+	"$schema": "./node_modules/nx/schemas/nx-schema.json"
 }
