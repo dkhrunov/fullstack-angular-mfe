@@ -1,0 +1,36 @@
+<ibm-modal size="sm" [open]="open" (overlaySelected)="closeModal()">
+	<ibm-modal-header (closeSelect)="closeModal()">
+		<p ibmModalHeaderHeading>
+			<ui-logo size="32"></ui-logo>
+			Verify your account
+		</p>
+	</ibm-modal-header>
+	<div ibmModalContent>
+		<div>
+			Account activation link has been sent to the e-mail addresss you provided - {{ email }}
+		</div>
+
+		<div class="mail-icon">
+			<div class="mail-icon__wrapper">
+				<svg ibmIcon="email--new" size="32" fill="currentColor"></svg>
+			</div>
+		</div>
+
+		<div class="send-mail">
+			<button
+				type="button"
+				ibmButton="ghost"
+				size="field"
+				[disabled]="countdown"
+				(click)="sendAgain()"
+			>
+				Didn`t get the mail? Send it again
+			</button>
+
+			<div class="send-mail__countdown" [style.visibility]="countdown ? 'visible' : 'hidden'">
+				You can send a new email after
+				{{ $any(countdown | async) * 1000 | date: 'mm:ss' }} second(s)
+			</div>
+		</div>
+	</div>
+</ibm-modal>

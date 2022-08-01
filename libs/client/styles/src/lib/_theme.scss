@@ -1,0 +1,7 @@
+@use './carbon-theme' as *;
+
+$carbon--theme: $theme;
+@import '~carbon-components/scss/globals/scss/styles';
+
+@import './override/carbon';
+@import './override/browser';

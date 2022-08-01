@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { DeepPartial, Repository } from 'typeorm';
@@ -27,11 +27,47 @@ export class UserService {
 
 	public async create(userData: DeepPartial<UserEntity>): Promise<UserEntity> {
 		if (userData.password) {
-			userData.password = await bcrypt.hash(userData.password, Number(process.env.SALT_ROUNDS));
+			userData.password = await bcrypt.hash(
+				userData.password,
+				Number(process.env.SALT_ROUNDS)
+			);
 		}
 		userData.confirmationLink = uuid.v4();
-		const user = this._userRepository.create(userData);
 
+		return this._userRepository.create(userData);
+	}
+
+	public async issueNewConfirmationLink(id: number): Promise<UserEntity>;
+	public async issueNewConfirmationLink(email: string): Promise<UserEntity>;
+	public async issueNewConfirmationLink(idOrEmail: number | string): Promise<UserEntity>;
+	public async issueNewConfirmationLink(idOrEmail: number | string): Promise<UserEntity> {
+		let user: UserEntity | undefined;
+
+		if (typeof idOrEmail === 'number') {
+			user = await this.getById(idOrEmail);
+		}
+
+		if (typeof idOrEmail === 'string') {
+			user = await this.getByEmail(idOrEmail);
+		}
+
+		if (!user) {
+			throw new NotFoundException(
+				`User with ${
+					typeof idOrEmail === 'number' ? idOrEmail + ' id' : idOrEmail + ' email'
+				} does not found`
+			);
+		}
+
+		const confirmationLink = uuid.v4();
+		user.confirmationLink = confirmationLink;
+		await this._userRepository.update(user.id, user);
+
+		return user;
+	}
+
+	public async createAndSave(userData: DeepPartial<UserEntity>): Promise<UserEntity> {
+		const user = await this.create(userData);
 		// TODO Add AutoMapper
 		return this._userRepository.save(user);
 	}

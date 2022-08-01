@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthTokenPayload, AuthTokensDto } from '@nx-mfe/shared/data-access';
+import { AuthTokenPayload } from '@nx-mfe/server/domains';
+import { AuthTokensResponse } from '@nx-mfe/shared/data-access';
 import { Repository } from 'typeorm';
 
 import { TokenEntity } from './token.entity';
@@ -15,7 +16,7 @@ export class TokenService {
 		private readonly _jwtService: JwtService
 	) {}
 
-	public generateTokens<P extends Record<string, any>>(payload: P): AuthTokensDto {
+	public generateTokens<P extends Record<string, any>>(payload: P): AuthTokensResponse {
 		const accessToken = this._jwtService.sign(payload, {
 			secret: process.env.JWT_ACCESS_SECRET,
 			expiresIn: Number(process.env.JWT_ACCESS_EXPIRES_IN),
@@ -26,7 +27,7 @@ export class TokenService {
 			expiresIn: Number(process.env.JWT_REFRESH_EXPIRES_IN),
 		});
 
-		return new AuthTokensDto(accessToken, refreshToken);
+		return new AuthTokensResponse(accessToken, refreshToken);
 	}
 
 	public async saveRefreshToken(

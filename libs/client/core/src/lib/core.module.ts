@@ -2,9 +2,25 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { AuthModule } from '@nx-mfe/client/auth';
 import { ENVIRONMENT, IEnvironment } from '@nx-mfe/client/environment';
 import { InjectorContainerModule } from '@nx-mfe/client/injector-container';
-import { MfeModule } from '@nx-mfe/client/mfe';
+import { IMfeModuleOptions, MfeModule } from '@nx-mfe/client/mfe';
 
 import { microfrontend as mfeConfig } from './microfrontends';
+
+const DEFAULT_MFE_OPTIONS: IMfeModuleOptions = {
+	mfeConfig,
+	preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
+	loaderDelay: 500,
+	loader: {
+		app: 'client-loaders-mfe',
+		module: 'SpinnerModule',
+		component: 'SpinnerComponent',
+	},
+	fallback: {
+		app: 'client-fallbacks-mfe',
+		module: 'MfeFallbackModule',
+		component: 'MfeFallbackComponent',
+	},
+};
 
 /**
  * Provides core functionality of apps and micro-frontends.
@@ -13,21 +29,9 @@ import { microfrontend as mfeConfig } from './microfrontends';
 	imports: [
 		AuthModule,
 		InjectorContainerModule,
-		MfeModule.forRoot({
-			mfeConfig,
-			preload: ['client-loaders-mfe', 'client-fallbacks-mfe'],
-			loaderDelay: 500,
-			loader: {
-				app: 'client-loaders-mfe',
-				module: 'SpinnerModule',
-				component: 'SpinnerComponent',
-			},
-			fallback: {
-				app: 'client-fallbacks-mfe',
-				module: 'MfeFallbackModule',
-				component: 'MfeFallbackComponent',
-			},
-		}),
+		// FIXME подумать что можно с этим сделать, проблема с тем что в Remote не нужны зависимости из preload
+		// как варик можно выпилить отсюда и объявлять не посредственно в нужных модулях
+		MfeModule.forRoot(DEFAULT_MFE_OPTIONS),
 	],
 })
 export class CoreModule {

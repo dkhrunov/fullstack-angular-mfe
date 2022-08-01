@@ -9,7 +9,7 @@ export interface StandaloneRemoteComponent {
 	component: string;
 }
 
-export interface ModularRemoteComponent {
+export interface RemoteComponentWithModule {
 	/**
 	 * Remote app name, specified in ModuleFederationPlugin in name config.
 	 */
@@ -24,7 +24,7 @@ export interface ModularRemoteComponent {
 	module: string;
 }
 
-export type RemoteComponent = StandaloneRemoteComponent | ModularRemoteComponent;
+export type RemoteComponent = StandaloneRemoteComponent | RemoteComponentWithModule;
 
 /**
  * Type Guard for RemoteComponent, checks if RemoteComponent is Standalone
@@ -42,8 +42,8 @@ export function isStandaloneRemoteComponent(
  * @param remoteComponent Mfe Remote Component
  * @returns
  */
-export function isModularRemoteComponent(
+export function isRemoteComponentWithModule(
 	remoteComponent: RemoteComponent
-): remoteComponent is ModularRemoteComponent {
+): remoteComponent is RemoteComponentWithModule {
 	return Object.prototype.hasOwnProperty.call(remoteComponent, 'module');
 }

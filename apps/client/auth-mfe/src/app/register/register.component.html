@@ -1,121 +1,152 @@
-<h1 nz-typography>Registration</h1>
+<div ibmGrid>
+	<div ibmRow>
+		<div
+			ibmCol
+			[offsets]="{ sm: 0, md: 0, lg: 0 }"
+			[columnNumbers]="{ sm: 0, md: 0, lg: 7 }"
+			class="illustration"
+		></div>
+		<div
+			ibmCol
+			[offsets]="{ sm: 0, md: 0, lg: 1 }"
+			[columnNumbers]="{ sm: 4, md: 8, lg: 4 }"
+			class="sign-up"
+		>
+			<div class="illustration illustration--inline"></div>
+			<div class="sign-up__wrapper" [@slideLeft]="'in'">
+				<ui-card theme="light">
+					<ui-card-header>
+						<ui-card-title>Sign up</ui-card-title>
+						<ui-card-subtitle>
+							Already have an account?&nbsp;
+							<a ibmLink [routerLink]="['../login']"> Log in </a>
+						</ui-card-subtitle>
+					</ui-card-header>
+					<ui-card-content>
+						<ui-divider></ui-divider>
+						<form [formGroup]="form" (submit)="register()">
+							<ng-container *ngIf="emailControl as control">
+								<ibm-label
+									labelState="success"
+									labelInputID="email"
+									[invalid]="control.touched && control.invalid"
+									[invalidText]="invalidText"
+								>
+									Email address
+									<input
+										#emailInput
+										ibmText
+										id="email"
+										type="email"
+										formControlName="email"
+										placeholder="Input email"
+										[invalid]="control.touched && control.invalid"
+									/>
+									<ng-template #invalidText>
+										<ng-container
+											*ngIf="control.touched && control.hasError('required')"
+										>
+											Email is required
+										</ng-container>
+										<ng-container *ngIf="control.hasError('email')">
+											Enter a valid email address
+										</ng-container>
+									</ng-template>
+								</ibm-label>
+							</ng-container>
 
-<nz-alert
-	*ngIf="authFacade.registerError$ | async as errorMessage"
-	nzType="error"
-	[nzMessage]="errorMessage"
-	nzShowIcon
-></nz-alert>
+							<ng-container *ngIf="passwordControl as control">
+								<ibm-label
+									labelInputID="password"
+									[invalid]="control.touched && control.invalid"
+									[invalidText]="invalidText"
+								>
+									Password
+									<div uiPasswordInputWrapper>
+										<ui-password-input
+											#passwordInput
+											id="password"
+											formControlName="password"
+											placeholder="Input password"
+											[invalid]="control.touched && control.invalid"
+											showStrength
+											[strengthTests]="passwordTests"
+											[strengthMinlength]="passwordMinlength"
+										>
+										</ui-password-input>
+									</div>
+									<ng-template #invalidText>
+										<ng-container
+											*ngIf="control.touched && control?.hasError('required')"
+										>
+											Password is required
+										</ng-container>
+										<ng-container
+											*ngIf="control.errors && control.hasError('minlength')"
+										>
+											Add
+											{{
+												control.errors['minlength'].requiredLength -
+													control.errors['minlength'].actualLength
+											}}
+											more characters!
+										</ng-container>
+										<ng-container
+											*ngIf="
+												control.hasError('pattern') &&
+												!control.hasError('minlength')
+											"
+										>
+											Password must contain letters, digits and character(s)
+											[@$!%*#?&]
+										</ng-container>
+									</ng-template>
+								</ibm-label>
+							</ng-container>
 
-<form nz-form [formGroup]="form" (ngSubmit)="submitForm()">
-	<nz-form-item>
-		<nz-form-label [nzSpan]="24" nzFor="email" nzRequired>E-mail</nz-form-label>
-		<nz-form-control nzHasFeedback [nzErrorTip]="emailErrorTpl">
-			<nz-input-group nzPrefixIcon="mail">
-				<input
-					nz-input
-					id="email"
-					type="email"
-					formControlName="email"
-					placeholder="Input your e-mail"
-				/>
-			</nz-input-group>
-		</nz-form-control>
-		<ng-template #emailErrorTpl let-control>
-			<ng-container *ngIf="control.hasError('email')">
-				The input is not valid E-mail!
-			</ng-container>
-			<ng-container *ngIf="control.hasError('required')">
-				Please input your E-mail!
-			</ng-container>
-		</ng-template>
-	</nz-form-item>
+							<ibm-notification
+								*ngIf="registerFacade.registerError$ | async as error"
+								[notificationObj]="{
+									type: 'error',
+									title: 'Error:',
+									message: error
+								}"
+								(close)="registerFacade.resetRegisterError()"
+							>
+							</ibm-notification>
+						</form>
+					</ui-card-content>
+					<ui-card-footer>
+						<button
+							ibmButton="primary"
+							[disabled]="registerFacade.isRegistering$ | async"
+							(click)="register()"
+						>
+							Create an account
+							<svg
+								*ngIf="!(registerFacade.isRegistering$ | async); else loading"
+								class="bx--btn__icon"
+								ibmIcon="arrow--right"
+								size="16"
+							></svg>
+							<ng-template #loading>
+								<ibm-loading class="bx--btn__icon" size="sm"></ibm-loading>
+							</ng-template>
+						</button>
+					</ui-card-footer>
+				</ui-card>
+				<p class="help">
+					Need help?
+					<a ibmLink href="mailto:therealpanda98@gmail.com?subject=I have problem">
+						Contant me
+					</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
 
-	<nz-form-item>
-		<nz-form-label [nzSpan]="24" nzFor="password" nzRequired>Password</nz-form-label>
-		<nz-form-control [nzErrorTip]="passwordErrorTpl">
-			<nz-input-group nzPrefixIcon="lock" [nzSuffix]="togglePasswordVisibilityTpl">
-				<input
-					nz-input
-					formControlName="password"
-					id="password"
-					class="password-input"
-					placeholder="Create a password"
-					[type]="passwordVisible ? 'text' : 'password'"
-					(ngModelChange)="validateConfirmPassword()"
-				/>
-				<ng-template #togglePasswordVisibilityTpl>
-					<i
-						nz-icon
-						[nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
-						(click)="passwordVisible = !passwordVisible"
-					></i>
-				</ng-template>
-			</nz-input-group>
-		</nz-form-control>
-		<ng-template #passwordErrorTpl let-control>
-			<ng-container *ngIf="control.hasError('required')">
-				Please input your Password!
-			</ng-container>
-			<ng-container *ngIf="control.hasError('minlength')">
-				Add
-				{{
-					control.errors.minlength.requiredLength - control.errors.minlength.actualLength
-				}}
-				more characters!
-			</ng-container>
-			<ng-container *ngIf="control.hasError('pattern') && !control.hasError('minlength')">
-				Password should contain at least one letter, one number and one special character
-				(@$!%*#?&).
-			</ng-container>
-		</ng-template>
-	</nz-form-item>
+<ibm-placeholder></ibm-placeholder>
 
-	<nz-form-item>
-		<nz-form-label [nzSpan]="24" nzFor="confirm" nzRequired>Confirm Password</nz-form-label>
-		<nz-form-control [nzErrorTip]="confirmPasswordErrorTpl">
-			<nz-input-group nzPrefixIcon="lock" [nzSuffix]="togglePasswordVisibilityTpl">
-				<input
-					nz-input
-					id="confirm"
-					formControlName="confirm"
-					class="password-input"
-					placeholder="Confirm your password"
-					[type]="passwordVisible ? 'text' : 'password'"
-				/>
-				<ng-template #togglePasswordVisibilityTpl>
-					<i
-						nz-icon
-						[nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
-						(click)="passwordVisible = !passwordVisible"
-					></i>
-				</ng-template>
-			</nz-input-group>
-		</nz-form-control>
-		<ng-template #confirmPasswordErrorTpl let-control>
-			<ng-container *ngIf="control.hasError('required')">
-				Please confirm your password!
-			</ng-container>
-			<ng-container *ngIf="control.hasError('confirm') && !control.hasError('required')">
-				Password is inconsistent!
-			</ng-container>
-		</ng-template>
-	</nz-form-item>
-
-	<nz-form-item>
-		<nz-form-control>
-			<button
-				nzBlock
-				nz-button
-				class="submit-button"
-				nzType="primary"
-				[nzLoading]="authFacade.isRegistering$ | async"
-			>
-				Register
-			</button>
-			<span>Already have an account? <a [routerLink]="['../login']">Log in</a></span>
-		</nz-form-control>
-	</nz-form-item>
-</form>
-
-<ng-container *mfeOutlet="'client-dashboard-mfe/EntryComponent'"></ng-container>
+<!-- TODO удалить тестовые данные -->
+<!-- <ng-container *mfeOutlet="'client-dashboard-mfe/EntryComponent'"></ng-container>  -->

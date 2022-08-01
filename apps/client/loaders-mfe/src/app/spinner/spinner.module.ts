@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { LoadingModule } from 'carbon-components-angular/loading';
 
 import { SpinnerComponent } from './spinner.component';
 
 @NgModule({
-	declarations: [SpinnerComponent],
 	imports: [
 		CommonModule,
 		RouterModule.forChild([
@@ -15,8 +14,9 @@ import { SpinnerComponent } from './spinner.component';
 				component: SpinnerComponent,
 			},
 		]),
-		NzSpinModule,
+		LoadingModule,
 	],
+	declarations: [SpinnerComponent],
 	exports: [SpinnerComponent],
 })
 export class SpinnerModule {}

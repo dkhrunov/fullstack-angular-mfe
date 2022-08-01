@@ -2,20 +2,21 @@ import {
 	BadRequestException,
 	ConflictException,
 	Injectable,
+	InternalServerErrorException,
 	NotFoundException,
 	UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { RefreshToken } from '@nx-mfe/server/domains';
+import { AuthTokenPayload, RefreshToken } from '@nx-mfe/server/domains';
 import { MailerService } from '@nx-mfe/server/mailer';
 import {
-	AuthTokenPayload,
-	AuthTokensDto,
-	CredentialsDto,
-	RegistrationDto,
+	AuthTokensResponse,
+	CredentialsRequest,
+	RegistrationRequest,
 } from '@nx-mfe/shared/data-access';
 import * as bcrypt from 'bcrypt';
 import { SentMessageInfo } from 'nodemailer';
+import { Connection } from 'typeorm';
 
 import { TokenService } from '../token/token.service';
 import { UserEntity } from '../user/user.entity';
@@ -24,6 +25,7 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class AuthService {
 	constructor(
+		private readonly _connection: Connection,
 		private readonly _userService: UserService,
 		private readonly _tokenService: TokenService,
 		private readonly _jwtService: JwtService,
@@ -31,10 +33,10 @@ export class AuthService {
 	) {}
 
 	public async login(
-		credentials: CredentialsDto,
+		credentials: CredentialsRequest,
 		userAgent: string,
 		ip: string
-	): Promise<AuthTokensDto> {
+	): Promise<AuthTokensResponse> {
 		const user = await this._userService.getByEmail(credentials.email);
 		if (!user) {
 			throw new UnauthorizedException('Некорректная почта или пароль');
@@ -55,19 +57,41 @@ export class AuthService {
 		return authTokens;
 	}
 
-	public async register(credentials: RegistrationDto): Promise<void> {
+	public async register(credentials: RegistrationRequest): Promise<void> {
 		const candidate = await this._userService.getByEmail(credentials.email);
 		if (candidate) {
 			throw new ConflictException(`Пользователь с данным email уже зарегистрирован`);
 		}
 
-		const user = await this._userService.create(credentials);
+		const queryRunner = this._connection.createQueryRunner();
 
-		// TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
-		await this._sendRegisterConfirmationMail(
-			user.email,
-			`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirm/${user.confirmationLink}`
-		);
+		await queryRunner.connect();
+		await queryRunner.startTransaction();
+		try {
+			const user = await this._userService.create(credentials);
+			await queryRunner.manager.save<UserEntity>(user);
+
+			// TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
+			await this._sendRegisterConfirmationMail(
+				user.email,
+				`${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/registration/confirm/${user.confirmationLink}`
+			);
+
+			await queryRunner.commitTransaction();
+		} catch (error) {
+			await queryRunner.rollbackTransaction();
+			throw new InternalServerErrorException();
+		} finally {
+			await queryRunner.release();
+		}
+	}
+
+	public async resendRegistrationConfirmationMail(id: number): Promise<void>;
+	public async resendRegistrationConfirmationMail(email: string): Promise<void>;
+	public async resendRegistrationConfirmationMail(idOrEmail: number | string): Promise<void>;
+	public async resendRegistrationConfirmationMail(idOrEmail: number | string): Promise<void> {
+		const user = await this._userService.issueNewConfirmationLink(idOrEmail);
+		await this._sendRegisterConfirmationMail(user.email, user.confirmationLink);
 	}
 
 	public async confirmRegistration(confirmationLink: string): Promise<void> {
@@ -92,7 +116,7 @@ export class AuthService {
 		refreshToken: string,
 		userAgent: string,
 		ip: string
-	): Promise<AuthTokensDto> {
+	): Promise<AuthTokensResponse> {
 		const tokenEntity = await this._tokenService.findRefreshToken(refreshToken);
 		if (!tokenEntity) {
 			throw new UnauthorizedException('Refresh token not found');
@@ -128,14 +152,14 @@ export class AuthService {
 		return authTokens;
 	}
 
-	private _generateAuthTokens(user: UserEntity): AuthTokensDto {
+	private _generateAuthTokens(user: UserEntity): AuthTokensResponse {
 		const { ...payload } = new AuthTokenPayload(user);
 		return this._tokenService.generateTokens(payload);
 	}
 
 	private async _sendRegisterConfirmationMail(
 		to: string,
-		link: string
+		confimationLink: string
 	): Promise<SentMessageInfo> {
 		return await this._mailerService.sendMail({
 			to,
@@ -144,8 +168,8 @@ export class AuthService {
 			text: '',
 			html: `
 					<div>
-						<h1>To confirm registration, follow the link</h1>
-						<a href="${link}">${link}</a>
+						<h2>Welcome to the application.</h2>
+	          <p>To confirm the email address, click here: <a href="${confimationLink}">confirm email</a></p>
 					</div>
 				`,
 		});

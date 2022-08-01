@@ -40,11 +40,6 @@
 						"allow": [],
 						"depConstraints": [
 							{
-								"sourceTag": "scope:shared",
-								"onlyDependOnLibsWithTags": ["scope:shared"],
-								"bannedExternalImports": ["@angular/*", "@nestjs/*"]
-							},
-							{
 								"sourceTag": "scope:client",
 								"onlyDependOnLibsWithTags": ["scope:shared", "scope:client"],
 								"bannedExternalImports": ["@nestjs/*"]
@@ -53,6 +48,11 @@
 								"sourceTag": "scope:server",
 								"onlyDependOnLibsWithTags": ["scope:shared", "scope:server"],
 								"bannedExternalImports": ["@angular/*"]
+							},
+							{
+								"sourceTag": "scope:shared",
+								"onlyDependOnLibsWithTags": ["scope:shared"],
+								"bannedExternalImports": ["@angular/*", "@nestjs/*"]
 							}
 						]
 					}

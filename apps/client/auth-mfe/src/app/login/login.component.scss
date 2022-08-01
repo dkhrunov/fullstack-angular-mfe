@@ -1,40 +1,101 @@
-:host {
-	width: 24rem;
+@use 'utilities/convert' as *;
+@use 'utilities/bemify' as *;
+@use '@carbon/layout';
+@use '@carbon/type';
+@use '@carbon/grid';
+
+// .light-theme
+// .illustration {
+//   background-image: url(/assets/illustrations/illustration-4.png);
+//   background-position: bottom;
+//   background-repeat: no-repeat;
+//   height: 100vh;
+// }
+
+// .dark-theme
+@include block(illustration) {
+	background-image: url(/assets/illustrations/illustration-5.png);
+	background-position: 50% 75%;
+	background-repeat: no-repeat;
+	background-size: contain;
+	opacity: 0.7;
+	height: 100vh;
+	width: 100%;
+
+	@include modifier(inline) {
+		background-position: 50% 50%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -1;
+		opacity: 0.25;
+	}
 }
 
-nz-alert {
-	position: absolute;
-	height: 4rem;
+@include block(log-in) {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	position: relative;
+	overflow: hidden;
+	align-items: center;
+	position: relative;
 
-	::ng-deep .ant-alert {
+	@include element(wrapper) {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		max-width: 500px;
+		width: 100%;
 		height: 100%;
+		position: relative;
+
+		@include grid.breakpoint(lg) {
+			justify-content: flex-start;
+			margin-top: 25%;
+		}
+	}
+
+	.illustration {
+		display: none;
+	}
+
+	@include grid.breakpoint-between(md, lg) {
+		.illustration {
+			display: block;
+		}
+	}
+
+	@include element(email-section) {
+		position: absolute;
+		width: 100%;
+	}
+
+	@include element(password-section) {
+		position: absolute;
+		width: 100%;
 	}
 }
 
 form {
-	width: 24rem;
-	margin-top: 6.188rem;
-}
-
-.session-checkbock {
-	flex: 1;
-	margin: 1.25rem 0 0.5rem;
-}
-
-.login-form-forgot {
-	float: right;
-}
-
-.submit-button {
-	margin-bottom: 0.5rem;
-}
-
-nz-input-group::ng-deep {
-	input.password-input + span[type='suffix'] {
-		cursor: pointer;
-		user-select: none;
-		-moz-user-select: none;
-		-webkit-user-select: none;
-		-ms-user-select: none;
+	& > * {
+		margin-bottom: layout.$spacing-05;
 	}
+}
+
+.label-content {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex: 1;
+}
+
+.session-checkbox {
+	display: block;
+}
+
+.help {
+	margin-top: layout.$spacing-05;
+	@include type.type-style('body-01');
 }

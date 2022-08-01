@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 
 import { EntryComponent } from './entry.component';
+import { EntryService } from './entry.service';
 
 @NgModule({
 	imports: [
@@ -14,8 +14,8 @@ import { EntryComponent } from './entry.component';
 				component: EntryComponent,
 			},
 		]),
-		NzDrawerModule,
 	],
+	providers: [EntryService],
 	declarations: [EntryComponent],
 	exports: [EntryComponent],
 })

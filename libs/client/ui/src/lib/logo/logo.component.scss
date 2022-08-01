@@ -1,0 +1,9 @@
+@use 'libs/client/styles/src/lib/carbon-theme';
+
+:host {
+	display: flex;
+}
+
+.ui-logo {
+	color: carbon-theme.get('support-error-inverse');
+}

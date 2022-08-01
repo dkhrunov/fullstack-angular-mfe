@@ -1,0 +1,20 @@
+@use 'libs/client/styles/src/lib/carbon-theme';
+@use 'utilities/convert' as *;
+@use 'utilities/bemify' as *;
+@use '@carbon/layout';
+
+@include block(ui-divider) {
+	display: block;
+	border-bottom: 1px solid carbon-theme.get('border-strong');
+	margin: layout.$spacing-05 0;
+
+	@include modifier(vertical) {
+		border-bottom: none;
+		border-left: 0.5px solid carbon-theme.get('border-strong');
+		border-right-width: 0.5px solid carbon-theme.get('border-strong');
+		margin: 0 layout.$spacing-05;
+		width: 0;
+		min-height: rem(16px);
+		height: 100%;
+	}
+}

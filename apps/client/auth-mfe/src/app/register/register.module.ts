@@ -2,14 +2,20 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+// @ts-ignore
+import { ArrowRight16, EmailNew32 } from '@carbon/icons';
 import { MfeModule } from '@nx-mfe/client/mfe';
-import { NzAlertModule } from 'ng-zorro-antd/alert';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { CardModule, DividerModule, LogoModule, PasswordInputModule } from '@nx-mfe/client/ui';
+import { ButtonModule } from 'carbon-components-angular/button';
+import { GridModule } from 'carbon-components-angular/grid';
+import { IconModule, IconService } from 'carbon-components-angular/icon';
+import { InputModule } from 'carbon-components-angular/input';
+import { LoadingModule } from 'carbon-components-angular/loading';
+import { ModalModule } from 'carbon-components-angular/modal';
+import { NotificationModule } from 'carbon-components-angular/notification';
+import { PlaceholderModule } from 'carbon-components-angular/placeholder';
 
+import { ConfirmRegistrationModalComponent } from './confirm-registration-modal/confirm-registration-modal.component';
 import { RegisterComponent } from './register.component';
 
 @NgModule({
@@ -23,14 +29,24 @@ import { RegisterComponent } from './register.component';
 		]),
 		ReactiveFormsModule,
 		MfeModule,
-		NzButtonModule,
-		NzFormModule,
-		NzInputModule,
-		NzTypographyModule,
-		NzIconModule,
-		NzAlertModule,
+		GridModule,
+		InputModule,
+		ButtonModule,
+		IconModule,
+		LoadingModule,
+		NotificationModule,
+		ModalModule,
+		PlaceholderModule,
+		CardModule,
+		DividerModule,
+		PasswordInputModule,
+		LogoModule,
 	],
-	declarations: [RegisterComponent],
+	declarations: [RegisterComponent, ConfirmRegistrationModalComponent],
 	exports: [RegisterComponent],
 })
-export class RegisterModule {}
+export class RegisterModule {
+	constructor(private readonly _iconService: IconService) {
+		this._iconService.registerAll([ArrowRight16, EmailNew32]);
+	}
+}

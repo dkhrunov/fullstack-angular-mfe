@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
 	selector: 'nx-mfe-spinner',
 	template: `
 		<div class="container">
-			<nz-spin nzSimple nzSize="large"></nz-spin>
+			<ibm-loading [isActive]="isActive" [size]="size"></ibm-loading>
 		</div>
 	`,
 	styles: [
@@ -19,4 +19,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpinnerComponent {}
+export class SpinnerComponent {
+	@Input()
+	public isActive = true;
+
+	@Input()
+	public size: 'normal' | 'sm' = 'normal';
+}

@@ -3,7 +3,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
 	selector: 'nx-mfe-client-fallbacks-mfe-entry',
 	template: `
-		<nz-result
+		<h3>MFE Fallback</h3>
+		<p>Something went wrong</p>
+		<!-- <nz-result
 			nzStatus="error"
 			nzTitle="Something went wrong"
 			nzSubTitle="Try reloading the page or contact support."
@@ -12,7 +14,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 			<ng-template #icon>
 				<i nz-icon nzType="api" nzTheme="twotone" nzTwotoneColor="#303030ee"></i>
 			</ng-template>
-		</nz-result>
+		</nz-result> -->
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

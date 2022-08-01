@@ -1,0 +1,45 @@
+@use 'utilities/convert' as *;
+@use 'utilities/bemify' as *;
+@use 'libs/client/styles/src/lib/carbon-theme';
+@use '@carbon/layout';
+@use '@carbon/type';
+
+ibm-modal::ng-deep .bx--modal-container {
+	max-width: 500px;
+}
+
+[ibmModalHeaderHeading] {
+	display: flex;
+	align-items: center;
+	gap: layout.$spacing-05;
+}
+
+@include block(mail-icon) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: layout.$spacing-05 0;
+	color: carbon-theme.get('text-helper');
+
+	@include element(wrapper) {
+		padding: layout.$spacing-04;
+		background: carbon-theme.get('layer-hover');
+		border-radius: 8px;
+	}
+
+	svg {
+		width: rem(60px);
+		height: rem(60px);
+	}
+}
+
+@include block(send-mail) {
+	text-align: center;
+
+	@include element(countdown) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		@include type.type-style('helper-text-01');
+	}
+}

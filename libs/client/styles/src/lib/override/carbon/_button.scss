@@ -1,0 +1,8 @@
+@use './prefix' as *;
+
+// ----------------
+// Button Set
+// ----------------
+.#{$prefix}--btn-set .bx--btn {
+	flex: 1;
+}

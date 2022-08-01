@@ -1,0 +1,31 @@
+// ----------------
+// Carbon Theme
+// ----------------
+
+@use 'sass:map';
+
+@use '~carbon-components/scss/globals/scss/vendor/@carbon/elements/scss/themes/theme-maps' as *;
+
+$theme: $carbon--theme--g100;
+
+@function get($token) {
+	@if map.has-key($theme, $token) {
+		@return map.get($theme, $token);
+	}
+	@error "Unable to find token: #{$token} in current $theme";
+}
+
+// ----------------
+// Carbon Theme (Old variant)
+// ----------------
+
+// $carbon--theme: map-merge(
+//   $carbon--theme--white,
+//   (
+//     ui-background: #f4f4f4,
+//   )
+// );
+
+// $carbon--theme: $carbon--theme--g10;
+// $carbon--theme: $carbon--theme--g100;
+// $carbon--theme: $carbon--theme--g90;
