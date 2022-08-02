@@ -8,15 +8,15 @@ const tsConfig = require('../../tsconfig.json');
  * @returns {null|string[]}
  */
 function getSharedLibs() {
-  const CLIENT_LIB_REGEXP = /^@.+\/client|shared\/(.+)$/g;
+	const CLIENT_LIB_REGEXP = /^@.+\/client|shared\/(.+)$/g;
 
-  if (!tsConfig?.compilerOptions?.paths) {
-    return null;
-  }
+	if (!tsConfig?.compilerOptions?.paths) {
+		return null;
+	}
 
-  return Object.keys(tsConfig.compilerOptions.paths).filter((libName) =>
-    libName.match(CLIENT_LIB_REGEXP)
-  );
+	return Object.keys(tsConfig.compilerOptions.paths).filter((libName) =>
+		libName.match(CLIENT_LIB_REGEXP)
+	);
 }
 
 /**
@@ -28,67 +28,66 @@ function getSharedLibs() {
  * This NX_TSCONFIG_PATH environment variable is set by the @nrwl/angular:webpack-browser and it contains
  * the location of the generated temporary tsconfig file.
  */
-const tsConfigPath =
-  process.env.NX_TSCONFIG_PATH ?? path.join(__dirname, '../../tsconfig.json');
+const tsConfigPath = process.env.NX_TSCONFIG_PATH ?? path.join(__dirname, '../../tsconfig.json');
 
 const workspaceRootPath = path.join(__dirname, '../../');
 const sharedMappings = new mf.SharedMappings();
 sharedMappings.register(
-  tsConfigPath,
-  [
-    /* mapped paths to share */
-    ...getSharedLibs(),
-  ],
-  workspaceRootPath
+	tsConfigPath,
+	[
+		/* mapped paths to share */
+		...getSharedLibs(),
+	],
+	workspaceRootPath
 );
 
 module.exports = {
-  getAliases: () => sharedMappings.getAliases(),
-  getShared: () =>
-    share({
-      '@angular/core': {
-        singleton: true,
-        strictVersion: true,
-        requiredVersion: 'auto',
-        includeSecondaries: true,
-      },
-      '@angular/common': {
-        singleton: true,
-        strictVersion: true,
-        requiredVersion: 'auto',
-        includeSecondaries: true,
-      },
-      '@angular/common/http': {
-        singleton: true,
-        strictVersion: true,
-        requiredVersion: 'auto',
-        includeSecondaries: true,
-      },
-      '@angular/router': {
-        singleton: true,
-        strictVersion: true,
-        requiredVersion: 'auto',
-        includeSecondaries: true,
-      },
-      rxjs: {
-        singleton: true,
-        strictVersion: true,
-        requiredVersion: 'auto',
-        includeSecondaries: true,
-      },
-      'ng-zorro-antd': {
-        singleton: true,
-        strictVersion: true,
-        requiredVersion: 'auto',
-        includeSecondaries: true,
-      },
-      '@dekh/ngx-jwt-auth': {
-        singleton: true,
-        strictVersion: true,
-        requiredVersion: 'auto',
-        includeSecondaries: true,
-      },
-      ...sharedMappings.getDescriptors(),
-    }),
-  getPlugin: () => sharedMappings.getPlugin(),
+	getAliases: () => sharedMappings.getAliases(),
+	getShared: () =>
+		share({
+			'@angular/core': {
+				singleton: true,
+				strictVersion: true,
+				requiredVersion: 'auto',
+				includeSecondaries: true,
+			},
+			'@angular/common': {
+				singleton: true,
+				strictVersion: true,
+				requiredVersion: 'auto',
+				includeSecondaries: true,
+			},
+			'@angular/common/http': {
+				singleton: true,
+				strictVersion: true,
+				requiredVersion: 'auto',
+				includeSecondaries: true,
+			},
+			'@angular/router': {
+				singleton: true,
+				strictVersion: true,
+				requiredVersion: 'auto',
+				includeSecondaries: true,
+			},
+			rxjs: {
+				singleton: true,
+				strictVersion: true,
+				requiredVersion: 'auto',
+				includeSecondaries: true,
+			},
+			'ng-zorro-antd': {
+				singleton: true,
+				strictVersion: true,
+				requiredVersion: 'auto',
+				includeSecondaries: true,
+			},
+			'@dekh/ngx-jwt-auth': {
+				singleton: true,
+				strictVersion: true,
+				requiredVersion: 'auto',
+				includeSecondaries: true,
+			},
+			...sharedMappings.getDescriptors(),
+		}),
+	getPlugin: () => sharedMappings.getPlugin(),
 };
