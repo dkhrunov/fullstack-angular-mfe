@@ -1,10 +1,10 @@
 const mf = require('@angular-architects/module-federation/webpack');
 const path = require('path');
 const { share } = require('@angular-architects/module-federation/webpack');
-const tsConfig = require('../../tsconfig.base.json');
+const tsConfig = require('../../tsconfig.json');
 
 /**
- * Получить client и shared библиотеки из tsconfig.base.json
+ * Получить client и shared библиотеки из tsconfig.json
  * @returns {null|string[]}
  */
 function getSharedLibs() {
@@ -29,7 +29,7 @@ function getSharedLibs() {
  * the location of the generated temporary tsconfig file.
  */
 const tsConfigPath =
-  process.env.NX_TSCONFIG_PATH ?? path.join(__dirname, '../../tsconfig.base.json');
+  process.env.NX_TSCONFIG_PATH ?? path.join(__dirname, '../../tsconfig.json');
 
 const workspaceRootPath = path.join(__dirname, '../../');
 const sharedMappings = new mf.SharedMappings();
