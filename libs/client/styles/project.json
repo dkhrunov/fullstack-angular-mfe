@@ -1,23 +1,31 @@
 {
-	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "libs/client/styles/src",
-	"projectType": "library",
-	"targets": {
-		"lint": {
-			"executor": "@nrwl/linter:eslint",
-			"outputs": ["{options.outputFile}"],
-			"options": {
-				"lintFilePatterns": ["libs/client/styles/**/*.ts"]
-			}
-		},
-		"test": {
-			"executor": "@nrwl/jest:jest",
-			"outputs": ["coverage/libs/client/styles"],
-			"options": {
-				"jestConfig": "libs/client/styles/jest.config.ts",
-				"passWithNoTests": true
-			}
-		}
-	},
-	"tags": ["scope:client"]
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/client/styles/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/client/styles/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/client/styles"
+      ],
+      "options": {
+        "jestConfig": "libs/client/styles/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [
+    "scope:client"
+  ]
 }

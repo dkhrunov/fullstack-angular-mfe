@@ -1,28 +1,36 @@
 {
-	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "apps/client/auth-mfe-e2e/src",
-	"projectType": "application",
-	"targets": {
-		"e2e": {
-			"executor": "@nrwl/cypress:cypress",
-			"options": {
-				"cypressConfig": "apps/client/auth-mfe-e2e/cypress.json",
-				"devServerTarget": "client-auth-mfe:serve:development"
-			},
-			"configurations": {
-				"production": {
-					"devServerTarget": "client-auth-mfe:serve:production"
-				}
-			}
-		},
-		"lint": {
-			"executor": "@nrwl/linter:eslint",
-			"outputs": ["{options.outputFile}"],
-			"options": {
-				"lintFilePatterns": ["apps/client/auth-mfe-e2e/**/*.{js,ts}"]
-			}
-		}
-	},
-	"tags": ["scope:client"],
-	"implicitDependencies": ["client-auth-mfe"]
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/client/auth-mfe-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/client/auth-mfe-e2e/cypress.json",
+        "devServerTarget": "client-auth-mfe:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "client-auth-mfe:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/client/auth-mfe-e2e/**/*.{js,ts}"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "scope:client"
+  ],
+  "implicitDependencies": [
+    "client-auth-mfe"
+  ]
 }

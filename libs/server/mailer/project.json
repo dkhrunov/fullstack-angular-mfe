@@ -1,23 +1,31 @@
 {
-	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "libs/server/mailer/src",
-	"projectType": "library",
-	"targets": {
-		"lint": {
-			"executor": "@nrwl/linter:eslint",
-			"outputs": ["{options.outputFile}"],
-			"options": {
-				"lintFilePatterns": ["libs/server/mailer/**/*.ts"]
-			}
-		},
-		"test": {
-			"executor": "@nrwl/jest:jest",
-			"outputs": ["coverage/libs/server/mailer"],
-			"options": {
-				"jestConfig": "libs/server/mailer/jest.config.ts",
-				"passWithNoTests": true
-			}
-		}
-	},
-	"tags": ["scope:server"]
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/server/mailer/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/server/mailer/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/server/mailer"
+      ],
+      "options": {
+        "jestConfig": "libs/server/mailer/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [
+    "scope:server"
+  ]
 }

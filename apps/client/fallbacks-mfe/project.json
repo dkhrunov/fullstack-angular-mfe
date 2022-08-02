@@ -1,111 +1,122 @@
 {
-	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
-	"projectType": "application",
-	"sourceRoot": "apps/client/fallbacks-mfe/src",
-	"prefix": "nx-mfe",
-	"targets": {
-		"build": {
-			"executor": "@nrwl/angular:webpack-browser",
-			"outputs": ["{options.outputPath}"],
-			"options": {
-				"outputPath": "dist/apps/client/fallbacks-mfe",
-				"index": "apps/client/fallbacks-mfe/src/index.html",
-				"main": "apps/client/fallbacks-mfe/src/main.ts",
-				"polyfills": "apps/client/fallbacks-mfe/src/polyfills.ts",
-				"tsConfig": "apps/client/fallbacks-mfe/tsconfig.app.json",
-				"inlineStyleLanguage": "scss",
-				"assets": [
-					"apps/client/fallbacks-mfe/src/favicon.ico",
-					"apps/client/fallbacks-mfe/src/assets",
-					{
-						"input": "libs/client/assets/src/lib",
-						"glob": "**/*",
-						"output": "assets"
-					}
-				],
-				"styles": ["apps/client/fallbacks-mfe/src/styles.scss"],
-				"scripts": [],
-				"customWebpackConfig": {
-					"path": "apps/client/fallbacks-mfe/webpack.config.js"
-				},
-				"buildLibsFromSource": false
-			},
-			"configurations": {
-				"production": {
-					"budgets": [
-						{
-							"type": "initial",
-							"maximumWarning": "500kb",
-							"maximumError": "1mb"
-						},
-						{
-							"type": "anyComponentStyle",
-							"maximumWarning": "2kb",
-							"maximumError": "4kb"
-						}
-					],
-					"fileReplacements": [
-						{
-							"replace": "apps/client/fallbacks-mfe/src/environments/environment.ts",
-							"with": "apps/client/fallbacks-mfe/src/environments/environment.prod.ts"
-						}
-					],
-					"outputHashing": "all",
-					"customWebpackConfig": {
-						"path": "apps/client/fallbacks-mfe/webpack.prod.config.js"
-					}
-				},
-				"development": {
-					"buildOptimizer": false,
-					"optimization": false,
-					"vendorChunk": true,
-					"extractLicenses": false,
-					"sourceMap": true,
-					"namedChunks": true
-				}
-			},
-			"defaultConfiguration": "production"
-		},
-		"serve": {
-			"executor": "@nrwl/angular:webpack-server",
-			"configurations": {
-				"production": {
-					"browserTarget": "client-fallbacks-mfe:build:production"
-				},
-				"development": {
-					"browserTarget": "client-fallbacks-mfe:build:development"
-				}
-			},
-			"defaultConfiguration": "development",
-			"options": {
-				"port": 4204,
-				"publicHost": "http://localhost:4204"
-			}
-		},
-		"extract-i18n": {
-			"executor": "@angular-devkit/build-angular:extract-i18n",
-			"options": {
-				"browserTarget": "client-fallbacks-mfe:build"
-			}
-		},
-		"lint": {
-			"executor": "@nrwl/linter:eslint",
-			"options": {
-				"lintFilePatterns": [
-					"apps/client/fallbacks-mfe/src/**/*.ts",
-					"apps/client/fallbacks-mfe/src/**/*.html"
-				]
-			}
-		},
-		"test": {
-			"executor": "@nrwl/jest:jest",
-			"outputs": ["coverage/apps/client/fallbacks-mfe"],
-			"options": {
-				"jestConfig": "apps/client/fallbacks-mfe/jest.config.ts",
-				"passWithNoTests": true
-			}
-		}
-	},
-	"tags": ["scope:client"],
-	"implicitDependencies": ["client-styles", "client-assets"]
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/client/fallbacks-mfe/src",
+  "prefix": "nx-mfe",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:webpack-browser",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/client/fallbacks-mfe",
+        "index": "apps/client/fallbacks-mfe/src/index.html",
+        "main": "apps/client/fallbacks-mfe/src/main.ts",
+        "polyfills": "apps/client/fallbacks-mfe/src/polyfills.ts",
+        "tsConfig": "apps/client/fallbacks-mfe/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/client/fallbacks-mfe/src/favicon.ico",
+          "apps/client/fallbacks-mfe/src/assets",
+          {
+            "input": "libs/client/assets/src/lib",
+            "glob": "**/*",
+            "output": "assets"
+          }
+        ],
+        "styles": [
+          "apps/client/fallbacks-mfe/src/styles.scss"
+        ],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/client/fallbacks-mfe/webpack.config.js"
+        },
+        "buildLibsFromSource": false
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/client/fallbacks-mfe/src/environments/environment.ts",
+              "with": "apps/client/fallbacks-mfe/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/client/fallbacks-mfe/webpack.prod.config.js"
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nrwl/angular:webpack-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "client-fallbacks-mfe:build:production"
+        },
+        "development": {
+          "browserTarget": "client-fallbacks-mfe:build:development"
+        }
+      },
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4204,
+        "publicHost": "http://localhost:4204"
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "client-fallbacks-mfe:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/client/fallbacks-mfe/src/**/*.ts",
+          "apps/client/fallbacks-mfe/src/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/apps/client/fallbacks-mfe"
+      ],
+      "options": {
+        "jestConfig": "apps/client/fallbacks-mfe/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [
+    "scope:client"
+  ],
+  "implicitDependencies": [
+    "client-styles",
+    "client-assets"
+  ]
 }
