@@ -19,6 +19,7 @@ import { AuthApiService } from './services';
 			unsecuredUrls: ['/auth'],
 			unAuthGuardRedirectUrl: '/',
 			authGuardRedirectUrl: '/auth/login',
+			redirectToLastPage: true,
 		}),
 	],
 	providers: [

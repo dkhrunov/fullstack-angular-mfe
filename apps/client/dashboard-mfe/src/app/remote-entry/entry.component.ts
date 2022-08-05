@@ -6,6 +6,7 @@ import { EntryService } from './entry.service';
 	template: `
 		<div class="remote-entry">
 			<h2 (click)="open()">{{ text ? text : 'Dashboard Remote Entry Component' }}</h2>
+			<a [routerLink]="['/not-work']">Go to something</a>
 		</div>
 	`,
 	styles: [

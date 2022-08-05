@@ -2164,10 +2164,10 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@dekh/ngx-jwt-auth@^1.0.0":
-  version "1.0.0"
-  resolved "http://localhost:8081/repository/npm-group/@dekh/ngx-jwt-auth/-/ngx-jwt-auth-1.0.0.tgz#513a79a74064a97b90b68d1998f1e42fa5ce9b7d"
-  integrity sha512-jQJkjuEoF1223N7SbVfTDVuQ4kecHaiMQgRSAy4o5ckwhC7MeQSrqxjYPSWFmzpzoepo7zXOq2OCRi+3qWrB8A==
+"@dekh/ngx-jwt-auth@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@dekh/ngx-jwt-auth/-/ngx-jwt-auth-2.0.0.tgz#270db4e7e790d96e3b9382096dd3093bdc42c25f"
+  integrity sha512-lfghvvNcVnu+M6OFmRks93bulGZfyGI1dlnSUJqOSz4N251u+/c/GkkrLynfmy/zOk3mkHW2W7kv5NK4pDnkfQ==
   dependencies:
     tslib "^2.3.0"
 

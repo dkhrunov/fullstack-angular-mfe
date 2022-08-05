@@ -20,6 +20,11 @@ const routes: Routes = [
 				canLoad: [UnAuthGuard],
 				canActivate: [UnAuthGuard],
 			},
+			{
+				path: '',
+				pathMatch: 'full',
+				redirectTo: 'login',
+			},
 		],
 	},
 	{
