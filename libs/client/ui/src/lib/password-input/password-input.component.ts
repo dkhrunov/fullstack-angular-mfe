@@ -9,6 +9,7 @@ import {
 	Optional,
 	Renderer2,
 	ChangeDetectorRef,
+	HostBinding,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CoerceBoolean, CoerceNumber } from '@nx-mfe/client/common';
@@ -52,6 +53,7 @@ export class PasswordInputComponent implements ControlValueAccessor {
 					'.bx--text-input__invalid-icon'
 				);
 				this._renderer.setStyle(invalidIcon, 'right', '3rem');
+				this._renderer.setStyle(invalidIcon, 'z-index', '1');
 			}, 0);
 		}
 	}
@@ -88,6 +90,9 @@ export class PasswordInputComponent implements ControlValueAccessor {
 	@Input()
 	@CoerceNumber()
 	public strengthMinlength: number = 6;
+
+	@HostBinding('class.ui-password-input')
+	public baseClass = true;
 
 	@ViewChild('input', { static: true })
 	private _inputElement: ElementRef<HTMLInputElement>;

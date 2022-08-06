@@ -1,3 +1,9 @@
+# Testing account
+
+Email: test@test.com
+
+Password: qwerty78!
+
 # Fullstack Nest.js and Angular MFE application
 
 This project was generated using [Nx](https://nx.dev).

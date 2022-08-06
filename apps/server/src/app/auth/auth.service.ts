@@ -105,10 +105,6 @@ export class AuthService {
 	}
 
 	public async logout(refreshToken: string): Promise<void> {
-		if (!refreshToken) {
-			return;
-		}
-
 		await this._tokenService.deleteRefreshToken(refreshToken);
 	}
 

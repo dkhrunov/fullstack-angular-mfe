@@ -24,7 +24,7 @@
 					</ui-card-header>
 					<ui-card-content>
 						<ui-divider></ui-divider>
-						<form [formGroup]="form" (submit)="register()">
+						<form [formGroup]="form" (submit)="register()" (keyup.enter)="register()">
 							<ng-container *ngIf="emailControl as control">
 								<ibm-label
 									labelState="success"
