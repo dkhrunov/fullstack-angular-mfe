@@ -5,7 +5,7 @@ root = true
 charset = utf-8
 indent_style = tab
 indent_size = tab
-tab_width = 4
+tab_width = 2
 ij_typescript_array_initializer_right_brace_on_new_line = true
 ij_typescript_array_initializer_new_line_after_left_brace = true
 insert_final_newline = true
@@ -28,7 +28,7 @@ ij_any_ternary_operation_signs_on_next_line = true
 ij_css_enforce_quotes_on_format = true
 ij_css_use_double_quotes = false
 ij_scss_use_double_quotes = false
-ij_continuation_indent_size = 4
+ij_continuation_indent_size = 2
 
 [*.md]
 max_line_length = off
@@ -37,4 +37,4 @@ trim_trailing_whitespace = false
 [*.json]
 indent_style = tab
 indent_size = tab
-tab_width = 4
+tab_width = 2
