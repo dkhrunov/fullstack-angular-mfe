@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 	selector: 'nx-mfe-not-found',
 	template: `
 		<p>Sorry, the page you visited does not exist.</p>
+		<a [routerLink]="['/dashboard']">Go to Dashboard</a>
 		<!-- <nz-result
 			nzStatus="404"
 			nzTitle="404"

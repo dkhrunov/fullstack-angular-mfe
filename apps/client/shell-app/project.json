@@ -1,125 +1,139 @@
 {
-	"projectType": "application",
-	"sourceRoot": "apps/client/shell-app/src",
-	"prefix": "nx-mfe",
-	"targets": {
-		"build": {
-			"executor": "@nrwl/angular:webpack-browser",
-			"outputs": ["{options.outputPath}"],
-			"options": {
-				"outputPath": "dist/apps/client/shell-app",
-				"index": "apps/client/shell-app/src/index.html",
-				"main": "apps/client/shell-app/src/main.ts",
-				"polyfills": "apps/client/shell-app/src/polyfills.ts",
-				"tsConfig": "apps/client/shell-app/tsconfig.app.json",
-				"inlineStyleLanguage": "scss",
-				"assets": [
-					"apps/client/shell-app/src/favicon.ico",
-					"apps/client/shell-app/src/assets",
-					{
-						"input": "libs/client/assets/src/lib",
-						"glob": "**/*",
-						"output": "assets"
-					}
-				],
-				"styles": ["apps/client/shell-app/src/styles.scss"],
-				"scripts": [],
-				"customWebpackConfig": {
-					"path": "apps/client/shell-app/webpack.config.js"
-				},
-				"buildLibsFromSource": false,
-				"stylePreprocessorOptions": {
-					"includePaths": ["libs/client/styles/src/lib/"]
-				}
-			},
-			"configurations": {
-				"production": {
-					"budgets": [
-						{
-							"type": "initial",
-							"maximumWarning": "500kb",
-							"maximumError": "1mb"
-						},
-						{
-							"type": "any@nrwl/angular:webpack-browserComponentStyle",
-							"maximumWarning": "2kb",
-							"maximumError": "4kb"
-						}
-					],
-					"fileReplacements": [
-						{
-							"replace": "apps/client/shell-app/src/environments/environment.ts",
-							"with": "apps/client/shell-app/src/environments/environment.prod.ts"
-						}
-					],
-					"outputHashing": "all",
-					"customWebpackConfig": {
-						"path": "apps/client/shell-app/webpack.prod.config.js"
-					}
-				},
-				"development": {
-					"buildOptimizer": false,
-					"optimization": false,
-					"vendorChunk": true,
-					"extractLicenses": false,
-					"sourceMap": true,
-					"namedChunks": true
-				}
-			},
-			"defaultConfiguration": "production"
-		},
-		"serve": {
-			"executor": "@nrwl/angular:webpack-server",
-			"configurations": {
-				"production": {
-					"browserTarget": "client-shell-app:build:production"
-				},
-				"development": {
-					"browserTarget": "client-shell-app:build:development"
-				}
-			},
-			"defaultConfiguration": "development",
-			"options": {
-				"port": 4200,
-				"publicHost": "http://localhost:4200"
-			}
-		},
-		"extract-i18n": {
-			"executor": "@angular-devkit/build-angular:extract-i18n",
-			"options": {
-				"browserTarget": "client-shell-app:build"
-			}
-		},
-		"lint": {
-			"executor": "@nrwl/linter:eslint",
-			"options": {
-				"lintFilePatterns": [
-					"apps/client/shell-app/src/**/*.ts",
-					"apps/client/shell-app/src/**/*.html"
-				]
-			}
-		},
-		"test": {
-			"executor": "@nrwl/jest:jest",
-			"outputs": ["coverage/apps/client/shell-app"],
-			"options": {
-				"jestConfig": "apps/client/shell-app/jest.config.ts",
-				"passWithNoTests": true
-			}
-		},
-		"serve-mfe": {
-			"executor": "@nrwl/workspace:run-commands",
-			"options": {
-				"commands": [
-					"nx serve client-shell-app",
-					"nx serve client-auth-mfe",
-					"nx serve client-dashboard-mfe",
-					"nx serve client-fallbacks-mfe",
-					"nx serve client-loaders-mfe"
-				]
-			}
-		}
-	},
-	"tags": ["scope:client"],
-	"implicitDependencies": ["client-styles", "client-assets"]
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/client/shell-app/src",
+  "prefix": "nx-mfe",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:webpack-browser",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/client/shell-app",
+        "index": "apps/client/shell-app/src/index.html",
+        "main": "apps/client/shell-app/src/main.ts",
+        "polyfills": "apps/client/shell-app/src/polyfills.ts",
+        "tsConfig": "apps/client/shell-app/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/client/shell-app/src/favicon.ico",
+          "apps/client/shell-app/src/assets",
+          {
+            "input": "libs/client/assets/src/lib",
+            "glob": "**/*",
+            "output": "assets"
+          }
+        ],
+        "styles": [
+          "apps/client/shell-app/src/styles.scss"
+        ],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/client/shell-app/webpack.config.js"
+        },
+        "buildLibsFromSource": false,
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/client/styles/src/lib/"
+          ]
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "any@nrwl/angular:webpack-browserComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/client/shell-app/src/environments/environment.ts",
+              "with": "apps/client/shell-app/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all",
+          "customWebpackConfig": {
+            "path": "apps/client/shell-app/webpack.prod.config.js"
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@nrwl/angular:webpack-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "client-shell-app:build:production"
+        },
+        "development": {
+          "browserTarget": "client-shell-app:build:development"
+        }
+      },
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4200,
+        "publicHost": "http://localhost:4200"
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "client-shell-app:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/client/shell-app/src/**/*.ts",
+          "apps/client/shell-app/src/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/apps/client/shell-app"
+      ],
+      "options": {
+        "jestConfig": "apps/client/shell-app/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "serve-mfe": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx serve client-shell-app",
+          "nx serve client-auth-mfe",
+          "nx serve client-dashboard-mfe",
+          "nx serve client-fallbacks-mfe",
+          "nx serve client-loaders-mfe"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "scope:client"
+  ],
+  "implicitDependencies": [
+    "client-styles",
+    "client-assets"
+  ]
 }

@@ -39,16 +39,16 @@ export class AuthService {
 	): Promise<AuthTokensResponse> {
 		const user = await this._userService.getByEmail(credentials.email);
 		if (!user) {
-			throw new UnauthorizedException('Некорректная почта или пароль');
+			throw new UnauthorizedException('Wrong E-mail or password.');
 		}
 
 		const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
 		if (!isPasswordCorrect) {
-			throw new UnauthorizedException('Некорректная почта или пароль');
+			throw new UnauthorizedException('Wrong E-mail or password.');
 		}
 
 		if (!user.isConfirmed) {
-			throw new UnauthorizedException('Требуется сначала подтвердить почту');
+			throw new UnauthorizedException('You need to verify your email first.');
 		}
 
 		const authTokens = this._generateAuthTokens(user);
@@ -60,7 +60,7 @@ export class AuthService {
 	public async register(credentials: RegistrationRequest): Promise<void> {
 		const candidate = await this._userService.getByEmail(credentials.email);
 		if (candidate) {
-			throw new ConflictException(`Пользователь с данным email уже зарегистрирован`);
+			throw new ConflictException('The user with this email is already registered');
 		}
 
 		const queryRunner = this._connection.createQueryRunner();
@@ -105,10 +105,6 @@ export class AuthService {
 	}
 
 	public async logout(refreshToken: string): Promise<void> {
-		if (!refreshToken) {
-			return;
-		}
-
 		await this._tokenService.deleteRefreshToken(refreshToken);
 	}
 
@@ -142,7 +138,7 @@ export class AuthService {
 
 		const user = await this._userService.getById(refreshTokenPayload.id);
 		if (!user) {
-			throw new NotFoundException(`Пользователь не найден`);
+			throw new NotFoundException('User does not exist');
 		}
 
 		const authTokens = this._generateAuthTokens(user);

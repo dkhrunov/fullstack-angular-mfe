@@ -6,7 +6,7 @@ import {
 	ElementRef,
 	ViewChild,
 } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { PASSWORD_REGEXP } from '@nx-mfe/client/auth';
 import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { RegistrationRequest } from '@nx-mfe/shared/data-access';
@@ -36,7 +36,7 @@ import { RegisterFacadeService } from './register-facade.service';
 })
 export class RegisterComponent implements AfterViewInit {
 	@Form()
-	public form: FormGroup;
+	public form: UntypedFormGroup;
 
 	@ViewChild('emailInput')
 	public emailInput: ElementRef<HTMLInputElement>;
@@ -56,7 +56,7 @@ export class RegisterComponent implements AfterViewInit {
 
 	constructor(
 		public readonly registerFacade: RegisterFacadeService,
-		private readonly _fb: FormBuilder
+		private readonly _fb: UntypedFormBuilder
 	) {
 		this._createForm();
 	}

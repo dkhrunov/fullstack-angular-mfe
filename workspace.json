@@ -25,6 +25,8 @@
 		"server-auth": "libs/server/auth",
 		"server-domains": "libs/server/domains",
 		"server-mailer": "libs/server/mailer",
+		"shared-common": "libs/shared/common",
 		"shared-data-access": "libs/shared/data-access"
-	}
+	},
+	"$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

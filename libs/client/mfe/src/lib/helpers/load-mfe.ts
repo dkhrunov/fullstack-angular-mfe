@@ -20,7 +20,7 @@ export type LoadMfeOptions = {
 const loadMfeDefaultOptions: LoadMfeOptions = { type: 'module' };
 
 /**
- * Loads remote module.
+ * Loads remote bundle.
  *
  * @param remoteApp The name of the micro-frontend app decalred in ModuleFederationPlugin.
  * @param exposedModule  The key of the exposed module decalred in ModuleFederationPlugin.

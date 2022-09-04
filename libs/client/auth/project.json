@@ -1,25 +1,30 @@
 {
-	"projectType": "library",
-	"sourceRoot": "libs/client/auth/src",
-	"prefix": "nx-mfe",
-	"targets": {
-		"test": {
-			"executor": "@nrwl/jest:jest",
-			"outputs": ["coverage/libs/client/auth"],
-			"options": {
-				"jestConfig": "libs/client/auth/jest.config.ts",
-				"passWithNoTests": true
-			}
-		},
-		"lint": {
-			"executor": "@nrwl/linter:eslint",
-			"options": {
-				"lintFilePatterns": [
-					"libs/client/auth/src/**/*.ts",
-					"libs/client/auth/src/**/*.html"
-				]
-			}
-		}
-	},
-	"tags": ["scope:client"]
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/client/auth/src",
+  "prefix": "nx-mfe",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/client/auth"
+      ],
+      "options": {
+        "jestConfig": "libs/client/auth/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/client/auth/src/**/*.ts",
+          "libs/client/auth/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "scope:client"
+  ]
 }

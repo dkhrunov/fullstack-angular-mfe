@@ -1,6 +1,6 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
-export function validateForm(form: FormGroup): void {
+export function validateForm(form: UntypedFormGroup): void {
 	for (const i in form.controls) {
 		if (Object.prototype.hasOwnProperty.call(form.controls, i)) {
 			form.controls[i].markAllAsTouched();

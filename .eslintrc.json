@@ -1,7 +1,7 @@
 {
 	"extends": ["plugin:@angular-eslint/recommended"],
 	"parserOptions": {
-		"project": "./tsconfig.base.json"
+		"project": "./tsconfig.json"
 	},
 	"rules": {
 		"@angular-eslint/component-selector": ["off"],
@@ -30,7 +30,7 @@
 		{
 			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
 			"parserOptions": {
-				"project": ["./tsconfig.base.json"]
+				"project": ["./tsconfig.json"]
 			},
 			"rules": {
 				"@nrwl/nx/enforce-module-boundaries": [
