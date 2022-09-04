@@ -28,6 +28,7 @@ import { LoginComponent } from './login.component';
 			},
 		]),
 		ReactiveFormsModule,
+		// <!-- TODO удалить тестовые данные -->
 		MfeModule,
 		GridModule,
 		InputModule,

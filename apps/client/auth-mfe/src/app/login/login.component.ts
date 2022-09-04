@@ -1,4 +1,4 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
@@ -12,7 +12,7 @@ import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { PasswordInputComponent } from '@nx-mfe/client/ui';
 import { LoginRequest } from '@nx-mfe/shared/data-access';
 import { plainToClass } from 'class-transformer';
-import { BehaviorSubject, filter, Subject, takeUntil, timer } from 'rxjs';
+import { BehaviorSubject, Subject, timer } from 'rxjs';
 
 import { LoginFacadeService } from './login-facade.service';
 
@@ -44,6 +44,22 @@ import { LoginFacadeService } from './login-facade.service';
 
 			// fade out when destroyed. this could also be written as transition('void => *')
 			transition(':leave', animate('300ms 0ms ease-in')),
+		]),
+		trigger('shakeX', [
+			state('*', style({ transform: 'translate3d(0, 0, 0)' })),
+			transition(':enter', [
+				animate(
+					'300ms',
+					keyframes([
+						style({ transform: 'translate3d(-15px, 0, 0)' }),
+						style({ transform: 'translate3d(15px, 0, 0)' }),
+						style({ transform: 'translate3d(-10px, 0, 0)' }),
+						style({ transform: 'translate3d(10px, 0, 0)' }),
+						style({ transform: 'translate3d(-5px, 0, 0)' }),
+						style({ transform: 'translate3d(5px, 0, 0)' }),
+					])
+				),
+			]),
 		]),
 	],
 })
@@ -77,13 +93,6 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 		private readonly _fb: UntypedFormBuilder
 	) {
 		this._createForm();
-
-		this.loginFacade.logInError$
-			.pipe(
-				filter((x) => !!x),
-				takeUntil(this._destroy$)
-			)
-			.subscribe(() => this.backToEmail());
 
 		// TODO удалить тестовые данные
 		setTimeout(() => this.text$.next('Test string changed 1x in Subject'), 2000);
@@ -124,6 +133,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 	public backToEmail(): void {
 		this._prevStep();
 		this.passwordControl?.reset();
+		this.loginFacade.resetLogInError();
 
 		// HACK 400ms - animation delay
 		timer(400).subscribe(() => {

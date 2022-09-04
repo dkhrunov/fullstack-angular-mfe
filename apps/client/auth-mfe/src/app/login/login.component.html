@@ -86,17 +86,6 @@
 										</ibm-tooltip-icon>
 									</ibm-checkbox>
 								</ng-container>
-
-								<ibm-notification
-									*ngIf="loginFacade.logInError$ | async as error"
-									[notificationObj]="{
-										type: 'error',
-										title: 'Error:',
-										message: error
-									}"
-									(close)="loginFacade.resetLogInError()"
-								>
-								</ibm-notification>
 							</form>
 						</ui-card-content>
 						<ui-card-footer>
@@ -118,7 +107,7 @@
 						<ui-card-header>
 							<ui-card-title> Log In </ui-card-title>
 							<ui-card-subtitle>
-								Logging in as {{ emailControl?.value }}&nbsp;
+								Logging in as {{ emailControl?.value }} &nbsp;
 								<a ibmLink (click)="backToEmail()"> Not you? </a>
 							</ui-card-subtitle>
 						</ui-card-header>
@@ -153,6 +142,18 @@
 										</ng-template>
 									</ibm-label>
 								</ng-container>
+
+								<ibm-notification
+									@shakeX
+									*ngIf="loginFacade.logInError$ | async as error"
+									[notificationObj]="{
+										type: 'error',
+										title: 'Error:',
+										message: error
+									}"
+									(close)="loginFacade.resetLogInError()"
+								>
+								</ibm-notification>
 							</form>
 						</ui-card-content>
 						<ui-card-footer>
@@ -192,7 +193,12 @@
 
 <!-- TODO удалить тестовые данные -->
 
-<!-- <ng-template
+<!-- ng-template
+  mfeOutlet="client-loaders-mfe"
+  mfeOutletComponent="StandaloneSpinnerComponent"
+></ng-template>
+
+<ng-template
   mfeOutlet="client-dashboard-mfe"
   mfeOutletModule="EntryModule"
   mfeOutletComponent="EntryComponent"
