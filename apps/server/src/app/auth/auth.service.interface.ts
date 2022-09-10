@@ -2,7 +2,7 @@ import { UserMetadata } from '@nx-mfe/server/domains';
 import {
   AuthTokensResponse,
   CredentialsRequest,
-  RegistrationRequest,
+  RegisterRequest,
 } from '@nx-mfe/shared/data-access';
 
 export interface IAuthService {
@@ -12,9 +12,9 @@ export interface IAuthService {
 
   refresh(refreshToken: string, userMetadata: UserMetadata): Promise<AuthTokensResponse>;
 
-  register(credentials: RegistrationRequest): Promise<void>;
+  register(credentials: RegisterRequest): Promise<void>;
 
-  confirmRegistration(confirmationLink: string): Promise<void>;
+  confirmRegister(confirmationLink: string): Promise<void>;
 
-  resendRegistrationConfirmationMail(email: string): Promise<void>;
+  resendRegisterConfirmationMail(email: string): Promise<void>;
 }

@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/server/gateway/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/server/gateway",
+        "main": "apps/server/gateway/src/main.ts",
+        "tsConfig": "apps/server/gateway/tsconfig.app.json",
+        "assets": ["apps/server/gateway/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/server/gateway/src/environments/environment.ts",
+              "with": "apps/server/gateway/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "server-gateway:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "server-gateway:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/server/gateway/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/server/gateway"],
+      "options": {
+        "jestConfig": "apps/server/gateway/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["server:gateway"]
+}

@@ -3,60 +3,60 @@ import { Inject, Injectable } from '@angular/core';
 import { BaseAuthApiService } from '@dekh/ngx-jwt-auth';
 import { ENVIRONMENT, IEnvironment } from '@nx-mfe/client/environment';
 import {
-	AuthTokensResponse,
-	LoginRequest,
-	RegistrationRequest,
-	ResendRegistrationConfirmationMailRequest,
+  AuthTokensResponse,
+  LoginRequest,
+  RegisterRequest,
+  ResendRegistrationConfirmationMailRequest,
 } from '@nx-mfe/shared/data-access';
 import { Observable } from 'rxjs';
 
 @Injectable({
-	providedIn: 'root',
+  providedIn: 'root',
 })
 export class AuthApiService extends BaseAuthApiService {
-	constructor(
-		private readonly _httpClient: HttpClient,
-		@Inject(ENVIRONMENT) private readonly _environment: IEnvironment
-	) {
-		super();
-	}
+  constructor(
+    private readonly _httpClient: HttpClient,
+    @Inject(ENVIRONMENT) private readonly _environment: IEnvironment
+  ) {
+    super();
+  }
 
-	public login(request: LoginRequest): Observable<AuthTokensResponse> {
-		return this._httpClient.post<AuthTokensResponse>(
-			this._environment.apiUrl + '/auth/login',
-			request,
-			{
-				withCredentials: true,
-			}
-		);
-	}
+  public login(request: LoginRequest): Observable<AuthTokensResponse> {
+    return this._httpClient.post<AuthTokensResponse>(
+      this._environment.apiUrl + '/auth/login',
+      request,
+      {
+        withCredentials: true,
+      }
+    );
+  }
 
-	public register(request: RegistrationRequest): Observable<void> {
-		return this._httpClient.post<void>(this._environment.apiUrl + '/auth/register', request);
-	}
+  public register(request: RegisterRequest): Observable<void> {
+    return this._httpClient.post<void>(this._environment.apiUrl + '/auth/register', request);
+  }
 
-	public logout(): Observable<void> {
-		return this._httpClient.post<void>(this._environment.apiUrl + '/auth/logout', null, {
-			withCredentials: true,
-		});
-	}
+  public logout(): Observable<void> {
+    return this._httpClient.post<void>(this._environment.apiUrl + '/auth/logout', null, {
+      withCredentials: true,
+    });
+  }
 
-	public resendRegistrationConfirmationMail(
-		request: ResendRegistrationConfirmationMailRequest
-	): Observable<void> {
-		return this._httpClient.post<void>(
-			this._environment.apiUrl + '/auth/registration/confirmation/resend',
-			request
-		);
-	}
+  public resendRegistrationConfirmationMail(
+    request: ResendRegistrationConfirmationMailRequest
+  ): Observable<void> {
+    return this._httpClient.post<void>(
+      this._environment.apiUrl + '/auth/registration/confirmation/resend',
+      request
+    );
+  }
 
-	public refresh(): Observable<AuthTokensResponse> {
-		return this._httpClient.post<AuthTokensResponse>(
-			this._environment.apiUrl + '/auth/refresh',
-			null,
-			{
-				withCredentials: true,
-			}
-		);
-	}
+  public refresh(): Observable<AuthTokensResponse> {
+    return this._httpClient.post<AuthTokensResponse>(
+      this._environment.apiUrl + '/auth/refresh',
+      null,
+      {
+        withCredentials: true,
+      }
+    );
+  }
 }

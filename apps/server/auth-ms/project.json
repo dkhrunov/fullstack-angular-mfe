@@ -1,0 +1,57 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/server/auth-ms/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/server/auth-ms",
+        "main": "apps/server/auth-ms/src/main.ts",
+        "tsConfig": "apps/server/auth-ms/tsconfig.app.json",
+        "assets": ["apps/server/auth-ms/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/server/auth-ms/src/environments/environment.ts",
+              "with": "apps/server/auth-ms/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "server-auth-ms:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "server-auth-ms:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/server/auth-ms/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/server/auth-ms"],
+      "options": {
+        "jestConfig": "apps/server/auth-ms/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["scope:microservice"]
+}

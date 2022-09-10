@@ -13,7 +13,7 @@ import { MailerService } from '@nx-mfe/server/mailer';
 import {
   AuthTokensResponse,
   CredentialsRequest,
-  RegistrationRequest,
+  RegisterRequest,
 } from '@nx-mfe/shared/data-access';
 import { SentMessageInfo } from 'nodemailer';
 import { Connection } from 'typeorm';
@@ -59,50 +59,6 @@ export class AuthService implements IAuthService {
     return authTokens;
   }
 
-  public async register(credentials: RegistrationRequest): Promise<void> {
-    const candidate = await this._userService.getByEmail(credentials.email);
-    if (candidate) {
-      throw new ConflictException('The user with this email is already registered.');
-    }
-
-    const queryRunner = this._connection.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      const user = await this._userService.create(credentials);
-      await queryRunner.manager.save<UserEntity>(user);
-
-      // TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
-      await this._sendRegisterConfirmationMail(
-        user.email,
-        `${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/registration/confirm/${user.confirmationLink}`
-      );
-
-      await queryRunner.commitTransaction();
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException();
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
-  public async resendRegistrationConfirmationMail(email: string): Promise<void> {
-    const user = await this._userService.issueNewConfirmationLink(email);
-    await this._sendRegisterConfirmationMail(user.email, user.confirmationLink);
-  }
-
-  public async confirmRegistration(confirmationLink: string): Promise<void> {
-    const user = await this._userService.getByConfirmationLink(confirmationLink);
-    if (!user) {
-      // TODO редирект на страницу с ошибкой на фронте.
-      throw new BadRequestException('Incorrect link to confirm registration.');
-    }
-
-    await this._userService.update(user.id, { isConfirmed: true });
-  }
-
   public async logout(refreshToken: string): Promise<void> {
     await this._tokenService.deleteRefreshToken(refreshToken);
   }
@@ -144,6 +100,50 @@ export class AuthService implements IAuthService {
     await this._tokenService.saveRefreshToken(authTokens.refreshToken, userMetadata);
 
     return authTokens;
+  }
+
+  public async register(credentials: RegisterRequest): Promise<void> {
+    const candidate = await this._userService.getByEmail(credentials.email);
+    if (candidate) {
+      throw new ConflictException('The user with this email is already registered.');
+    }
+
+    const queryRunner = this._connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const user = await this._userService.create(credentials);
+      await queryRunner.manager.save<UserEntity>(user);
+
+      // TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
+      await this._sendRegisterConfirmationMail(
+        user.email,
+        `${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/registration/confirm/${user.confirmationLink}`
+      );
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async confirmRegister(confirmationLink: string): Promise<void> {
+    const user = await this._userService.getByConfirmationLink(confirmationLink);
+    if (!user) {
+      // TODO редирект на страницу с ошибкой на фронте.
+      throw new BadRequestException('Incorrect link to confirm registration.');
+    }
+
+    await this._userService.update(user.id, { isConfirmed: true });
+  }
+
+  public async resendRegisterConfirmationMail(email: string): Promise<void> {
+    const user = await this._userService.issueNewConfirmationLink(email);
+    await this._sendRegisterConfirmationMail(user.email, user.confirmationLink);
   }
 
   private _generateAuthTokens(user: UserEntity): AuthTokensResponse {

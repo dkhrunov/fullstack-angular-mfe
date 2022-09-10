@@ -39,5 +39,6 @@
     "build": {
       "dependsOn": ["^build"]
     }
-  }
+  },
+  "defaultProject": "server-auth-ms"
 }

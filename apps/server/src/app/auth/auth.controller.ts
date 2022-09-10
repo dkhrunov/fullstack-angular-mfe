@@ -18,7 +18,7 @@ import { UserMetadata } from '@nx-mfe/server/domains';
 import {
   AuthTokensResponse,
   LoginRequest,
-  RegistrationRequest,
+  RegisterRequest,
   ResendRegistrationConfirmationMailRequest,
 } from '@nx-mfe/shared/data-access';
 import { plainToClass } from 'class-transformer';
@@ -51,7 +51,7 @@ export class AuthController {
   }
 
   @Post('/register')
-  public async register(@Body() credentials: RegistrationRequest): Promise<void> {
+  public async register(@Body() credentials: RegisterRequest): Promise<void> {
     return await this._authService.register(credentials);
   }
 
@@ -60,7 +60,7 @@ export class AuthController {
   public async resendRegistrationConfirmationMail(
     @Body() { email }: ResendRegistrationConfirmationMailRequest
   ): Promise<void> {
-    return await this._authService.resendRegistrationConfirmationMail(email);
+    return await this._authService.resendRegisterConfirmationMail(email);
   }
 
   @Get('/registration/confirm/:link')
@@ -68,7 +68,7 @@ export class AuthController {
     @Param('link') link: string,
     @Res() res: Response
   ): Promise<void> {
-    await this._authService.confirmRegistration(link);
+    await this._authService.confirmRegister(link);
 
     return res.redirect(String(process.env.CLIENT_URL));
   }
