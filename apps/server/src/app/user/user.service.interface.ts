@@ -11,10 +11,7 @@ export interface IUserService {
 
   create(userData: DeepPartial<UserEntity>): Promise<UserEntity>;
 
-  issueNewConfirmationLink(id: number): Promise<UserEntity>;
   issueNewConfirmationLink(email: string): Promise<UserEntity>;
-  issueNewConfirmationLink(idOrEmail: number | string): Promise<UserEntity>;
-  issueNewConfirmationLink(idOrEmail: number | string): Promise<UserEntity>;
 
   createAndSave(userData: DeepPartial<UserEntity>): Promise<UserEntity>;
 

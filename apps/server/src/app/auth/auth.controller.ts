@@ -14,12 +14,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '@nx-mfe/server/auth';
+import { UserMetadata } from '@nx-mfe/server/domains';
 import {
   AuthTokensResponse,
   LoginRequest,
   RegistrationRequest,
   ResendRegistrationConfirmationMailRequest,
 } from '@nx-mfe/shared/data-access';
+import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 
 import { Service } from '../shared/constants/services-injection-tokens';
@@ -40,8 +42,9 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response
   ): Promise<AuthTokensResponse> {
     const { session, ...credentials } = body;
+    const userMetadata = plainToClass(UserMetadata, { userAgent, ip });
+    const tokens = await this._authService.login(credentials, userMetadata);
 
-    const tokens = await this._authService.login(credentials, userAgent, ip);
     this._setRefreshTokenInCookie(res, tokens.refreshToken, session);
 
     return tokens;
@@ -94,7 +97,8 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response
   ): Promise<Response<AuthTokensResponse>> {
-    const tokens = await this._authService.refresh(req.cookies.refreshToken, userAgent, ip);
+    const userMetadata = plainToClass(UserMetadata, { userAgent, ip });
+    const tokens = await this._authService.refresh(req.cookies.refreshToken, userMetadata);
     this._setRefreshTokenInCookie(res, tokens.refreshToken, req.cookies.session);
 
     return res.json(tokens);

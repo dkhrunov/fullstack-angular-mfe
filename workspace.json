@@ -24,6 +24,7 @@
     "server": "apps/server",
     "server-auth": "libs/server/auth",
     "server-domains": "libs/server/domains",
+    "server-grpc-proto": "libs/server/grpc-proto",
     "server-mailer": "libs/server/mailer",
     "shared-common": "libs/shared/common",
     "shared-data-access": "libs/shared/data-access"

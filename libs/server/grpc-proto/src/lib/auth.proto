@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+package auth;
+
+service AuthService {
+  rpc Login (LoginRequest) returns (AuthTokensResponse);
+  rpc Logout (LogoutRequest) returns (google.protobuf.Empty);
+  rpc Refresh (RefreshRequest) returns (AuthTokensResponse);
+  rpc Register (RegistrationRequest) returns (google.protobuf.Empty);
+  rpc ConfirmRegistration (ConfirmRegistrationRequest) returns (google.protobuf.Empty);
+  rpc ResendRegistrationConfirmationMail (ResendRegistrationConfirmationMailRequest) returns (google.protobuf.Empty);
+}
+
+message LoginRequest {
+  message UserMetadata {
+    string ip = 1;
+    string userAgent = 2;
+  }
+  string email = 1;
+  string password = 2;
+  UserMetadata userMetadata = 3;
+}
+
+message LogoutRequest {
+  
+}

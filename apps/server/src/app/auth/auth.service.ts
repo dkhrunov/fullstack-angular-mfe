@@ -8,7 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthTokenPayload, RefreshToken } from '@nx-mfe/server/domains';
+import { AuthTokenPayload, RefreshToken, UserMetadata } from '@nx-mfe/server/domains';
 import { MailerService } from '@nx-mfe/server/mailer';
 import {
   AuthTokensResponse,
@@ -37,8 +37,7 @@ export class AuthService implements IAuthService {
 
   public async login(
     credentials: CredentialsRequest,
-    userAgent: string,
-    ip: string
+    userMetadata: UserMetadata
   ): Promise<AuthTokensResponse> {
     const user = await this._userService.getByEmail(credentials.email);
     if (!user) {
@@ -55,7 +54,7 @@ export class AuthService implements IAuthService {
     }
 
     const authTokens = this._generateAuthTokens(user);
-    await this._tokenService.saveRefreshToken(authTokens.refreshToken, userAgent, ip);
+    await this._tokenService.saveRefreshToken(authTokens.refreshToken, userMetadata);
 
     return authTokens;
   }
@@ -89,11 +88,8 @@ export class AuthService implements IAuthService {
     }
   }
 
-  public async resendRegistrationConfirmationMail(id: number): Promise<void>;
-  public async resendRegistrationConfirmationMail(email: string): Promise<void>;
-  public async resendRegistrationConfirmationMail(idOrEmail: number | string): Promise<void>;
-  public async resendRegistrationConfirmationMail(idOrEmail: number | string): Promise<void> {
-    const user = await this._userService.issueNewConfirmationLink(idOrEmail);
+  public async resendRegistrationConfirmationMail(email: string): Promise<void> {
+    const user = await this._userService.issueNewConfirmationLink(email);
     await this._sendRegisterConfirmationMail(user.email, user.confirmationLink);
   }
 
@@ -113,8 +109,7 @@ export class AuthService implements IAuthService {
 
   public async refresh(
     refreshToken: string,
-    userAgent: string,
-    ip: string
+    userMetadata: UserMetadata
   ): Promise<AuthTokensResponse> {
     const tokenEntity = await this._tokenService.findRefreshToken(refreshToken);
     if (!tokenEntity) {
@@ -126,7 +121,10 @@ export class AuthService implements IAuthService {
 
     const isExpired = tokenEntity.expiresIn < Math.floor(Date.now() / 1000);
     if (isExpired) {
-      await this._tokenService.deleteAllRefreshTokensForDevice(refreshTokenPayload.id, userAgent);
+      await this._tokenService.deleteAllRefreshTokensForDevice(
+        refreshTokenPayload.id,
+        userMetadata.userAgent
+      );
       throw new UnauthorizedException('Refresh token is expired.');
     }
 
@@ -143,7 +141,7 @@ export class AuthService implements IAuthService {
 
     const authTokens = this._generateAuthTokens(user);
     await this._tokenService.deleteRefreshToken(refreshToken);
-    await this._tokenService.saveRefreshToken(authTokens.refreshToken, userAgent, ip);
+    await this._tokenService.saveRefreshToken(authTokens.refreshToken, userMetadata);
 
     return authTokens;
   }

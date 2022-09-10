@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthTokenPayload } from '@nx-mfe/server/domains';
+import { AuthTokenPayload, UserMetadata } from '@nx-mfe/server/domains';
 import { AuthTokensResponse } from '@nx-mfe/shared/data-access';
 import { Repository } from 'typeorm';
 
@@ -33,8 +33,7 @@ export class TokenService implements ITokenService {
 
   public async saveRefreshToken(
     refreshToken: string,
-    userAgent: string,
-    ip: string
+    userMetadata: UserMetadata
   ): Promise<TokenEntity> {
     const { exp: expiresIn, id: userId } = this._jwtService.decode(
       refreshToken
@@ -43,8 +42,8 @@ export class TokenService implements ITokenService {
       refreshToken,
       expiresIn,
       userId,
-      userAgent,
-      ip,
+      userAgent: userMetadata.userAgent,
+      ip: userMetadata.ip,
     });
     return this._tokenRepository.save(createdToken);
   }
