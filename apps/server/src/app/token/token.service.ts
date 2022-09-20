@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthTokenPayload, UserMetadata } from '@nx-mfe/server/domains';
-import { AuthTokensResponse } from '@nx-mfe/shared/data-access';
+import { AuthTokensResponse } from '@nx-mfe/shared/dto';
 import { Repository } from 'typeorm';
 
 import { TokenEntity } from './token.entity';

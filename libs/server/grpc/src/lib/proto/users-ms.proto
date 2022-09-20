@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package users;
+
+service UsersService {
+  // TODO returns (User | undefined)
+  rpc FindOne(FindOneRequest) returns (User);
+  rpc Create(CreateRequest) returns (User);
+  rpc Update(UpdateRequest) returns (User);
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+  rpc IssueNewConfirmationLink(IssueNewConfirmationLinkRequest) returns (IssueNewConfirmationLinkResponse);
+}
+
+message User {
+  int32 id = 1;
+  string email = 2;
+  string password = 3;
+  bool isConfirmed = 4;
+  string confirmationLink = 5;
+}
+
+message CreateRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message UpdateRequest {
+  int32 id = 1;
+  oneof optionalEmail {
+    string email = 2;
+  }
+  oneof optionalPassword {
+    string password = 3;
+  }
+  oneof optionalIsConfirmed {
+    bool isConfirmed = 4;
+  }
+  oneof optionalConfirmationLink {
+    string confirmationLink = 5;
+  }
+}
+
+message FindOneRequest {
+  oneof criteria {
+    int32 id = 1;
+    string email = 2;
+    string confirmationLink = 3;
+  }
+}
+
+message DeleteRequest {
+  int32 id = 1;
+}
+
+message DeleteResponse {
+  int32 id = 1;
+}
+
+message IssueNewConfirmationLinkRequest {
+  string email = 1;
+}
+
+message IssueNewConfirmationLinkResponse {
+  string link = 1;
+}

@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+import "utils.proto";
+
+package auth;
+
+service AuthService {
+  rpc Login (LoginRequest) returns (AuthTokens);
+  rpc Logout (LogoutRequest) returns (utils.Empty);
+  rpc Refresh (RefreshRequest) returns (AuthTokens);
+  rpc Register (RegistrerRequest) returns (utils.Empty);
+  rpc ConfirmRegister (ConfirmRegisterRequest) returns (utils.Empty);
+  rpc ResendRegisterConfirmation (ResendRegisterConfirmationRequest) returns (utils.Empty);
+}
+
+message UserMetadata {
+  string ip = 1;
+  string userAgent = 2;
+}
+
+message AuthTokens {
+  string accessToken = 1;
+  string refreshToken = 2;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  UserMetadata userMetadata = 3;
+}
+
+message LogoutRequest {
+  string refreshToken = 1;
+}
+
+message RefreshRequest {
+  string refreshToken = 1;
+  UserMetadata userMetadata = 2;
+}
+
+message RegistrerRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message ConfirmRegisterRequest {
+  string confirmationLink = 1;
+}
+
+message ResendRegisterConfirmationRequest {
+  string email = 1;
+}

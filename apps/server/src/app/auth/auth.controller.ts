@@ -19,8 +19,8 @@ import {
   AuthTokensResponse,
   LoginRequest,
   RegisterRequest,
-  ResendRegistrationConfirmationMailRequest,
-} from '@nx-mfe/shared/data-access';
+  ResendRegisterConfirmationRequest,
+} from '@nx-mfe/shared/dto';
 import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 
@@ -55,10 +55,10 @@ export class AuthController {
     return await this._authService.register(credentials);
   }
 
-  @Post('/registration/confirmation/resend')
+  @Post('/register/confirmation/resend')
   @HttpCode(200)
   public async resendRegistrationConfirmationMail(
-    @Body() { email }: ResendRegistrationConfirmationMailRequest
+    @Body() { email }: ResendRegisterConfirmationRequest
   ): Promise<void> {
     return await this._authService.resendRegisterConfirmationMail(email);
   }

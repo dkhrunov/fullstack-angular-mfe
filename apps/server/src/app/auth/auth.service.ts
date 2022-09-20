@@ -10,11 +10,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { AuthTokenPayload, RefreshToken, UserMetadata } from '@nx-mfe/server/domains';
 import { MailerService } from '@nx-mfe/server/mailer';
-import {
-  AuthTokensResponse,
-  CredentialsRequest,
-  RegisterRequest,
-} from '@nx-mfe/shared/data-access';
+import { AuthTokensResponse, CredentialsRequest, RegisterRequest } from '@nx-mfe/shared/dto';
 import { SentMessageInfo } from 'nodemailer';
 import { Connection } from 'typeorm';
 
@@ -119,7 +115,7 @@ export class AuthService implements IAuthService {
       // TODO поменять ссылку с вызова API бека на страницу на клиенте где как раз будет вызываться данный ендпоинт
       await this._sendRegisterConfirmationMail(
         user.email,
-        `${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/registration/confirm/${user.confirmationLink}`
+        `${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirm/${user.confirmationLink}`
       );
 
       await queryRunner.commitTransaction();

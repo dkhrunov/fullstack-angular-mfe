@@ -1,0 +1,4 @@
+export enum Services {
+  AUTH_SERVICE = 'AUTH_SERVICE',
+  TOKEN_SERVICE = 'TOKEN_SERVICE',
+}

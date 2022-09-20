@@ -46,7 +46,12 @@
 							},
 							{
 								"sourceTag": "scope:server",
-								"onlyDependOnLibsWithTags": ["scope:shared", "scope:server"],
+								"onlyDependOnLibsWithTags": ["scope:shared", "scope:server", "scope:microservice"],
+								"bannedExternalImports": ["@angular/*"]
+							},
+							{
+								"sourceTag": "scope:microservice",
+								"onlyDependOnLibsWithTags": ["scope:shared", "scope:server", "scope:microservice"],
 								"bannedExternalImports": ["@angular/*"]
 							},
 							{

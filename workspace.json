@@ -22,14 +22,16 @@
     "client-styles": "libs/client/styles",
     "client-ui": "libs/client/ui",
     "server": "apps/server",
+    "server-api-gateway": "apps/server/api-gateway",
     "server-auth": "libs/server/auth",
     "server-auth-ms": "apps/server/auth-ms",
+    "server-common": "libs/server/common",
     "server-domains": "libs/server/domains",
-    "server-gateway": "apps/server/gateway",
-    "server-grpc-proto": "libs/server/grpc-proto",
+    "server-grpc": "libs/server/grpc",
     "server-mailer": "libs/server/mailer",
+    "server-users-ms": "apps/server/users-ms",
     "shared-common": "libs/shared/common",
-    "shared-data-access": "libs/shared/data-access"
+    "shared-dto": "libs/shared/dto"
   },
   "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

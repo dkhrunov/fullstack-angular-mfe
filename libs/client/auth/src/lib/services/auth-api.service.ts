@@ -6,8 +6,8 @@ import {
   AuthTokensResponse,
   LoginRequest,
   RegisterRequest,
-  ResendRegistrationConfirmationMailRequest,
-} from '@nx-mfe/shared/data-access';
+  ResendRegisterConfirmationRequest,
+} from '@nx-mfe/shared/dto';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -42,7 +42,7 @@ export class AuthApiService extends BaseAuthApiService {
   }
 
   public resendRegistrationConfirmationMail(
-    request: ResendRegistrationConfirmationMailRequest
+    request: ResendRegisterConfirmationRequest
   ): Observable<void> {
     return this._httpClient.post<void>(
       this._environment.apiUrl + '/auth/registration/confirmation/resend',
