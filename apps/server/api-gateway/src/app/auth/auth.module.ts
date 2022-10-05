@@ -1,11 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PassportModule } from '@nestjs/passport';
 import { AuthMs } from '@nx-mfe/server/grpc';
 
 import { AuthController } from './auth.controller';
+import { AuthStrategy } from './auth.strategy';
 
 @Module({
   imports: [
+    PassportModule.register({
+      defaultStrategy: 'jwt',
+      property: 'user',
+      session: false,
+    }),
     ClientsModule.register([
       // TODO вынести в отдельную константу
       {
@@ -24,5 +31,6 @@ import { AuthController } from './auth.controller';
     ]),
   ],
   controllers: [AuthController],
+  providers: [AuthStrategy],
 })
 export class AuthModule {}

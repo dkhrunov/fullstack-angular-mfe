@@ -8,6 +8,7 @@ import { AuthMs, GrpcException, UsersMs } from '@nx-mfe/server/grpc';
 import { MailerService } from '@nx-mfe/server/mailer';
 import { VOID } from '@nx-mfe/shared/common';
 import { AuthTokensResponse, CredentialsRequest, RegisterRequest } from '@nx-mfe/shared/dto';
+import { classToPlain } from 'class-transformer';
 import { SentMessageInfo } from 'nodemailer';
 import { firstValueFrom, mergeMap, Observable } from 'rxjs';
 
@@ -87,7 +88,8 @@ export class AuthService implements IAuthService, OnModuleInit {
       });
     }
 
-    const authTokens = this._tokenService.generateAuthTokens(user);
+    const tokenPayload = classToPlain(new AuthTokenPayload(user));
+    const authTokens = this._tokenService.generateAuthTokens(tokenPayload);
     await this._tokenService.saveRefreshToken(authTokens.refreshToken, userMetadata);
 
     return AuthMs.AuthTokens.fromJSON(authTokens);
@@ -148,7 +150,8 @@ export class AuthService implements IAuthService, OnModuleInit {
       });
     }
 
-    const authTokens = this._tokenService.generateAuthTokens(new AuthTokenPayload(user));
+    const tokenPayload = classToPlain(new AuthTokenPayload(user));
+    const authTokens = this._tokenService.generateAuthTokens(tokenPayload);
     await this._tokenService.deleteRefreshToken(refreshToken);
     await this._tokenService.saveRefreshToken(authTokens.refreshToken, userMetadata);
 

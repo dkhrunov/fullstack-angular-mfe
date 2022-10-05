@@ -1,10 +1,11 @@
 import { Controller, Get, Inject, OnModuleInit, Param, UseGuards } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { JwtAuthGuard } from '@nx-mfe/server/auth';
 import { UsersMs } from '@nx-mfe/server/grpc';
 import { transformToClass } from '@nx-mfe/shared/common';
 import { UserResponse } from '@nx-mfe/shared/dto';
 import { Observable } from 'rxjs';
+
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('users')
 export class UsersController implements OnModuleInit {
@@ -17,7 +18,7 @@ export class UsersController implements OnModuleInit {
   }
 
   @Get('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   public getOne(@Param('id') id: string): Observable<UserResponse | undefined> {
     return this._usersMs
       .findOne(UsersMs.FindOneRequest.fromPartial({ id: parseInt(id) }))

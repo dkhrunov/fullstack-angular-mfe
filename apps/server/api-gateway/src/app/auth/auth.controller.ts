@@ -16,7 +16,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { JwtAuthGuard } from '@nx-mfe/server/auth';
 import { UserMetadata } from '@nx-mfe/server/domains';
 import { AuthMs, Utils } from '@nx-mfe/server/grpc';
 import { transformToClass } from '@nx-mfe/shared/common';
@@ -29,6 +28,8 @@ import {
 import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { lastValueFrom, Observable, tap } from 'rxjs';
+
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController implements OnModuleInit {
@@ -53,7 +54,6 @@ export class AuthController implements OnModuleInit {
     @Headers('User-Agent') userAgent: string,
     @Body() body: LoginRequest,
     @Res({ passthrough: true }) res: Response
-    // ): Promise<AuthTokensResponse> {
   ): Observable<AuthTokensResponse> {
     const { session, email, password } = body;
     const userMetadata = plainToClass(UserMetadata, { userAgent, ip });
@@ -71,7 +71,7 @@ export class AuthController implements OnModuleInit {
   }
 
   @Post('/logout')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   public logout(
     @Req() req: Request,

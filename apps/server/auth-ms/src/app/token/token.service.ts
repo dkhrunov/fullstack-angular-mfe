@@ -1,8 +1,11 @@
+import { status } from '@grpc/grpc-js';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthTokenPayload, UserMetadata } from '@nx-mfe/server/domains';
+import { UserMetadata } from '@nx-mfe/server/domains';
+import { GrpcException } from '@nx-mfe/server/grpc';
+import { isNil, isString } from '@nx-mfe/shared/common';
 import { AuthTokensResponse } from '@nx-mfe/shared/dto';
 import { Repository } from 'typeorm';
 
@@ -35,13 +38,19 @@ export class TokenService implements ITokenService {
     refreshToken: string,
     userMetadata: UserMetadata
   ): Promise<TokenEntity> {
-    const { exp: expiresIn, id: userId } = this._jwtService.decode(
-      refreshToken
-    ) as AuthTokenPayload;
+    const payload = this._jwtService.decode(refreshToken);
+
+    if (isNil(payload) || isString(payload) || isNil(payload.exp) || isNil(payload.id)) {
+      throw new GrpcException({
+        code: status.INVALID_ARGUMENT,
+        message: 'Refresh token has incorrect payload.',
+      });
+    }
+
     const createdToken = this._tokenRepository.create({
       refreshToken,
-      expiresIn,
-      userId,
+      expiresIn: payload.exp,
+      userId: payload.id,
       userAgent: userMetadata.userAgent,
       ip: userMetadata.ip,
     });
