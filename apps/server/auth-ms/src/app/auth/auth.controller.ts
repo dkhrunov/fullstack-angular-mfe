@@ -1,5 +1,6 @@
-import { Controller, Inject, InternalServerErrorException } from '@nestjs/common';
-import { AuthMs, Utils } from '@nx-mfe/server/grpc';
+import { status } from '@grpc/grpc-js';
+import { Controller, Inject } from '@nestjs/common';
+import { AuthMs, GrpcException, Utils } from '@nx-mfe/server/grpc';
 import { isNil } from '@nx-mfe/shared/common';
 import { Observable } from 'rxjs';
 
@@ -21,8 +22,10 @@ export class AuthController implements AuthMs.AuthServiceController {
     request: AuthMs.LoginRequest
   ): AuthMs.AuthTokens | Promise<AuthMs.AuthTokens> | Observable<AuthMs.AuthTokens> {
     if (isNil(request.userMetadata)) {
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new InternalServerErrorException('userMetadata field in request is required');
+      throw new GrpcException({
+        code: status.INTERNAL,
+        message: 'userMetadata field in request is required',
+      });
     }
 
     return this._service.login(request, request.userMetadata);
@@ -38,8 +41,10 @@ export class AuthController implements AuthMs.AuthServiceController {
     request: AuthMs.RefreshRequest
   ): AuthMs.AuthTokens | Promise<AuthMs.AuthTokens> | Observable<AuthMs.AuthTokens> {
     if (isNil(request.userMetadata)) {
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new InternalServerErrorException('userMetadata field in request is required');
+      throw new GrpcException({
+        code: status.INTERNAL,
+        message: 'userMetadata field in request is required',
+      });
     }
 
     return this._service.refresh(request.refreshToken, request.userMetadata);

@@ -2,7 +2,7 @@ import { status } from '@grpc/grpc-js';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hashPassword } from '@nx-mfe/server/common';
-import { RpcException } from '@nx-mfe/server/grpc';
+import { GrpcException } from '@nx-mfe/server/grpc';
 import { isNil, isUndefined } from '@nx-mfe/shared/common';
 import { DeepPartial, Repository } from 'typeorm';
 import * as uuid from 'uuid';
@@ -21,7 +21,7 @@ export class UserService implements IUserService {
     const user = await this._repository.findOne({ where: { ...criterias } });
 
     if (isNil(user)) {
-      throw new RpcException({ code: status.NOT_FOUND, message: 'User doesn`t found' });
+      throw new GrpcException({ code: status.NOT_FOUND, message: 'User doesn`t found' });
     }
 
     return user;
@@ -36,7 +36,7 @@ export class UserService implements IUserService {
       .then((v) => !isUndefined(v));
 
     if (isExist) {
-      throw new RpcException({
+      throw new GrpcException({
         code: status.ALREADY_EXISTS,
         message: 'Email already used',
       });
@@ -58,7 +58,7 @@ export class UserService implements IUserService {
 
       return result.raw[0];
     } catch (error) {
-      throw new RpcException({
+      throw new GrpcException({
         code: status.INTERNAL,
         message: error,
       });

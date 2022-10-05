@@ -1,16 +1,10 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-  OnModuleInit,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { status } from '@grpc/grpc-js';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ClientGrpc, RpcException } from '@nestjs/microservices';
+import { ClientGrpc } from '@nestjs/microservices';
 import { compareHashedPassword } from '@nx-mfe/server/common';
 import { AuthTokenPayload, RefreshToken, UserMetadata } from '@nx-mfe/server/domains';
-import { AuthMs, UsersMs } from '@nx-mfe/server/grpc';
+import { AuthMs, GrpcException, UsersMs } from '@nx-mfe/server/grpc';
 import { MailerService } from '@nx-mfe/server/mailer';
 import { VOID } from '@nx-mfe/shared/common';
 import { AuthTokensResponse, CredentialsRequest, RegisterRequest } from '@nx-mfe/shared/dto';
@@ -50,7 +44,7 @@ export class AuthService implements IAuthService, OnModuleInit {
       //   catchError(() =>
       //     throwError(
       //       () =>
-      //         new RpcException({
+      //         new GrpcException({
       //           code: status.INTERNAL,
       //           message: 'Error while sending email confirmation',
       //         })
@@ -71,23 +65,29 @@ export class AuthService implements IAuthService, OnModuleInit {
     );
 
     if (!user) {
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new UnauthorizedException('Wrong E-mail or password.');
+      throw new GrpcException({
+        code: status.UNAUTHENTICATED,
+        message: 'Wrong E-mail or password.',
+      });
     }
 
     if (!user.isConfirmed) {
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new RpcException('You need to verify your email first.');
+      throw new GrpcException({
+        code: status.PERMISSION_DENIED,
+        message: 'You need to verify your email first.',
+      });
     }
 
     const isPasswordCorrect = await compareHashedPassword(credentials.password, user.password);
 
     if (!isPasswordCorrect) {
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new UnauthorizedException('Wrong E-mail or password.');
+      throw new GrpcException({
+        code: status.UNAUTHENTICATED,
+        message: 'Wrong E-mail or password.',
+      });
     }
 
-    const authTokens = this._tokenService.generateAuthTokens(new AuthTokenPayload(user));
+    const authTokens = this._tokenService.generateAuthTokens(user);
     await this._tokenService.saveRefreshToken(authTokens.refreshToken, userMetadata);
 
     return AuthMs.AuthTokens.fromJSON(authTokens);
@@ -101,33 +101,40 @@ export class AuthService implements IAuthService, OnModuleInit {
     refreshToken: string,
     userMetadata: UserMetadata
   ): Promise<AuthTokensResponse> {
-    const tokenEntity = await this._tokenService.findRefreshToken(refreshToken);
+    const refreshTokenEntity = await this._tokenService.findRefreshToken(refreshToken);
 
-    if (!tokenEntity) {
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new UnauthorizedException('Refresh token not found.');
+    if (!refreshTokenEntity) {
+      throw new GrpcException({
+        code: status.UNAUTHENTICATED,
+        message: 'Refresh token not found.',
+      });
     }
 
     // TODO Так не должно быть чтобы в модель я передавал сервис this._jwtService
     const _refreshToken = new RefreshToken(refreshToken, this._jwtService);
     const refreshTokenPayload = _refreshToken.decode();
 
-    const isExpired = tokenEntity.expiresIn < Math.floor(Date.now() / 1000);
+    const isExpired = refreshTokenEntity.expiresIn < Math.floor(Date.now() / 1000);
 
     if (isExpired) {
       await this._tokenService.deleteAllRefreshTokensForDevice(
         refreshTokenPayload.id,
         userMetadata.userAgent
       );
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new UnauthorizedException('Refresh token is expired.');
+
+      throw new GrpcException({
+        code: status.UNAUTHENTICATED,
+        message: 'Refresh token is expired.',
+      });
     }
 
     try {
       _refreshToken.verify();
     } catch (error) {
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new UnauthorizedException(error.message);
+      throw new GrpcException({
+        code: status.UNAUTHENTICATED,
+        message: error.message,
+      });
     }
 
     const user = await firstValueFrom(
@@ -135,8 +142,10 @@ export class AuthService implements IAuthService, OnModuleInit {
     );
 
     if (!user) {
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new NotFoundException('User does not exist.');
+      throw new GrpcException({
+        code: status.NOT_FOUND,
+        message: 'User does not exist.',
+      });
     }
 
     const authTokens = this._tokenService.generateAuthTokens(new AuthTokenPayload(user));
@@ -153,8 +162,11 @@ export class AuthService implements IAuthService, OnModuleInit {
 
     if (!user) {
       // TODO редирект на страницу с ошибкой на фронте.
-      // FIXME RpcException ? https://github.com/nestjs/nest/issues/764
-      throw new BadRequestException('Incorrect link to confirm registration.');
+
+      throw new GrpcException({
+        code: status.INVALID_ARGUMENT,
+        message: 'Incorrect link to confirm registration.',
+      });
     }
 
     await firstValueFrom(

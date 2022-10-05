@@ -28,7 +28,7 @@ export class TokenService implements ITokenService {
       expiresIn: Number(process.env.JWT_REFRESH_EXPIRES_IN),
     });
 
-    return new AuthTokensResponse(accessToken, refreshToken);
+    return new AuthTokensResponse({ accessToken, refreshToken });
   }
 
   public async saveRefreshToken(

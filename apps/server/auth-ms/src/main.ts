@@ -6,7 +6,7 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
-import { AuthMs, RpcExceptionFilter } from '@nx-mfe/server/grpc';
+import { AuthMs, GrpcExceptionFilter } from '@nx-mfe/server/grpc';
 
 import { AppModule } from './app/app.module';
 
@@ -26,7 +26,7 @@ async function bootstrap() {
     },
   });
 
-  microservice.useGlobalFilters(new RpcExceptionFilter());
+  microservice.useGlobalFilters(new GrpcExceptionFilter());
 
   await microservice.listen();
 

@@ -9,10 +9,10 @@ import {
 } from '@nestjs/common';
 import { ServerErrorResponse } from '@nx-mfe/shared/dto';
 
-import { IRpcException } from '../exceptions';
+import { IGrpcException } from '../exceptions';
 
 @Catch()
-export class RpcToHttpExceptionFilter implements ExceptionFilter {
+export class GrpcToHttpExceptionFilter implements ExceptionFilter {
   private static readonly _logger = new Logger('RpcToHttpExceptionFilter');
 
   private static _rpcToHttpCodesMap = new Map<number, number>([
@@ -49,7 +49,7 @@ export class RpcToHttpExceptionFilter implements ExceptionFilter {
       responseBody = this._defaultExceptionResponse(exception, host);
     }
 
-    RpcToHttpExceptionFilter._logger.error(responseBody);
+    GrpcToHttpExceptionFilter._logger.error(responseBody);
     httpAdapter.reply(ctx.getResponse(), responseBody, responseBody.statusCode);
   }
 
@@ -67,13 +67,13 @@ export class RpcToHttpExceptionFilter implements ExceptionFilter {
   }
 
   private _rpcExceptionResponse(
-    exception: IRpcException,
+    exception: IGrpcException,
     host: ArgumentsHost
   ): ServerErrorResponse {
     const { httpAdapter } = this._httpAdapterHost;
     const ctx = host.switchToHttp();
     const statusCode =
-      RpcToHttpExceptionFilter._rpcToHttpCodesMap.get(exception?.code ?? status.UNKNOWN) ??
+      GrpcToHttpExceptionFilter._rpcToHttpCodesMap.get(exception?.code ?? status.UNKNOWN) ??
       HttpStatus.INTERNAL_SERVER_ERROR;
 
     return {
@@ -85,7 +85,7 @@ export class RpcToHttpExceptionFilter implements ExceptionFilter {
     };
   }
 
-  private _isRpcException(exception: any): exception is IRpcException {
+  private _isRpcException(exception: any): exception is IGrpcException {
     const isRpcCode = Boolean(status[exception?.code]);
     const isHasCode = Object.hasOwnProperty.call(exception, 'code');
     const isHasMetadata = Object.hasOwnProperty.call(exception, 'metadata');

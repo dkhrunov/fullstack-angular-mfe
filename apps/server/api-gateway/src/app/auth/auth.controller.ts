@@ -12,7 +12,6 @@ import {
   Post,
   Req,
   Res,
-  Type,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +19,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { JwtAuthGuard } from '@nx-mfe/server/auth';
 import { UserMetadata } from '@nx-mfe/server/domains';
 import { AuthMs, Utils } from '@nx-mfe/server/grpc';
+import { transformToClass } from '@nx-mfe/shared/common';
 import {
   AuthTokensResponse,
   LoginRequest,
@@ -28,15 +28,7 @@ import {
 } from '@nx-mfe/shared/dto';
 import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
-import { lastValueFrom, map, Observable, OperatorFunction, tap } from 'rxjs';
-
-function transform<TSource, TDestination>(
-  destination: Type<TDestination>
-): OperatorFunction<TSource, TDestination> {
-  return (source: Observable<TSource>): Observable<TDestination> => {
-    return source.pipe(map((value) => plainToClass(destination, value)));
-  };
-}
+import { lastValueFrom, Observable, tap } from 'rxjs';
 
 @Controller('auth')
 export class AuthController implements OnModuleInit {
@@ -74,24 +66,12 @@ export class AuthController implements OnModuleInit {
       })
       .pipe(
         tap(({ refreshToken }) => this._setRefreshTokenInCookie(res, refreshToken, session)),
-        transform(AuthTokensResponse)
+        transformToClass(AuthTokensResponse)
       );
-
-    // const tokens = await lastValueFrom(
-    //   this._authService.login({
-    //     email,
-    //     password,
-    //     userMetadata,
-    //   })
-    // );
-
-    // this._setRefreshTokenInCookie(res, tokens.refreshToken, session);
-
-    // return tokens;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/logout')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   public logout(
     @Req() req: Request,
@@ -120,7 +100,7 @@ export class AuthController implements OnModuleInit {
       tap(({ refreshToken }) =>
         this._setRefreshTokenInCookie(res, refreshToken, req.cookies.session)
       ),
-      transform(AuthTokensResponse)
+      transformToClass(AuthTokensResponse)
     );
   }
 

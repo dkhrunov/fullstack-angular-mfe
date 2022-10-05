@@ -10,10 +10,10 @@ import { LogObservableError } from '@nx-mfe/server/common';
 import { Observable, throwError } from 'rxjs';
 
 @Catch()
-export class RpcExceptionFilter implements IRpcExceptionFilter {
+export class GrpcExceptionFilter implements IRpcExceptionFilter {
   private static readonly _logger = new Logger('RpcExceptionFilter');
 
-  @LogObservableError(RpcExceptionFilter._logger, 'error')
+  @LogObservableError(GrpcExceptionFilter._logger, 'error')
   public catch(exception: any, host: ArgumentsHost): Observable<never> {
     if (host.getType() === 'rpc') {
       if (exception instanceof RpcException) {

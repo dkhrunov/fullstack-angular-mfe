@@ -1,2 +1,2 @@
-export * from './rpc-exception';
-export * from './rpc-exception.interface';
+export * from './grpc-exception';
+export * from './grpc-exception.interface';

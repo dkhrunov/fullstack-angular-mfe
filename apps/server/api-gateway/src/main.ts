@@ -5,7 +5,8 @@
 
 import { Logger } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { RpcToHttpExceptionFilter } from '@nx-mfe/server/grpc';
+import { GrpcToHttpExceptionFilter } from '@nx-mfe/server/grpc';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app/app.module';
 
@@ -18,7 +19,9 @@ async function bootstrap() {
   app.setGlobalPrefix(GLOBAL_PREFIX);
 
   const httpAdapterHost = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new RpcToHttpExceptionFilter(httpAdapterHost));
+  app.useGlobalFilters(new GrpcToHttpExceptionFilter(httpAdapterHost));
+
+  app.use(cookieParser());
 
   await app.listen(PORT);
 

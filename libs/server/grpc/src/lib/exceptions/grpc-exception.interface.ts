@@ -1,6 +1,6 @@
 import { status } from '@grpc/grpc-js';
 
-export interface IRpcException {
+export interface IGrpcException {
   code: status;
   message: string;
   details?: string;

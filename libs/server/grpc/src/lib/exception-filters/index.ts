@@ -1,2 +1,2 @@
-export * from './rpc-exception.filter';
-export * from './rpc-to-http-exception.filter';
+export * from './grpc-exception.filter';
+export * from './grpc-to-http-exception.filter';

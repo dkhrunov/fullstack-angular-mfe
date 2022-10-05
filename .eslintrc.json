@@ -1,104 +1,104 @@
 {
-	"extends": ["plugin:@angular-eslint/recommended"],
-	"parserOptions": {
-		"project": "./tsconfig.json"
-	},
-	"rules": {
-		"@angular-eslint/component-selector": ["off"],
-		"@typescript-eslint/no-non-null-assertion": ["off"],
-		"@typescript-eslint/no-inferrable-types": ["off"],
-		"@angular-eslint/no-inputs-metadata-property": ["off"],
-		"@angular-eslint/no-host-metadata-property": ["off"],
-		"max-len": ["error", 100],
-		"@angular-eslint/no-input-rename": ["off"],
-		"@angular-eslint/component-class-suffix": ["off"],
-		"@angular-eslint/directive-class-suffix": ["off"],
-		"quotes": [
-			"error",
-			"single",
-			{
-				"allowTemplateLiterals": true
-			}
-		],
-		"simple-import-sort/exports": "error",
-		"simple-import-sort/imports": "error"
-	},
-	"root": true,
-	"ignorePatterns": ["!**/*"],
-	"plugins": ["@nrwl/nx", "simple-import-sort"],
-	"overrides": [
-		{
-			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-			"parserOptions": {
-				"project": ["./tsconfig.json"]
-			},
-			"rules": {
-				"@nrwl/nx/enforce-module-boundaries": [
-					"error",
-					{
-						"enforceBuildableLibDependency": true,
-						"allow": [],
-						"depConstraints": [
-							{
-								"sourceTag": "scope:client",
-								"onlyDependOnLibsWithTags": ["scope:shared", "scope:client"],
-								"bannedExternalImports": ["@nestjs/*"]
-							},
-							{
-								"sourceTag": "scope:server",
-								"onlyDependOnLibsWithTags": ["scope:shared", "scope:server", "scope:microservice"],
-								"bannedExternalImports": ["@angular/*"]
-							},
-							{
-								"sourceTag": "scope:microservice",
-								"onlyDependOnLibsWithTags": ["scope:shared", "scope:server", "scope:microservice"],
-								"bannedExternalImports": ["@angular/*"]
-							},
-							{
-								"sourceTag": "scope:shared",
-								"onlyDependOnLibsWithTags": ["scope:shared"],
-								"bannedExternalImports": ["@angular/*", "@nestjs/*"]
-							}
-						]
-					}
-				]
-			}
-		},
-		{
-			"files": ["*.ts", "*.tsx"],
-			"extends": ["plugin:@nrwl/nx/typescript"],
-			"rules": {
-				"quotes": [
-					"error",
-					"single",
-					{
-						"allowTemplateLiterals": true
-					}
-				]
-			}
-		},
-		{
-			"files": ["*.js", "*.jsx"],
-			"extends": ["plugin:@nrwl/nx/javascript"],
-			"rules": {
-				"quotes": [
-					"error",
-					"single",
-					{
-						"allowTemplateLiterals": true
-					}
-				]
-			}
-		},
-		{
-			"files": ["*.component.ts"],
-			"parser": "@typescript-eslint/parser",
-			"parserOptions": {
-				"ecmaVersion": 2020,
-				"sourceType": "module"
-			},
-			"plugins": ["@angular-eslint/template"],
-			"processor": "@angular-eslint/template/extract-inline-html"
-		}
-	]
+  "extends": ["plugin:@angular-eslint/recommended"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@angular-eslint/component-selector": ["off"],
+    "@typescript-eslint/no-non-null-assertion": ["off"],
+    "@typescript-eslint/no-inferrable-types": ["off"],
+    "@angular-eslint/no-inputs-metadata-property": ["off"],
+    "@angular-eslint/no-host-metadata-property": ["off"],
+    "max-len": ["error", 100],
+    "@angular-eslint/no-input-rename": ["off"],
+    "@angular-eslint/component-class-suffix": ["off"],
+    "@angular-eslint/directive-class-suffix": ["off"],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "allowTemplateLiterals": true
+      }
+    ],
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "error"
+  },
+  "root": true,
+  "ignorePatterns": ["!**/*"],
+  "plugins": ["@nrwl/nx", "simple-import-sort"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      },
+      "rules": {
+        "@nrwl/nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "scope:client",
+                "onlyDependOnLibsWithTags": ["scope:shared", "scope:client"],
+                "bannedExternalImports": ["@nestjs/*"]
+              },
+              {
+                "sourceTag": "scope:server",
+                "onlyDependOnLibsWithTags": ["scope:shared", "scope:server", "scope:microservice"],
+                "bannedExternalImports": ["@angular/*"]
+              },
+              {
+                "sourceTag": "scope:microservice",
+                "onlyDependOnLibsWithTags": ["scope:shared", "scope:server", "scope:microservice"],
+                "bannedExternalImports": ["@angular/*"]
+              },
+              {
+                "sourceTag": "scope:shared",
+                "onlyDependOnLibsWithTags": ["scope:shared"],
+                "bannedExternalImports": ["@angular/*", "@nestjs/*"]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nrwl/nx/typescript"],
+      "rules": {
+        "quotes": [
+          "error",
+          "single",
+          {
+            "allowTemplateLiterals": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nrwl/nx/javascript"],
+      "rules": {
+        "quotes": [
+          "error",
+          "single",
+          {
+            "allowTemplateLiterals": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.component.ts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module"
+      },
+      "plugins": ["@angular-eslint/template"],
+      "processor": "@angular-eslint/template/extract-inline-html"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AuthModule as LibAuthModule } from '@nx-mfe/server/auth';
+import { AuthModule as AuthLibModule } from '@nx-mfe/server/auth';
 import { UsersMs } from '@nx-mfe/server/grpc';
 import { MailerModule } from '@nx-mfe/server/mailer';
 
@@ -42,7 +42,7 @@ const AUTH_SERVICE_PROVIDER = {
       },
     }),
     TokenModule,
-    LibAuthModule,
+    AuthLibModule,
   ],
   controllers: [AuthController],
   providers: [AUTH_SERVICE_PROVIDER],
