@@ -4,7 +4,7 @@ import { HttpError } from '@nx-mfe/client/common';
 import {
   DefaultHttpErrorResponse,
   RegisterRequest,
-  ResendRegistrationConfirmationMailRequest,
+  ResendRegisterConfirmationRequest,
   ServerErrorResponse,
 } from '@nx-mfe/shared/dto';
 import { ModalService } from 'carbon-components-angular/modal';
@@ -60,7 +60,7 @@ export class RegisterFacadeService implements OnDestroy {
   }
 
   public resendRegistrationConfirmationMail(email: string): void {
-    const request = plainToClass(ResendRegistrationConfirmationMailRequest, { email });
+    const request = plainToClass(ResendRegisterConfirmationRequest, { email });
 
     this._authApiService.resendRegistrationConfirmationMail(request).subscribe();
   }

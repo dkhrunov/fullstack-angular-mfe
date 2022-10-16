@@ -2,11 +2,11 @@ import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class JwtToken<T extends Object> {
-  constructor(
-    public readonly token: string,
-    // FIXME здесь не должно быть сериса
-    protected readonly _jwtService: JwtService
-  ) {}
+  protected readonly _jwtService: JwtService;
+
+  constructor(public readonly token: string) {
+    this._jwtService = new JwtService({});
+  }
 
   public verify(options?: JwtVerifyOptions): T {
     return this._jwtService.verify(this.token, options);

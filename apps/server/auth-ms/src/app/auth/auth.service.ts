@@ -1,69 +1,54 @@
 import { status } from '@grpc/grpc-js';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ClientGrpc } from '@nestjs/microservices';
 import { compareHashedPassword } from '@nx-mfe/server/common';
-import { AuthTokenPayload, RefreshToken, UserMetadata } from '@nx-mfe/server/domains';
-import { AuthMs, GrpcException, UsersMs } from '@nx-mfe/server/grpc';
-import { MailerService } from '@nx-mfe/server/mailer';
+import { ActivationTokenPayload, AuthTokenPayload, UserMetadata } from '@nx-mfe/server/domains';
+import { AuthMs, GrpcException, MailMs, UsersMs } from '@nx-mfe/server/grpc';
 import { VOID } from '@nx-mfe/shared/common';
 import { AuthTokensResponse, CredentialsRequest, RegisterRequest } from '@nx-mfe/shared/dto';
-import { classToPlain } from 'class-transformer';
-import { SentMessageInfo } from 'nodemailer';
-import { firstValueFrom, mergeMap, Observable } from 'rxjs';
+import { catchError, firstValueFrom, mergeMap, Observable, throwError } from 'rxjs';
 
 import { IAuthService, ITokenService } from '../abstractions';
 import { Services } from '../constants';
 
 @Injectable()
 export class AuthService implements IAuthService, OnModuleInit {
-  private _userService: UsersMs.UsersServiceClient;
+  private _userMs: UsersMs.UsersServiceClient;
+
+  private _mailMs: MailMs.MailServiceClient;
 
   constructor(
-    private readonly _jwtService: JwtService,
-    private readonly _mailerService: MailerService,
+    @Inject(Services.TOKEN_SERVICE) private readonly _tokenService: ITokenService,
     @Inject(UsersMs.USERS_SERVICE_NAME) private readonly _userMsClient: ClientGrpc,
-    @Inject(Services.TOKEN_SERVICE) private readonly _tokenService: ITokenService
+    @Inject(MailMs.MAIL_SERVICE_NAME) private readonly _mailMsClient: ClientGrpc
   ) {}
 
   public onModuleInit() {
-    this._userService = this._userMsClient.getService<UsersMs.UsersServiceClient>(
+    this._userMs = this._userMsClient.getService<UsersMs.UsersServiceClient>(
       UsersMs.USERS_SERVICE_NAME
+    );
+
+    this._mailMs = this._mailMsClient.getService<MailMs.MailServiceClient>(
+      MailMs.MAIL_SERVICE_NAME
     );
   }
 
-  public register(credentials: RegisterRequest): Observable<void> {
-    return this._userService.create(UsersMs.CreateRequest.fromJSON(credentials)).pipe(
-      // FIXME настроить отправку писем после регистрации
-      // switchMap((user) => {
-      //   return from(this._sendRegisterConfirmationMail(
-      //     user.email,
-      //     `${process.env.SERVER_URL}:${process.env.PORT}/${process.env.GLOBAL_PREFIX}/auth/register/confirm/${user.confirmationLink}`
-      //   ))
+  public async register(credentials: RegisterRequest): Promise<void> {
+    const createUserRequest = UsersMs.CreateRequest.fromJSON(credentials);
+    const user = await firstValueFrom(this._userMs.create(createUserRequest));
 
-      // .pipe(
-      //   catchError(() =>
-      //     throwError(
-      //       () =>
-      //         new GrpcException({
-      //           code: status.INTERNAL,
-      //           message: 'Error while sending email confirmation',
-      //         })
-      //     )
-      //   )
-      // );
-      // })
-      mergeMap(() => VOID)
-    );
+    const activationTokenPayload = new ActivationTokenPayload(user);
+    const activationToken = this._tokenService.signActivationToken(activationTokenPayload);
+
+    await firstValueFrom(this._sendActivationAccountEmail(user.email, activationToken));
   }
 
   public async login(
     credentials: CredentialsRequest,
     userMetadata: UserMetadata
   ): Promise<AuthMs.AuthTokens> {
-    const user = await firstValueFrom(
-      this._userService.findOne(UsersMs.FindOneRequest.fromJSON({ email: credentials.email }))
-    );
+    const findUserRequest = UsersMs.FindOneRequest.fromJSON({ email: credentials.email });
+    const user = await firstValueFrom(this._userMs.findOne(findUserRequest));
 
     if (!user) {
       throw new GrpcException({
@@ -75,7 +60,7 @@ export class AuthService implements IAuthService, OnModuleInit {
     if (!user.isConfirmed) {
       throw new GrpcException({
         code: status.PERMISSION_DENIED,
-        message: 'You need to verify your email first.',
+        message: 'Account not activated. Please activate your account first',
       });
     }
 
@@ -88,8 +73,9 @@ export class AuthService implements IAuthService, OnModuleInit {
       });
     }
 
-    const tokenPayload = classToPlain(new AuthTokenPayload(user));
-    const authTokens = this._tokenService.generateAuthTokens(tokenPayload);
+    const tokenPayload = new AuthTokenPayload(user);
+    const authTokens = this._tokenService.signAuthTokens(tokenPayload);
+
     await this._tokenService.saveRefreshToken(authTokens.refreshToken, userMetadata);
 
     return AuthMs.AuthTokens.fromJSON(authTokens);
@@ -103,45 +89,11 @@ export class AuthService implements IAuthService, OnModuleInit {
     refreshToken: string,
     userMetadata: UserMetadata
   ): Promise<AuthTokensResponse> {
-    const refreshTokenEntity = await this._tokenService.findRefreshToken(refreshToken);
+    this._tokenService.checkRefreshToken(refreshToken, userMetadata);
 
-    if (!refreshTokenEntity) {
-      throw new GrpcException({
-        code: status.UNAUTHENTICATED,
-        message: 'Refresh token not found.',
-      });
-    }
-
-    // TODO Так не должно быть чтобы в модель я передавал сервис this._jwtService
-    const _refreshToken = new RefreshToken(refreshToken, this._jwtService);
-    const refreshTokenPayload = _refreshToken.decode();
-
-    const isExpired = refreshTokenEntity.expiresIn < Math.floor(Date.now() / 1000);
-
-    if (isExpired) {
-      await this._tokenService.deleteAllRefreshTokensForDevice(
-        refreshTokenPayload.id,
-        userMetadata.userAgent
-      );
-
-      throw new GrpcException({
-        code: status.UNAUTHENTICATED,
-        message: 'Refresh token is expired.',
-      });
-    }
-
-    try {
-      _refreshToken.verify();
-    } catch (error) {
-      throw new GrpcException({
-        code: status.UNAUTHENTICATED,
-        message: error.message,
-      });
-    }
-
-    const user = await firstValueFrom(
-      this._userService.findOne(UsersMs.FindOneRequest.fromJSON({ id: refreshTokenPayload.id }))
-    );
+    const refreshTokenPayload = this._tokenService.decode(refreshToken);
+    const findUserRequest = UsersMs.FindOneRequest.fromJSON({ id: refreshTokenPayload.id });
+    const user = await firstValueFrom(this._userMs.findOne(findUserRequest));
 
     if (!user) {
       throw new GrpcException({
@@ -150,61 +102,79 @@ export class AuthService implements IAuthService, OnModuleInit {
       });
     }
 
-    const tokenPayload = classToPlain(new AuthTokenPayload(user));
-    const authTokens = this._tokenService.generateAuthTokens(tokenPayload);
+    const tokenPayload = new AuthTokenPayload(user);
+    const authTokens = this._tokenService.signAuthTokens(tokenPayload);
     await this._tokenService.deleteRefreshToken(refreshToken);
     await this._tokenService.saveRefreshToken(authTokens.refreshToken, userMetadata);
 
     return authTokens;
   }
 
-  public async confirmRegister(confirmationLink: string): Promise<void> {
-    const user = await firstValueFrom(
-      this._userService.findOne(UsersMs.FindOneRequest.fromJSON({ confirmationLink }))
-    );
+  public async activateAccount(activationToken: string): Promise<void> {
+    this._tokenService.verifyActivationToken(activationToken);
+
+    const userId = this._tokenService.decode(activationToken).id;
+    const findUserRequest = UsersMs.FindOneRequest.fromPartial({ id: userId });
+    const user = await firstValueFrom(this._userMs.findOne(findUserRequest));
 
     if (!user) {
-      // TODO редирект на страницу с ошибкой на фронте.
+      throw new GrpcException({ code: status.NOT_FOUND, message: 'User doesn`t found' });
+    }
 
+    if (user.isConfirmed) {
       throw new GrpcException({
         code: status.INVALID_ARGUMENT,
-        message: 'Incorrect link to confirm registration.',
+        message: 'Account already activated.',
       });
     }
 
-    await firstValueFrom(
-      this._userService.update(
-        UsersMs.UpdateRequest.fromJSON({ id: user.id, data: { isConfirmed: true } })
-      )
-    );
-  }
-
-  public async resendRegisterConfirmation(email: string): Promise<void> {
-    const res = await firstValueFrom(
-      this._userService.issueNewConfirmationLink(
-        UsersMs.IssueNewConfirmationLinkRequest.fromJSON({ email })
-      )
-    );
-
-    await this._sendRegisterConfirmationMail(email, res.link);
-  }
-
-  // TODO Mail microservice with RabbitMQ
-  private async _sendRegisterConfirmationMail(
-    to: string,
-    confimationLink: string
-  ): Promise<SentMessageInfo> {
-    return await this._mailerService.sendMail({
-      to,
-      from: process.env.SMTP_USER,
-      subject: 'Confirm account',
-      text: '',
-      html: `
-					<div>
-						<h2>Welcome to the application.</h2>
-	          <p>To confirm the email address, click here: <a href="${confimationLink}">confirm email</a>.</p>
-					</div>
-				`,
+    const updateUserRequest = UsersMs.UpdateRequest.fromPartial({
+      id: user.id,
+      isConfirmed: true,
     });
+    await firstValueFrom(this._userMs.update(updateUserRequest));
+  }
+
+  public async resendActivationEmail(email: string): Promise<void> {
+    const findUserRequest = UsersMs.FindOneRequest.fromPartial({ email });
+    // BUG проверить что падает ошибка если передать email несуществуешего пользователя
+    const user = await firstValueFrom(this._userMs.findOne(findUserRequest));
+
+    if (!user) {
+      throw new GrpcException({ code: status.NOT_FOUND, message: 'User doesn`t found' });
+    }
+
+    if (user.isConfirmed) {
+      throw new GrpcException({
+        code: status.INVALID_ARGUMENT,
+        message: 'Account already activated.',
+      });
+    }
+
+    const activationTokenPayload = new ActivationTokenPayload(user);
+    const activationToken = this._tokenService.signActivationToken(activationTokenPayload);
+
+    await firstValueFrom(this._sendActivationAccountEmail(user.email, activationToken));
+  }
+
+  // TODO requestPassword
+
+  // TODO resetPassword
+
+  private _sendActivationAccountEmail(recipient: string, token: string): Observable<void> {
+    const request = MailMs.ConfirmRegistrationRequest.fromJSON({ recipient, token });
+
+    return this._mailMs.confirmRegistration(request).pipe(
+      catchError((error) =>
+        throwError(
+          () =>
+            new GrpcException({
+              code: status.INTERNAL,
+              message: error ?? 'Error while sending email confirmation',
+            })
+        )
+      ),
+      mergeMap(() => VOID)
+    );
   }
 }

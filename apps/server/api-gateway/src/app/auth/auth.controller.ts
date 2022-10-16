@@ -16,7 +16,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { UserMetadata } from '@nx-mfe/server/domains';
 import { AuthMs, Utils } from '@nx-mfe/server/grpc';
 import { transformToClass } from '@nx-mfe/shared/common';
 import {
@@ -25,7 +24,6 @@ import {
   RegisterRequest,
   ResendRegisterConfirmationRequest,
 } from '@nx-mfe/shared/dto';
-import { plainToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { lastValueFrom, Observable, tap } from 'rxjs';
 
@@ -44,7 +42,9 @@ export class AuthController implements OnModuleInit {
   @Post('/register')
   @HttpCode(HttpStatus.CREATED)
   public register(@Body() credentials: RegisterRequest): Observable<Utils.Empty> {
-    return this._authMs.register(credentials);
+    const registerRequest = AuthMs.RegisterRequest.fromJSON(credentials);
+
+    return this._authMs.register(registerRequest);
   }
 
   @Post('/login')
@@ -56,18 +56,18 @@ export class AuthController implements OnModuleInit {
     @Res({ passthrough: true }) res: Response
   ): Observable<AuthTokensResponse> {
     const { session, email, password } = body;
-    const userMetadata = plainToClass(UserMetadata, { userAgent, ip });
 
-    return this._authMs
-      .login({
-        email,
-        password,
-        userMetadata,
-      })
-      .pipe(
-        tap(({ refreshToken }) => this._setRefreshTokenInCookie(res, refreshToken, session)),
-        transformToClass(AuthTokensResponse)
-      );
+    const userMetadata = AuthMs.UserMetadata.fromJSON({ userAgent, ip });
+    const loginRequest = AuthMs.LoginRequest.fromJSON({
+      email,
+      password,
+      userMetadata,
+    });
+
+    return this._authMs.login(loginRequest).pipe(
+      tap(({ refreshToken }) => this._setRefreshTokenInCookie(res, refreshToken, session)),
+      transformToClass(AuthTokensResponse)
+    );
   }
 
   @Post('/logout')
@@ -82,8 +82,9 @@ export class AuthController implements OnModuleInit {
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
+    const logoutRequest = AuthMs.LogoutRequest.fromJSON({ refreshToken });
 
-    return this._authMs.logout({ refreshToken }).pipe(tap(() => this._clearCookies(res)));
+    return this._authMs.logout(logoutRequest).pipe(tap(() => this._clearCookies(res)));
   }
 
   @Post('/refresh')
@@ -94,9 +95,14 @@ export class AuthController implements OnModuleInit {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ): Observable<AuthTokensResponse> {
-    const userMetadata = plainToClass(UserMetadata, { userAgent, ip });
+    const userMetadata = AuthMs.UserMetadata.fromJSON({ userAgent, ip });
 
-    return this._authMs.refresh({ refreshToken: req.cookies.refreshToken, userMetadata }).pipe(
+    const refreshRequest = AuthMs.RefreshRequest.fromJSON({
+      refreshToken: req.cookies.refreshToken,
+      userMetadata,
+    });
+
+    return this._authMs.refresh(refreshRequest).pipe(
       tap(({ refreshToken }) =>
         this._setRefreshTokenInCookie(res, refreshToken, req.cookies.session)
       ),
@@ -104,11 +110,17 @@ export class AuthController implements OnModuleInit {
     );
   }
 
-  @Get('/register/confirm/:link')
+  @Get('/register/confirm/:activationToken')
   @HttpCode(HttpStatus.PERMANENT_REDIRECT)
-  public async confirmRegister(@Param('link') link: string, @Res() res: Response): Promise<void> {
-    await lastValueFrom(this._authMs.confirmRegister({ confirmationLink: link }));
+  public async confirmRegister(
+    @Param('activationToken') activationToken: string,
+    @Res() res: Response
+  ): Promise<void> {
+    const request = AuthMs.ActivateAccountRequest.fromJSON({ activationToken });
 
+    await lastValueFrom(this._authMs.activateAccount(request));
+
+    // TODO редирект на страницу c сообщением об успешном подтверждении почты.
     return res.redirect(String(process.env.CLIENT_URL));
   }
 
@@ -117,7 +129,9 @@ export class AuthController implements OnModuleInit {
   public resendRegisterConfirmation(
     @Body() { email }: ResendRegisterConfirmationRequest
   ): Observable<Utils.Empty> {
-    return this._authMs.resendRegisterConfirmation({ email });
+    const request = AuthMs.ResendActivationEmailRequest.fromJSON({ email });
+
+    return this._authMs.resendActivationEmail(request);
   }
 
   private _clearCookies(res: Response): void {

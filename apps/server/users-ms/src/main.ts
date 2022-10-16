@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { GrpcExceptionFilter, UsersMs } from '@nx-mfe/server/grpc';
+import { join } from 'path';
 
 import { AppModule } from './app/app.module';
 
@@ -21,7 +22,7 @@ async function bootstrap() {
       // TODO монжо вынести в npm пакет,
       // но тогда придется публиковать пакет при каждом изменении,
       // пока что пусть будет такой путь для удобства разработки
-      protoPath: 'libs/server/grpc/src/lib/proto/users-ms.proto',
+      protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/users-ms.proto'),
     },
   });
 

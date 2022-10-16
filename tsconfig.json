@@ -30,7 +30,6 @@
       "@nx-mfe/server/common": ["libs/server/common/src/index.ts"],
       "@nx-mfe/server/domains": ["libs/server/domains/src/index.ts"],
       "@nx-mfe/server/grpc": ["libs/server/grpc/src/index.ts"],
-      "@nx-mfe/server/mailer": ["libs/server/mailer/src/index.ts"],
       "@nx-mfe/shared/common": ["libs/shared/common/src/index.ts"],
       "@nx-mfe/shared/dto": ["libs/shared/dto/src/index.ts"]
     },

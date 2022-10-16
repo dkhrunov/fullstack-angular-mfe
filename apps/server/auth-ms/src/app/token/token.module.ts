@@ -19,6 +19,6 @@ const TOKEN_SERVICE_PROVIDER = {
     ScheduleModule.forRoot(),
   ],
   providers: [TOKEN_SERVICE_PROVIDER],
-  exports: [TOKEN_SERVICE_PROVIDER, JwtModule],
+  exports: [TOKEN_SERVICE_PROVIDER],
 })
 export class TokenModule {}

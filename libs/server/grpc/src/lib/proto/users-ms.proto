@@ -8,7 +8,6 @@ service UsersService {
   rpc Create(CreateRequest) returns (User);
   rpc Update(UpdateRequest) returns (User);
   rpc Delete(DeleteRequest) returns (DeleteResponse);
-  rpc IssueNewConfirmationLink(IssueNewConfirmationLinkRequest) returns (IssueNewConfirmationLinkResponse);
 }
 
 message User {
@@ -16,7 +15,6 @@ message User {
   string email = 2;
   string password = 3;
   bool isConfirmed = 4;
-  string confirmationLink = 5;
 }
 
 message CreateRequest {
@@ -35,16 +33,12 @@ message UpdateRequest {
   oneof optionalIsConfirmed {
     bool isConfirmed = 4;
   }
-  oneof optionalConfirmationLink {
-    string confirmationLink = 5;
-  }
 }
 
 message FindOneRequest {
   oneof criteria {
     int32 id = 1;
     string email = 2;
-    string confirmationLink = 3;
   }
 }
 
@@ -54,12 +48,4 @@ message DeleteRequest {
 
 message DeleteResponse {
   int32 id = 1;
-}
-
-message IssueNewConfirmationLinkRequest {
-  string email = 1;
-}
-
-message IssueNewConfirmationLinkResponse {
-  string link = 1;
 }

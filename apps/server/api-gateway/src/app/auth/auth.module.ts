@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PassportModule } from '@nestjs/passport';
 import { AuthMs } from '@nx-mfe/server/grpc';
+import { join } from 'path';
 
 import { AuthController } from './auth.controller';
 import { AuthStrategy } from './auth.strategy';
@@ -25,7 +26,7 @@ import { AuthStrategy } from './auth.strategy';
           // TODO монжо вынести в npm пакет,
           // но тогда придется публиковать пакет при каждом изменении,
           // пока что пусть будет такой путь для удобства разработки
-          protoPath: 'libs/server/grpc/src/lib/proto/auth-ms.proto',
+          protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/auth-ms.proto'),
         },
       },
     ]),

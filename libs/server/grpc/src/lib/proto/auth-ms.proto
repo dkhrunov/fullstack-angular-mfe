@@ -8,9 +8,9 @@ service AuthService {
   rpc Login (LoginRequest) returns (AuthTokens);
   rpc Logout (LogoutRequest) returns (utils.Empty);
   rpc Refresh (RefreshRequest) returns (AuthTokens);
-  rpc Register (RegistrerRequest) returns (utils.Empty);
-  rpc ConfirmRegister (ConfirmRegisterRequest) returns (utils.Empty);
-  rpc ResendRegisterConfirmation (ResendRegisterConfirmationRequest) returns (utils.Empty);
+  rpc Register (RegisterRequest) returns (utils.Empty);
+  rpc ActivateAccount (ActivateAccountRequest) returns (utils.Empty);
+  rpc ResendActivationEmail (ResendActivationEmailRequest) returns (utils.Empty);
 }
 
 message UserMetadata {
@@ -38,15 +38,15 @@ message RefreshRequest {
   UserMetadata userMetadata = 2;
 }
 
-message RegistrerRequest {
+message RegisterRequest {
   string email = 1;
   string password = 2;
 }
 
-message ConfirmRegisterRequest {
-  string confirmationLink = 1;
+message ActivateAccountRequest {
+  string activationToken = 1;
 }
 
-message ResendRegisterConfirmationRequest {
+message ResendActivationEmailRequest {
   string email = 1;
 }

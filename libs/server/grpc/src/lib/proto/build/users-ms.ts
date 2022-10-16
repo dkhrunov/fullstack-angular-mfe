@@ -10,7 +10,6 @@ export interface User {
   email: string;
   password: string;
   isConfirmed: boolean;
-  confirmationLink: string;
 }
 
 export interface CreateRequest {
@@ -23,13 +22,11 @@ export interface UpdateRequest {
   email: string | undefined;
   password: string | undefined;
   isConfirmed: boolean | undefined;
-  confirmationLink: string | undefined;
 }
 
 export interface FindOneRequest {
   id: number | undefined;
   email: string | undefined;
-  confirmationLink: string | undefined;
 }
 
 export interface DeleteRequest {
@@ -40,18 +37,10 @@ export interface DeleteResponse {
   id: number;
 }
 
-export interface IssueNewConfirmationLinkRequest {
-  email: string;
-}
-
-export interface IssueNewConfirmationLinkResponse {
-  link: string;
-}
-
 export const USERS_PACKAGE_NAME = 'users';
 
 function createBaseUser(): User {
-  return { id: 0, email: '', password: '', isConfirmed: false, confirmationLink: '' };
+  return { id: 0, email: '', password: '', isConfirmed: false };
 }
 
 export const User = {
@@ -61,7 +50,6 @@ export const User = {
       email: isSet(object.email) ? String(object.email) : '',
       password: isSet(object.password) ? String(object.password) : '',
       isConfirmed: isSet(object.isConfirmed) ? Boolean(object.isConfirmed) : false,
-      confirmationLink: isSet(object.confirmationLink) ? String(object.confirmationLink) : '',
     };
   },
 
@@ -71,7 +59,6 @@ export const User = {
     message.email !== undefined && (obj.email = message.email);
     message.password !== undefined && (obj.password = message.password);
     message.isConfirmed !== undefined && (obj.isConfirmed = message.isConfirmed);
-    message.confirmationLink !== undefined && (obj.confirmationLink = message.confirmationLink);
     return obj;
   },
 
@@ -81,7 +68,6 @@ export const User = {
     message.email = object.email ?? '';
     message.password = object.password ?? '';
     message.isConfirmed = object.isConfirmed ?? false;
-    message.confirmationLink = object.confirmationLink ?? '';
     return message;
   },
 };
@@ -114,13 +100,7 @@ export const CreateRequest = {
 };
 
 function createBaseUpdateRequest(): UpdateRequest {
-  return {
-    id: 0,
-    email: undefined,
-    password: undefined,
-    isConfirmed: undefined,
-    confirmationLink: undefined,
-  };
+  return { id: 0, email: undefined, password: undefined, isConfirmed: undefined };
 }
 
 export const UpdateRequest = {
@@ -130,9 +110,6 @@ export const UpdateRequest = {
       email: isSet(object.email) ? String(object.email) : undefined,
       password: isSet(object.password) ? String(object.password) : undefined,
       isConfirmed: isSet(object.isConfirmed) ? Boolean(object.isConfirmed) : undefined,
-      confirmationLink: isSet(object.confirmationLink)
-        ? String(object.confirmationLink)
-        : undefined,
     };
   },
 
@@ -142,7 +119,6 @@ export const UpdateRequest = {
     message.email !== undefined && (obj.email = message.email);
     message.password !== undefined && (obj.password = message.password);
     message.isConfirmed !== undefined && (obj.isConfirmed = message.isConfirmed);
-    message.confirmationLink !== undefined && (obj.confirmationLink = message.confirmationLink);
     return obj;
   },
 
@@ -152,13 +128,12 @@ export const UpdateRequest = {
     message.email = object.email ?? undefined;
     message.password = object.password ?? undefined;
     message.isConfirmed = object.isConfirmed ?? undefined;
-    message.confirmationLink = object.confirmationLink ?? undefined;
     return message;
   },
 };
 
 function createBaseFindOneRequest(): FindOneRequest {
-  return { id: undefined, email: undefined, confirmationLink: undefined };
+  return { id: undefined, email: undefined };
 }
 
 export const FindOneRequest = {
@@ -166,9 +141,6 @@ export const FindOneRequest = {
     return {
       id: isSet(object.id) ? Number(object.id) : undefined,
       email: isSet(object.email) ? String(object.email) : undefined,
-      confirmationLink: isSet(object.confirmationLink)
-        ? String(object.confirmationLink)
-        : undefined,
     };
   },
 
@@ -176,7 +148,6 @@ export const FindOneRequest = {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     message.email !== undefined && (obj.email = message.email);
-    message.confirmationLink !== undefined && (obj.confirmationLink = message.confirmationLink);
     return obj;
   },
 
@@ -184,7 +155,6 @@ export const FindOneRequest = {
     const message = createBaseFindOneRequest();
     message.id = object.id ?? undefined;
     message.email = object.email ?? undefined;
-    message.confirmationLink = object.confirmationLink ?? undefined;
     return message;
   },
 };
@@ -233,57 +203,7 @@ export const DeleteResponse = {
   },
 };
 
-function createBaseIssueNewConfirmationLinkRequest(): IssueNewConfirmationLinkRequest {
-  return { email: '' };
-}
-
-export const IssueNewConfirmationLinkRequest = {
-  fromJSON(object: any): IssueNewConfirmationLinkRequest {
-    return { email: isSet(object.email) ? String(object.email) : '' };
-  },
-
-  toJSON(message: IssueNewConfirmationLinkRequest): unknown {
-    const obj: any = {};
-    message.email !== undefined && (obj.email = message.email);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<IssueNewConfirmationLinkRequest>, I>>(
-    object: I
-  ): IssueNewConfirmationLinkRequest {
-    const message = createBaseIssueNewConfirmationLinkRequest();
-    message.email = object.email ?? '';
-    return message;
-  },
-};
-
-function createBaseIssueNewConfirmationLinkResponse(): IssueNewConfirmationLinkResponse {
-  return { link: '' };
-}
-
-export const IssueNewConfirmationLinkResponse = {
-  fromJSON(object: any): IssueNewConfirmationLinkResponse {
-    return { link: isSet(object.link) ? String(object.link) : '' };
-  },
-
-  toJSON(message: IssueNewConfirmationLinkResponse): unknown {
-    const obj: any = {};
-    message.link !== undefined && (obj.link = message.link);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<IssueNewConfirmationLinkResponse>, I>>(
-    object: I
-  ): IssueNewConfirmationLinkResponse {
-    const message = createBaseIssueNewConfirmationLinkResponse();
-    message.link = object.link ?? '';
-    return message;
-  },
-};
-
 export interface UsersServiceClient {
-  /** TODO returns (User | undefined) */
-
   findOne(request: FindOneRequest, metadata?: Metadata): Observable<User>;
 
   create(request: CreateRequest, metadata?: Metadata): Observable<User>;
@@ -291,16 +211,9 @@ export interface UsersServiceClient {
   update(request: UpdateRequest, metadata?: Metadata): Observable<User>;
 
   delete(request: DeleteRequest, metadata?: Metadata): Observable<DeleteResponse>;
-
-  issueNewConfirmationLink(
-    request: IssueNewConfirmationLinkRequest,
-    metadata?: Metadata
-  ): Observable<IssueNewConfirmationLinkResponse>;
 }
 
 export interface UsersServiceController {
-  /** TODO returns (User | undefined) */
-
   findOne(request: FindOneRequest, metadata?: Metadata): Promise<User> | Observable<User> | User;
 
   create(request: CreateRequest, metadata?: Metadata): Promise<User> | Observable<User> | User;
@@ -311,25 +224,11 @@ export interface UsersServiceController {
     request: DeleteRequest,
     metadata?: Metadata
   ): Promise<DeleteResponse> | Observable<DeleteResponse> | DeleteResponse;
-
-  issueNewConfirmationLink(
-    request: IssueNewConfirmationLinkRequest,
-    metadata?: Metadata
-  ):
-    | Promise<IssueNewConfirmationLinkResponse>
-    | Observable<IssueNewConfirmationLinkResponse>
-    | IssueNewConfirmationLinkResponse;
 }
 
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = [
-      'findOne',
-      'create',
-      'update',
-      'delete',
-      'issueNewConfirmationLink',
-    ];
+    const grpcMethods: string[] = ['findOne', 'create', 'update', 'delete'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod('UsersService', method)(constructor.prototype[method], method, descriptor);

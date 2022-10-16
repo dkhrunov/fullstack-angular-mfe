@@ -13,7 +13,7 @@ export class AuthController implements AuthMs.AuthServiceController {
   constructor(@Inject(Services.AUTH_SERVICE) private readonly _service: IAuthService) {}
 
   public register(
-    request: AuthMs.RegistrerRequest
+    request: AuthMs.RegisterRequest
   ): Utils.Empty | Promise<Utils.Empty> | Observable<Utils.Empty> {
     return this._service.register(request);
   }
@@ -50,15 +50,15 @@ export class AuthController implements AuthMs.AuthServiceController {
     return this._service.refresh(request.refreshToken, request.userMetadata);
   }
 
-  public confirmRegister(
-    request: AuthMs.ConfirmRegisterRequest
+  public activateAccount(
+    request: AuthMs.ActivateAccountRequest
   ): Utils.Empty | Promise<Utils.Empty> | Observable<Utils.Empty> {
-    return this._service.confirmRegister(request.confirmationLink);
+    return this._service.activateAccount(request.activationToken);
   }
 
-  public resendRegisterConfirmation(
-    request: AuthMs.ResendRegisterConfirmationRequest
+  public resendActivationEmail(
+    request: AuthMs.ResendActivationEmailRequest
   ): Utils.Empty | Promise<Utils.Empty> | Observable<Utils.Empty> {
-    return this._service.resendRegisterConfirmation(request.email);
+    return this._service.resendActivationEmail(request.email);
   }
 }

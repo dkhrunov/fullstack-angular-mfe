@@ -31,16 +31,16 @@ export interface RefreshRequest {
   userMetadata: UserMetadata | undefined;
 }
 
-export interface RegistrerRequest {
+export interface RegisterRequest {
   email: string;
   password: string;
 }
 
-export interface ConfirmRegisterRequest {
-  confirmationLink: string;
+export interface ActivateAccountRequest {
+  activationToken: string;
 }
 
-export interface ResendRegisterConfirmationRequest {
+export interface ResendActivationEmailRequest {
   email: string;
 }
 
@@ -195,78 +195,76 @@ export const RefreshRequest = {
   },
 };
 
-function createBaseRegistrerRequest(): RegistrerRequest {
+function createBaseRegisterRequest(): RegisterRequest {
   return { email: '', password: '' };
 }
 
-export const RegistrerRequest = {
-  fromJSON(object: any): RegistrerRequest {
+export const RegisterRequest = {
+  fromJSON(object: any): RegisterRequest {
     return {
       email: isSet(object.email) ? String(object.email) : '',
       password: isSet(object.password) ? String(object.password) : '',
     };
   },
 
-  toJSON(message: RegistrerRequest): unknown {
+  toJSON(message: RegisterRequest): unknown {
     const obj: any = {};
     message.email !== undefined && (obj.email = message.email);
     message.password !== undefined && (obj.password = message.password);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<RegistrerRequest>, I>>(object: I): RegistrerRequest {
-    const message = createBaseRegistrerRequest();
+  fromPartial<I extends Exact<DeepPartial<RegisterRequest>, I>>(object: I): RegisterRequest {
+    const message = createBaseRegisterRequest();
     message.email = object.email ?? '';
     message.password = object.password ?? '';
     return message;
   },
 };
 
-function createBaseConfirmRegisterRequest(): ConfirmRegisterRequest {
-  return { confirmationLink: '' };
+function createBaseActivateAccountRequest(): ActivateAccountRequest {
+  return { activationToken: '' };
 }
 
-export const ConfirmRegisterRequest = {
-  fromJSON(object: any): ConfirmRegisterRequest {
-    return {
-      confirmationLink: isSet(object.confirmationLink) ? String(object.confirmationLink) : '',
-    };
+export const ActivateAccountRequest = {
+  fromJSON(object: any): ActivateAccountRequest {
+    return { activationToken: isSet(object.activationToken) ? String(object.activationToken) : '' };
   },
 
-  toJSON(message: ConfirmRegisterRequest): unknown {
+  toJSON(message: ActivateAccountRequest): unknown {
     const obj: any = {};
-    message.confirmationLink !== undefined && (obj.confirmationLink = message.confirmationLink);
+    message.activationToken !== undefined && (obj.activationToken = message.activationToken);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ConfirmRegisterRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<ActivateAccountRequest>, I>>(
     object: I
-  ): ConfirmRegisterRequest {
-    const message = createBaseConfirmRegisterRequest();
-    message.confirmationLink = object.confirmationLink ?? '';
+  ): ActivateAccountRequest {
+    const message = createBaseActivateAccountRequest();
+    message.activationToken = object.activationToken ?? '';
     return message;
   },
 };
 
-function createBaseResendRegisterConfirmationRequest(): ResendRegisterConfirmationRequest {
+function createBaseResendActivationEmailRequest(): ResendActivationEmailRequest {
   return { email: '' };
 }
 
-export const ResendRegisterConfirmationRequest = {
-  fromJSON(object: any): ResendRegisterConfirmationRequest {
+export const ResendActivationEmailRequest = {
+  fromJSON(object: any): ResendActivationEmailRequest {
     return { email: isSet(object.email) ? String(object.email) : '' };
   },
 
-  toJSON(message: ResendRegisterConfirmationRequest): unknown {
+  toJSON(message: ResendActivationEmailRequest): unknown {
     const obj: any = {};
     message.email !== undefined && (obj.email = message.email);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ResendRegisterConfirmationRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<ResendActivationEmailRequest>, I>>(
     object: I
-  ): ResendRegisterConfirmationRequest {
-    const message = createBaseResendRegisterConfirmationRequest();
+  ): ResendActivationEmailRequest {
+    const message = createBaseResendActivationEmailRequest();
     message.email = object.email ?? '';
     return message;
   },
@@ -279,12 +277,12 @@ export interface AuthServiceClient {
 
   refresh(request: RefreshRequest, metadata?: Metadata): Observable<AuthTokens>;
 
-  register(request: RegistrerRequest, metadata?: Metadata): Observable<Empty>;
+  register(request: RegisterRequest, metadata?: Metadata): Observable<Empty>;
 
-  confirmRegister(request: ConfirmRegisterRequest, metadata?: Metadata): Observable<Empty>;
+  activateAccount(request: ActivateAccountRequest, metadata?: Metadata): Observable<Empty>;
 
-  resendRegisterConfirmation(
-    request: ResendRegisterConfirmationRequest,
+  resendActivationEmail(
+    request: ResendActivationEmailRequest,
     metadata?: Metadata
   ): Observable<Empty>;
 }
@@ -303,17 +301,17 @@ export interface AuthServiceController {
   ): Promise<AuthTokens> | Observable<AuthTokens> | AuthTokens;
 
   register(
-    request: RegistrerRequest,
+    request: RegisterRequest,
     metadata?: Metadata
   ): Promise<Empty> | Observable<Empty> | Empty;
 
-  confirmRegister(
-    request: ConfirmRegisterRequest,
+  activateAccount(
+    request: ActivateAccountRequest,
     metadata?: Metadata
   ): Promise<Empty> | Observable<Empty> | Empty;
 
-  resendRegisterConfirmation(
-    request: ResendRegisterConfirmationRequest,
+  resendActivationEmail(
+    request: ResendActivationEmailRequest,
     metadata?: Metadata
   ): Promise<Empty> | Observable<Empty> | Empty;
 }
@@ -325,8 +323,8 @@ export function AuthServiceControllerMethods() {
       'logout',
       'refresh',
       'register',
-      'confirmRegister',
-      'resendRegisterConfirmation',
+      'activateAccount',
+      'resendActivationEmail',
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -26,7 +26,7 @@
     "server-common": "libs/server/common",
     "server-domains": "libs/server/domains",
     "server-grpc": "libs/server/grpc",
-    "server-mailer": "libs/server/mailer",
+    "server-mail-ms": "apps/server/mail-ms",
     "server-users-ms": "apps/server/users-ms",
     "shared-common": "libs/shared/common",
     "shared-dto": "libs/shared/dto"

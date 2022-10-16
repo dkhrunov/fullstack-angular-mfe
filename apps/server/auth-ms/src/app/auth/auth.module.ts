@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { UsersMs } from '@nx-mfe/server/grpc';
-import { MailerModule } from '@nx-mfe/server/mailer';
+import { MailMs, UsersMs } from '@nx-mfe/server/grpc';
+import { join } from 'path';
 
 import { Services } from '../constants';
 import { TokenModule } from '../token/token.module';
@@ -20,26 +20,29 @@ const AUTH_SERVICE_PROVIDER = {
         name: UsersMs.USERS_SERVICE_NAME,
         transport: Transport.GRPC,
         options: {
+          // TODO service discovery
           url: '0.0.0.0:3002',
           package: UsersMs.USERS_PACKAGE_NAME,
           // TODO монжо вынести в npm пакет,
           // но тогда придется публиковать пакет при каждом изменении,
           // пока что пусть будет такой путь для удобства разработки
-          protoPath: 'libs/server/grpc/src/lib/proto/users-ms.proto',
+          protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/users-ms.proto'),
+        },
+      },
+      {
+        name: MailMs.MAIL_SERVICE_NAME,
+        transport: Transport.GRPC,
+        options: {
+          // TODO service discovery
+          url: '0.0.0.0:3003',
+          package: MailMs.MAIL_PACKAGE_NAME,
+          // TODO монжо вынести в npm пакет,
+          // но тогда придется публиковать пакет при каждом изменении,
+          // пока что пусть будет такой путь для удобства разработки
+          protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/mail-ms.proto'),
         },
       },
     ]),
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.SMTP_HOST,
-        port: 587,
-        secure: false,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASSWORD,
-        },
-      },
-    }),
     TokenModule,
   ],
   controllers: [AuthController],

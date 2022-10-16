@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
+import { TokenModule } from './token/token.module';
 
 @Module({
   imports: [
@@ -14,8 +15,10 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME,
       synchronize: !JSON.parse(process.env.PRODUCTION || 'false'),
       autoLoadEntities: true,
+      migrations: ['./migrations/*{.ts,.js}'],
     }),
     AuthModule,
+    TokenModule,
   ],
 })
 export class AppModule {}

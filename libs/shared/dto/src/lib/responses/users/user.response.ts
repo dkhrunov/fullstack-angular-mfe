@@ -17,9 +17,6 @@ export class UserResponse {
   @Exclude()
   public readonly password: string;
 
-  @Exclude()
-  public readonly confirmationLink: string;
-
   constructor(partial: Partial<UserResponse>) {
     Object.assign(this, partial);
   }

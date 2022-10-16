@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UserModule } from './user/user.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,8 +14,9 @@ import { UserModule } from './user/user.module';
       database: process.env.DB_NAME,
       synchronize: !JSON.parse(process.env.PRODUCTION || 'false'),
       autoLoadEntities: true,
+      migrations: ['./migrations/*{.ts,.js}'],
     }),
-    UserModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

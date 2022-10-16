@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UsersMs } from '@nx-mfe/server/grpc';
+import { join } from 'path';
 
 import { UsersController } from './users.controller';
 
@@ -18,7 +19,7 @@ import { UsersController } from './users.controller';
           // TODO монжо вынести в npm пакет,
           // но тогда придется публиковать пакет при каждом изменении,
           // пока что пусть будет такой путь для удобства разработки
-          protoPath: 'libs/server/grpc/src/lib/proto/users-ms.proto',
+          protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/users-ms.proto'),
         },
       },
     ]),
