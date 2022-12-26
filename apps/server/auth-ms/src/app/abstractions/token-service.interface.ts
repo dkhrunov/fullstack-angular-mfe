@@ -3,7 +3,7 @@ import { ActivationTokenPayload, AuthTokenPayload, UserMetadata } from '@nx-mfe/
 import { AuthTokensResponse } from '@nx-mfe/shared/dto';
 
 // TODO мне не нравиться эта зависимость от БД сущности
-import { TokenEntity } from '../token/token.entity';
+import { TokenEntity } from '../modules/token/token.entity';
 
 export interface ITokenService {
   decode(token: string): AuthTokenPayload;

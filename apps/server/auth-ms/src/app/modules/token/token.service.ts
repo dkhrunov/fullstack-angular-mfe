@@ -7,10 +7,10 @@ import { ActivationTokenPayload, AuthTokenPayload, UserMetadata } from '@nx-mfe/
 import { GrpcException } from '@nx-mfe/server/grpc';
 import { isNil, isString } from '@nx-mfe/shared/common';
 import { AuthTokensResponse } from '@nx-mfe/shared/dto';
-import { classToPlain } from 'class-transformer';
+import { instanceToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
 
-import { ITokenService } from '../abstractions';
+import { ITokenService } from '../../abstractions';
 import { TokenEntity } from './token.entity';
 
 @Injectable()
@@ -46,7 +46,7 @@ export class TokenService implements ITokenService {
   }
 
   public signAuthTokens(payload: AuthTokenPayload): AuthTokensResponse {
-    const payloadObject = classToPlain(payload);
+    const payloadObject = instanceToPlain(payload);
 
     const accessToken = this._jwtService.sign(payloadObject, {
       secret: process.env.JWT_ACCESS_SECRET,
@@ -62,7 +62,7 @@ export class TokenService implements ITokenService {
   }
 
   public signActivationToken(payload: ActivationTokenPayload): string {
-    const payloadObject = classToPlain(payload);
+    const payloadObject = instanceToPlain(payload);
 
     return this._jwtService.sign(payloadObject, {
       secret: process.env.JWT_ACTIVATION_SECRET,

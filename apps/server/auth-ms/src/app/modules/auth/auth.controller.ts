@@ -4,8 +4,8 @@ import { AuthMs, GrpcException, Utils } from '@nx-mfe/server/grpc';
 import { isNil } from '@nx-mfe/shared/common';
 import { Observable } from 'rxjs';
 
-import { IAuthService } from '../abstractions';
-import { Services } from '../constants';
+import { IAuthService } from '../../abstractions';
+import { Services } from '../../constants';
 
 @Controller()
 @AuthMs.AuthServiceControllerMethods()

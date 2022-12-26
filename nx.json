@@ -4,7 +4,7 @@
     "defaultBase": "development"
   },
   "implicitDependencies": {
-    "package.json": {
+    "package.jso": {
       "dependencies": "*",
       "devDependencies": "*"
     },

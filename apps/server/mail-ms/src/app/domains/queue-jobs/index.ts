@@ -1,1 +1,1 @@
-export * from './confirm-registration-job';
+export * from './confirm-registration-job-payload';

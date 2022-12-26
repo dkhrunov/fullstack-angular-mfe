@@ -12,7 +12,7 @@ import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { PasswordInputComponent } from '@nx-mfe/client/ui';
 import { LoginRequest } from '@nx-mfe/shared/dto';
 import { plainToClass } from 'class-transformer';
-import { BehaviorSubject, Subject, timer } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil, timer } from 'rxjs';
 
 import { LoginFacadeService } from './login-facade.service';
 
@@ -84,6 +84,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   public get emailControl(): AbstractControl | null {
     return this.form.get('email');
   }
+
   public get passwordControl(): AbstractControl | null {
     return this.form.get('password');
   }
@@ -124,7 +125,9 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
     if (this.emailControl?.valid) {
       this._nextStep();
       // HACK 400ms - animation delay
-      timer(400).subscribe(() => this.passwordInput.focus());
+      timer(400)
+        .pipe(takeUntil(this._destroy$))
+        .subscribe(() => this.passwordInput.focus());
     } else {
       this.emailControl?.markAsTouched();
     }
@@ -136,10 +139,12 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
     this.loginFacade.resetLogInError();
 
     // HACK 400ms - animation delay
-    timer(400).subscribe(() => {
-      this.emailInput.nativeElement.focus();
-      this.emailInput.nativeElement.select();
-    });
+    timer(400)
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(() => {
+        this.emailInput.nativeElement.focus();
+        this.emailInput.nativeElement.select();
+      });
   }
 
   private _prevStep(): void {

@@ -5,7 +5,7 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { resolve } from 'path';
 
-import { MAIL_QUEUE, Services } from '../constants';
+import { MAIL_QUEUE, Services } from '../../constants';
 import { MailController } from './mail.controller';
 import { MailProcessor } from './mail.processor';
 import { MailService } from './mail.service';

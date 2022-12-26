@@ -4,9 +4,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { GrpcException } from '@nx-mfe/server/grpc';
 import { Queue } from 'bull';
 
-import { IMailService } from '../abstractions';
-import { CONFIRM_REGISTRATION, MAIL_QUEUE } from '../constants';
-import { ConfirmRegistrationJob } from '../domains';
+import { IMailService } from '../../abstractions';
+import { CONFIRM_REGISTRATION_JOB, MAIL_QUEUE } from '../../constants';
+import { ConfirmRegistrationJobPayload } from '../../domains';
 
 @Injectable()
 export class MailService implements IMailService {
@@ -16,12 +16,12 @@ export class MailService implements IMailService {
 
   public async confirmRegistration(recipient: string, token: string): Promise<void> {
     try {
-      const confirmRegistrationJob = new ConfirmRegistrationJob({
+      const confirmRegistrationJob = new ConfirmRegistrationJobPayload({
         recipient,
         token,
       });
 
-      await this._mailQueue.add(CONFIRM_REGISTRATION, confirmRegistrationJob);
+      await this._mailQueue.add(CONFIRM_REGISTRATION_JOB, confirmRegistrationJob);
     } catch (error) {
       this._logger.error(`Error queueing registration email to user ${recipient}`);
 

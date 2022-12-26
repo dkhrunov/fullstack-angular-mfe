@@ -3,8 +3,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MailMs, UsersMs } from '@nx-mfe/server/grpc';
 import { join } from 'path';
 
-import { Services } from '../constants';
-import { TokenModule } from '../token/token.module';
+import { Services } from '../../constants';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -43,7 +42,6 @@ const AUTH_SERVICE_PROVIDER = {
         },
       },
     ]),
-    TokenModule,
   ],
   controllers: [AuthController],
   providers: [AUTH_SERVICE_PROVIDER],

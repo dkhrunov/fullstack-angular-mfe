@@ -4,8 +4,8 @@ import { Process, Processor } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
-import { CONFIRM_REGISTRATION, MAIL_QUEUE } from '../constants';
-import { ConfirmRegistrationJob } from '../domains';
+import { CONFIRM_REGISTRATION_JOB, MAIL_QUEUE } from '../../constants';
+import { ConfirmRegistrationJobPayload } from '../../domains';
 
 @Injectable()
 @Processor(MAIL_QUEUE)
@@ -15,8 +15,8 @@ export class MailProcessor {
   constructor(private readonly _mailerService: MailerService) {}
 
   // TODO Job Interface
-  @Process(CONFIRM_REGISTRATION)
-  public async confirmRegistration(job: Job<ConfirmRegistrationJob>): Promise<void> {
+  @Process(CONFIRM_REGISTRATION_JOB)
+  public async confirmRegistration(job: Job<ConfirmRegistrationJobPayload>): Promise<void> {
     this._logger.log(`Sending confirm registration email to '${job.data.recipient}'`);
 
     try {

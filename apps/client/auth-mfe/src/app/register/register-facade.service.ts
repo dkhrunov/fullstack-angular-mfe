@@ -8,8 +8,8 @@ import {
   ServerErrorResponse,
 } from '@nx-mfe/shared/dto';
 import { ModalService } from 'carbon-components-angular/modal';
-import { plainToClass } from 'class-transformer';
-import { BehaviorSubject, catchError, EMPTY, finalize, Subject, takeUntil, tap, timer } from 'rxjs';
+import { plainToInstance } from 'class-transformer';
+import { BehaviorSubject, catchError, EMPTY, finalize, Subject, takeUntil, timer } from 'rxjs';
 
 import { ConfirmRegistrationModalComponent } from './confirm-registration-modal/confirm-registration-modal.component';
 
@@ -39,7 +39,6 @@ export class RegisterFacadeService implements OnDestroy {
     this._authApiService
       .register(request)
       .pipe(
-        tap(() => this.resetRegisterError()),
         // TODO сделать сервис по обработке ошибок
         catchError((error: HttpError<ServerErrorResponse>) => {
           if (!error.error) {
@@ -52,7 +51,10 @@ export class RegisterFacadeService implements OnDestroy {
         }),
         finalize(() => this._isRegistering$.next(false))
       )
-      .subscribe(() => this._showConfirmRegistrationModal(request.email));
+      .subscribe(() => {
+        this.resetRegisterError();
+        this._showConfirmRegistrationModal(request.email);
+      });
   }
 
   public resetRegisterError(): void {
@@ -60,7 +62,7 @@ export class RegisterFacadeService implements OnDestroy {
   }
 
   public resendRegistrationConfirmationMail(email: string): void {
-    const request = plainToClass(ResendRegisterConfirmationRequest, { email });
+    const request = plainToInstance(ResendRegisterConfirmationRequest, { email });
 
     this._authApiService.resendRegistrationConfirmationMail(request).subscribe();
   }

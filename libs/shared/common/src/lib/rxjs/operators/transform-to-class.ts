@@ -1,4 +1,4 @@
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { map, Observable, OperatorFunction } from 'rxjs';
 
 interface Type<T> extends Function {
@@ -9,6 +9,6 @@ export function transformToClass<TSource, TDestination>(
   destination: Type<TDestination>
 ): OperatorFunction<TSource, TDestination> {
   return (source: Observable<TSource>): Observable<TDestination> => {
-    return source.pipe(map((value) => plainToClass(destination, value)));
+    return source.pipe(map((value) => plainToInstance(destination, value)));
   };
 }

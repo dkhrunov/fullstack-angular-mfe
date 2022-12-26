@@ -2,8 +2,8 @@ import { Controller, Inject } from '@nestjs/common';
 import { UsersMs } from '@nx-mfe/server/grpc';
 import { Observable } from 'rxjs';
 
-import { IUsersService } from '../abstractions';
-import { Services } from '../constants';
+import { IUsersService } from '../../abstractions';
+import { Services } from '../../constants';
 
 @Controller()
 @UsersMs.UsersServiceControllerMethods()

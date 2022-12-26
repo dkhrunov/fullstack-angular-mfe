@@ -8,8 +8,8 @@ import { VOID } from '@nx-mfe/shared/common';
 import { AuthTokensResponse, CredentialsRequest, RegisterRequest } from '@nx-mfe/shared/dto';
 import { catchError, firstValueFrom, mergeMap, Observable, throwError } from 'rxjs';
 
-import { IAuthService, ITokenService } from '../abstractions';
-import { Services } from '../constants';
+import { IAuthService, ITokenService } from '../../abstractions';
+import { Services } from '../../constants';
 
 @Injectable()
 export class AuthService implements IAuthService, OnModuleInit {

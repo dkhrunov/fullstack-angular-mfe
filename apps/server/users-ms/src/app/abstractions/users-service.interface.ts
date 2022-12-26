@@ -1,7 +1,7 @@
 import { DeepPartial } from 'typeorm';
 
 // TODO мне не нравиться эта зависимость от БД сущности
-import { UserEntity } from '../users/user.entity';
+import { UserEntity } from '../modules/users/user.entity';
 
 // TODO Вынести Promise<UserEntity> в DTO
 export interface IUsersService {

@@ -6,7 +6,7 @@ import { GrpcException } from '@nx-mfe/server/grpc';
 import { isNil, isUndefined } from '@nx-mfe/shared/common';
 import { DeepPartial, Repository } from 'typeorm';
 
-import { IUsersService } from '../abstractions/users-service.interface';
+import { IUsersService } from '../../abstractions/users-service.interface';
 import { UserEntity } from './user.entity';
 
 @Injectable()
