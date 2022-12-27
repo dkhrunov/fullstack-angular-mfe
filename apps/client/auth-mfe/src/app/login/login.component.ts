@@ -11,7 +11,7 @@ import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } fro
 import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { PasswordInputComponent } from '@nx-mfe/client/ui';
 import { LoginRequest } from '@nx-mfe/shared/dto';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { BehaviorSubject, Subject, takeUntil, timer } from 'rxjs';
 
 import { LoginFacadeService } from './login-facade.service';
@@ -117,7 +117,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
   @IfFormValid()
   public logIn(): void {
-    const credentials = plainToClass(LoginRequest, this.form.value);
+    const credentials = plainToInstance(LoginRequest, this.form.value);
     this.loginFacade.logIn(credentials);
   }
 

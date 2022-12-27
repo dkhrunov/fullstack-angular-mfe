@@ -1,1 +1,1 @@
-export * from './transform-to-class';
+export * from './map-to-instance';

@@ -5,7 +5,7 @@ interface Type<T> extends Function {
   new (...args: any[]): T;
 }
 
-export function transformToClass<TSource, TDestination>(
+export function mapToInstance<TSource, TDestination>(
   destination: Type<TDestination>
 ): OperatorFunction<TSource, TDestination> {
   return (source: Observable<TSource>): Observable<TDestination> => {

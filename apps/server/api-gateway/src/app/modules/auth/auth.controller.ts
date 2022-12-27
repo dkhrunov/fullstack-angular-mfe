@@ -17,7 +17,7 @@ import {
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { AuthMs, Utils } from '@nx-mfe/server/grpc';
-import { transformToClass } from '@nx-mfe/shared/common';
+import { mapToInstance } from '@nx-mfe/shared/common';
 import {
   AuthTokensResponse,
   LoginRequest,
@@ -66,7 +66,7 @@ export class AuthController implements OnModuleInit {
 
     return this._authMs.login(loginRequest).pipe(
       tap(({ refreshToken }) => this._setRefreshTokenInCookie(res, refreshToken, session)),
-      transformToClass(AuthTokensResponse)
+      mapToInstance(AuthTokensResponse)
     );
   }
 
@@ -106,7 +106,7 @@ export class AuthController implements OnModuleInit {
       tap(({ refreshToken }) =>
         this._setRefreshTokenInCookie(res, refreshToken, req.cookies.session)
       ),
-      transformToClass(AuthTokensResponse)
+      mapToInstance(AuthTokensResponse)
     );
   }
 
