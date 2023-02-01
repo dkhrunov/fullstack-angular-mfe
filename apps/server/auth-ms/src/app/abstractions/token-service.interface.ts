@@ -24,7 +24,7 @@ export interface ITokenService {
 
   saveRefreshToken(refreshToken: string, userMetadata: UserMetadata): Promise<TokenEntity>;
 
-  findRefreshToken(refreshToken: string): Promise<TokenEntity | undefined>;
+  findRefreshToken(refreshToken: string): Promise<TokenEntity | null>;
 
   deleteRefreshToken(refreshToken: string): Promise<void>;
 

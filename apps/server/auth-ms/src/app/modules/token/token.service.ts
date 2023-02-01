@@ -137,8 +137,8 @@ export class TokenService implements ITokenService {
     return this._repository.save(createdToken);
   }
 
-  public findRefreshToken(refreshToken: string): Promise<TokenEntity | undefined> {
-    return this._repository.findOne({ refreshToken });
+  public findRefreshToken(refreshToken: string): Promise<TokenEntity | null> {
+    return this._repository.findOneBy({ refreshToken });
   }
 
   public async deleteRefreshToken(refreshToken: string): Promise<void> {

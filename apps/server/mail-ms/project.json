@@ -3,6 +3,16 @@
   "sourceRoot": "apps/server/mail-ms/src",
   "projectType": "application",
   "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build server-mail-ms",
+          "docker build -f ./apps/server/mail-ms/Dockerfile . -t mail-ms"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
@@ -10,7 +20,17 @@
         "outputPath": "dist/apps/server/mail-ms",
         "main": "apps/server/mail-ms/src/main.ts",
         "tsConfig": "apps/server/mail-ms/tsconfig.app.json",
-        "assets": ["apps/server/mail-ms/src/assets", "apps/server/mail-ms/src/templates"]
+        "assets": [
+          "apps/server/mail-ms/src/assets",
+          "apps/server/mail-ms/src/templates",
+          {
+            "glob": "*.proto",
+            "input": "libs/server/grpc/src/lib/proto/",
+            "output": "assets/proto/"
+          }
+        ],
+        "watchAssets": true,
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {

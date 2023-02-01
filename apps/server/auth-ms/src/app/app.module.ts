@@ -7,13 +7,13 @@ import { TokenModule } from './modules/token/token.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: process.env.DB_TYPE as 'aurora-data-api',
+      type: process.env.DB_TYPE as 'aurora-mysql',
       host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT) || 5432,
+      port: Number(process.env.DB_PORT),
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      synchronize: !JSON.parse(process.env.PRODUCTION || 'false'),
+      synchronize: !(process.env.NODE_ENV?.trim() === 'production'),
       autoLoadEntities: true,
       migrations: ['./migrations/*{.ts,.js}'],
     }),

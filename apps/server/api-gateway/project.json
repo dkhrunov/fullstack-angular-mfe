@@ -3,6 +3,16 @@
   "sourceRoot": "apps/server/api-gateway/src",
   "projectType": "application",
   "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build server-api-gateway",
+          "docker build -f ./apps/server/api-gateway/Dockerfile . -t api-gateway"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
@@ -10,7 +20,16 @@
         "outputPath": "dist/apps/server/api-gateway",
         "main": "apps/server/api-gateway/src/main.ts",
         "tsConfig": "apps/server/api-gateway/tsconfig.app.json",
-        "assets": ["apps/server/api-gateway/src/assets"]
+        "assets": [
+          "apps/server/api-gateway/src/assets",
+          {
+            "glob": "*.proto",
+            "input": "libs/server/grpc/src/lib/proto/",
+            "output": "assets/proto/"
+          }
+        ],
+        "watchAssets": true,
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {

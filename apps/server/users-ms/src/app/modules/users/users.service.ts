@@ -28,6 +28,7 @@ export class UsersService implements IUsersService {
 
   // TODO credential dto
   public async create(userData: Pick<UserEntity, 'email' | 'password'>): Promise<UserEntity> {
+    // BUG всегда при регистрации кидает что пользователь уже есть
     const isExists = await this._repository
       .createQueryBuilder()
       .where({ email: userData.email })

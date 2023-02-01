@@ -20,12 +20,13 @@ const AUTH_SERVICE_PROVIDER = {
         transport: Transport.GRPC,
         options: {
           // TODO service discovery
-          url: '0.0.0.0:3002',
+          url: process.env.USERS_MS_URL,
           package: UsersMs.USERS_PACKAGE_NAME,
           // TODO монжо вынести в npm пакет,
           // но тогда придется публиковать пакет при каждом изменении,
           // пока что пусть будет такой путь для удобства разработки
-          protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/users-ms.proto'),
+          // protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/users-ms.proto'),
+          protoPath: join(__dirname, 'assets/proto/users-ms.proto'),
         },
       },
       {
@@ -33,12 +34,13 @@ const AUTH_SERVICE_PROVIDER = {
         transport: Transport.GRPC,
         options: {
           // TODO service discovery
-          url: '0.0.0.0:3003',
+          url: process.env.MAIL_MS_URL,
           package: MailMs.MAIL_PACKAGE_NAME,
           // TODO монжо вынести в npm пакет,
           // но тогда придется публиковать пакет при каждом изменении,
           // пока что пусть будет такой путь для удобства разработки
-          protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/mail-ms.proto'),
+          // protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/mail-ms.proto'),
+          protoPath: join(__dirname, 'assets/proto/mail-ms.proto'),
         },
       },
     ]),

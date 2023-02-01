@@ -17,12 +17,14 @@ async function bootstrap() {
   const microservice = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.GRPC,
     options: {
+      // BUG ip 0.0.0.0
       url: `0.0.0.0:${PORT}`,
       package: MailMs.protobufPackage,
       // TODO монжо вынести в npm пакет,
       // но тогда придется публиковать пакет при каждом изменении,
       // пока что пусть будет такой путь для удобства разработки
-      protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/mail-ms.proto'),
+      // protoPath: join(process.cwd(), 'libs/server/grpc/src/lib/proto/mail-ms.proto'),
+      protoPath: join(__dirname, 'assets/proto/mail-ms.proto'),
     },
   });
 

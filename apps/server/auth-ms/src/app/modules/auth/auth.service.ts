@@ -89,7 +89,7 @@ export class AuthService implements IAuthService, OnModuleInit {
     refreshToken: string,
     userMetadata: UserMetadata
   ): Promise<AuthTokensResponse> {
-    this._tokenService.checkRefreshToken(refreshToken, userMetadata);
+    await this._tokenService.checkRefreshToken(refreshToken, userMetadata);
 
     const refreshTokenPayload = this._tokenService.decode(refreshToken);
     const findUserRequest = UsersMs.FindOneRequest.fromJSON({ id: refreshTokenPayload.id });

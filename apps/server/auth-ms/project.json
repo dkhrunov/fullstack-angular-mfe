@@ -3,6 +3,16 @@
   "sourceRoot": "apps/server/auth-ms/src",
   "projectType": "application",
   "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build server-auth-ms",
+          "docker build -f ./apps/server/auth-ms/Dockerfile . -t auth-ms"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
@@ -10,7 +20,16 @@
         "outputPath": "dist/apps/server/auth-ms",
         "main": "apps/server/auth-ms/src/main.ts",
         "tsConfig": "apps/server/auth-ms/tsconfig.app.json",
-        "assets": ["apps/server/auth-ms/src/assets"]
+        "assets": [
+          "apps/server/auth-ms/src/assets",
+          {
+            "glob": "*.proto",
+            "input": "libs/server/grpc/src/lib/proto/",
+            "output": "assets/proto/"
+          }
+        ],
+        "watchAssets": true,
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {

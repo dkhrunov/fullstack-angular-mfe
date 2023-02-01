@@ -7,6 +7,7 @@ export class UserEntity {
 
   @Column({
     type: 'varchar',
+    length: 50,
     unique: true,
     nullable: false,
   })
@@ -14,6 +15,7 @@ export class UserEntity {
 
   @Column({
     type: 'varchar',
+    length: 200,
     nullable: false,
   })
   public password: string;

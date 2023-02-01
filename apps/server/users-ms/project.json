@@ -3,6 +3,16 @@
   "sourceRoot": "apps/server/users-ms/src",
   "projectType": "application",
   "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build server-users-ms",
+          "docker build -f ./apps/server/users-ms/Dockerfile . -t users-ms"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
@@ -10,7 +20,16 @@
         "outputPath": "dist/apps/server/users-ms",
         "main": "apps/server/users-ms/src/main.ts",
         "tsConfig": "apps/server/users-ms/tsconfig.app.json",
-        "assets": ["apps/server/users-ms/src/assets"]
+        "assets": [
+          "apps/server/users-ms/src/assets",
+          {
+            "glob": "*.proto",
+            "input": "libs/server/grpc/src/lib/proto/",
+            "output": "assets/proto/"
+          }
+        ],
+        "watchAssets": true,
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {

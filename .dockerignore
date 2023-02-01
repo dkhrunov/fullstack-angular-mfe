@@ -1,0 +1,12 @@
+**/Dockerfile*
+**/.dockerignore
+docker-compose*.yml
+
+/coverage
+npm-debug.log
+yarn-error.log
+
+node_modules
+# dist
+
+**/.env
