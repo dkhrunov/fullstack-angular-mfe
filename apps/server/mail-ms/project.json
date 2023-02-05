@@ -8,7 +8,7 @@
       "options": {
         "commands": [
           "nx build server-mail-ms",
-          "docker build -f ./apps/server/mail-ms/Dockerfile . -t mail-ms"
+          "docker build -f ./apps/server/mail-ms/Dockerfile . -t nx-mfe-mail-ms --target production"
         ],
         "parallel": false
       }

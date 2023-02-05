@@ -2,7 +2,10 @@ version: '3'
 
 services:
   auth-ms:
-    image: auth-ms
+    build:
+      context: .
+      dockerfile: ./apps/server/auth-ms/Dockerfile
+      target: production
     environment:
       PORT: 3001
       DB_TYPE: postgres
@@ -48,7 +51,10 @@ services:
       - auth-db:/var/lib/postgresql/data
 
   users-ms:
-    image: users-ms
+    build:
+      context: .
+      dockerfile: ./apps/server/users-ms/Dockerfile
+      target: production
     environment:
       PORT: 3002
       DB_TYPE: postgres
@@ -79,7 +85,10 @@ services:
       - users-db:/var/lib/postgresql/data
 
   mail-ms:
-    image: mail-ms
+    build:
+      context: .
+      dockerfile: ./apps/server/mail-ms/Dockerfile
+      target: production
     environment:
       PORT: 3003
       # Email Settings
@@ -103,7 +112,10 @@ services:
       - mail-redis:/data
 
   api-gateway:
-    image: api-gateway
+    build:
+      context: .
+      dockerfile: ./apps/server/api-gateway/Dockerfile
+      target: production
     environment:
       PORT: 3000
       GLOBAL_PREFIX: api

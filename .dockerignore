@@ -1,12 +1,27 @@
+# Docker files
 **/Dockerfile*
-**/.dockerignore
 docker-compose*.yml
 
+# Versioning and metadata
+.git
+.gitignore
+**/.dockerignore
+
+# Build dependencies
+/node_modules
+/.angular
+# dist
+
+# Environment (contains sensitive data)
+**/.env
+
+# FE files
+# /apps/client
+# /dist/apps/client
+# /libs/client
+# /dist/libs/client
+
+# Misc
 /coverage
 npm-debug.log
 yarn-error.log
-
-node_modules
-# dist
-
-**/.env
