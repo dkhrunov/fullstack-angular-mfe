@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { Metadata } from '@grpc/grpc-js';
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { Metadata } from "@grpc/grpc-js";
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
 
-export const protobufPackage = 'users';
+export const protobufPackage = "users";
 
 export interface User {
   id: number;
@@ -19,14 +19,14 @@ export interface CreateRequest {
 
 export interface UpdateRequest {
   id: number;
-  email: string | undefined;
-  password: string | undefined;
-  isConfirmed: boolean | undefined;
+  email?: string | undefined;
+  password?: string | undefined;
+  isConfirmed?: boolean | undefined;
 }
 
 export interface FindOneRequest {
-  id: number | undefined;
-  email: string | undefined;
+  id?: number | undefined;
+  email?: string | undefined;
 }
 
 export interface DeleteRequest {
@@ -37,18 +37,18 @@ export interface DeleteResponse {
   id: number;
 }
 
-export const USERS_PACKAGE_NAME = 'users';
+export const USERS_PACKAGE_NAME = "users";
 
 function createBaseUser(): User {
-  return { id: 0, email: '', password: '', isConfirmed: false };
+  return { id: 0, email: "", password: "", isConfirmed: false };
 }
 
 export const User = {
   fromJSON(object: any): User {
     return {
       id: isSet(object.id) ? Number(object.id) : 0,
-      email: isSet(object.email) ? String(object.email) : '',
-      password: isSet(object.password) ? String(object.password) : '',
+      email: isSet(object.email) ? String(object.email) : "",
+      password: isSet(object.password) ? String(object.password) : "",
       isConfirmed: isSet(object.isConfirmed) ? Boolean(object.isConfirmed) : false,
     };
   },
@@ -62,25 +62,29 @@ export const User = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<User>, I>>(base?: I): User {
+    return User.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<User>, I>>(object: I): User {
     const message = createBaseUser();
     message.id = object.id ?? 0;
-    message.email = object.email ?? '';
-    message.password = object.password ?? '';
+    message.email = object.email ?? "";
+    message.password = object.password ?? "";
     message.isConfirmed = object.isConfirmed ?? false;
     return message;
   },
 };
 
 function createBaseCreateRequest(): CreateRequest {
-  return { email: '', password: '' };
+  return { email: "", password: "" };
 }
 
 export const CreateRequest = {
   fromJSON(object: any): CreateRequest {
     return {
-      email: isSet(object.email) ? String(object.email) : '',
-      password: isSet(object.password) ? String(object.password) : '',
+      email: isSet(object.email) ? String(object.email) : "",
+      password: isSet(object.password) ? String(object.password) : "",
     };
   },
 
@@ -91,16 +95,20 @@ export const CreateRequest = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CreateRequest>, I>>(base?: I): CreateRequest {
+    return CreateRequest.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<CreateRequest>, I>>(object: I): CreateRequest {
     const message = createBaseCreateRequest();
-    message.email = object.email ?? '';
-    message.password = object.password ?? '';
+    message.email = object.email ?? "";
+    message.password = object.password ?? "";
     return message;
   },
 };
 
 function createBaseUpdateRequest(): UpdateRequest {
-  return { id: 0, email: undefined, password: undefined, isConfirmed: undefined };
+  return { id: 0 };
 }
 
 export const UpdateRequest = {
@@ -122,6 +130,10 @@ export const UpdateRequest = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<UpdateRequest>, I>>(base?: I): UpdateRequest {
+    return UpdateRequest.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<UpdateRequest>, I>>(object: I): UpdateRequest {
     const message = createBaseUpdateRequest();
     message.id = object.id ?? 0;
@@ -133,7 +145,7 @@ export const UpdateRequest = {
 };
 
 function createBaseFindOneRequest(): FindOneRequest {
-  return { id: undefined, email: undefined };
+  return {};
 }
 
 export const FindOneRequest = {
@@ -149,6 +161,10 @@ export const FindOneRequest = {
     message.id !== undefined && (obj.id = Math.round(message.id));
     message.email !== undefined && (obj.email = message.email);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FindOneRequest>, I>>(base?: I): FindOneRequest {
+    return FindOneRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<FindOneRequest>, I>>(object: I): FindOneRequest {
@@ -174,6 +190,10 @@ export const DeleteRequest = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DeleteRequest>, I>>(base?: I): DeleteRequest {
+    return DeleteRequest.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<DeleteRequest>, I>>(object: I): DeleteRequest {
     const message = createBaseDeleteRequest();
     message.id = object.id ?? 0;
@@ -196,6 +216,10 @@ export const DeleteResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DeleteResponse>, I>>(base?: I): DeleteResponse {
+    return DeleteResponse.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<DeleteResponse>, I>>(object: I): DeleteResponse {
     const message = createBaseDeleteResponse();
     message.id = object.id ?? 0;
@@ -204,6 +228,8 @@ export const DeleteResponse = {
 };
 
 export interface UsersServiceClient {
+  /** TODO returns (User | undefined) */
+
   findOne(request: FindOneRequest, metadata?: Metadata): Observable<User>;
 
   create(request: CreateRequest, metadata?: Metadata): Observable<User>;
@@ -214,6 +240,8 @@ export interface UsersServiceClient {
 }
 
 export interface UsersServiceController {
+  /** TODO returns (User | undefined) */
+
   findOne(request: FindOneRequest, metadata?: Metadata): Promise<User> | Observable<User> | User;
 
   create(request: CreateRequest, metadata?: Metadata): Promise<User> | Observable<User> | User;
@@ -222,42 +250,36 @@ export interface UsersServiceController {
 
   delete(
     request: DeleteRequest,
-    metadata?: Metadata
+    metadata?: Metadata,
   ): Promise<DeleteResponse> | Observable<DeleteResponse> | DeleteResponse;
 }
 
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['findOne', 'create', 'update', 'delete'];
+    const grpcMethods: string[] = ["findOne", "create", "update", "delete"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod('UsersService', method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod("UsersService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod('UsersService', method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod("UsersService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const USERS_SERVICE_NAME = 'UsersService';
+export const USERS_SERVICE_NAME = "UsersService";
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
+export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isSet(value: any): boolean {

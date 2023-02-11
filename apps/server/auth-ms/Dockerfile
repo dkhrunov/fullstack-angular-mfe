@@ -13,7 +13,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install app dependencies using the `npm install`
-# RUN npm ci
 RUN npm install
 
 # Bundle app source
@@ -26,8 +25,6 @@ COPY . .
 FROM node:16-alpine As build
 
 WORKDIR /usr/src/app
-
-# COPY package*.json ./
 
 # In order to run `npm run build` we need access to the Nx CLI.
 # The Nx CLI is a dev dependency,
@@ -57,6 +54,28 @@ EXPOSE ${PORT}
 
 # Copy the bundled code from the build stage to the production image
 COPY --from=build /usr/src/app/dist/apps/server/auth-ms .
+
+RUN npm install --production
+# Implicit deps
+RUN npm install pg
+
+CMD node ./main.js
+
+###################
+# PRODUCTION FROM NX
+###################
+
+FROM node:16-alpine As production-nx
+
+WORKDIR /usr/src/app
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+ENV PORT=3001
+EXPOSE ${PORT}
+
+COPY ./dist/apps/server/auth-ms .
 
 RUN npm install --production
 # Implicit deps

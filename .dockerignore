@@ -13,7 +13,7 @@ docker-compose*.yml
 # dist
 
 # Environment (contains sensitive data)
-**/.env
+# **/.env
 
 # FE files
 # /apps/client

@@ -8,7 +8,16 @@
       "options": {
         "commands": [
           "nx build server-api-gateway",
-          "docker build -f ./apps/server/api-gateway/Dockerfile . -t nx-mfe-api-gateway --target production"
+          "docker build -f ./apps/server/api-gateway/Dockerfile . -t nx-mfe-api-gateway --target production-nx"
+        ],
+        "parallel": false
+      }
+    },
+    "serve-docker": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "npx nodemon -L --watch ./apps/server/api-gateway/src --watch ./libs/server --watch ./libs/shared -e '.ts,.js,.html,.css,.scss' --exec nx build server-api-gateway"
         ],
         "parallel": false
       }

@@ -1,0 +1,131 @@
+version: '3'
+
+services:
+  auth-ms:
+    image: nx-mfe-auth-ms
+    environment:
+      PORT: 3001
+      DB_TYPE: postgres
+      DB_HOST: auth-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: auth
+      # JWT Auth
+      JWT_ACCESS_SECRET: seCReT_kEy_#uBa!-98
+      JWT_REFRESH_SECRET: RefFreSH_seCReT_kEy_#uBa!-98
+      JWT_ACTIVATION_SECRET: AcTiVAtIOn_seCReT_kEy_#uBa!-98
+      # 30m
+      JWT_ACCESS_EXPIRES_IN: 1800
+      # 14d
+      JWT_REFRESH_EXPIRES_IN: 1209600
+      # 1d
+      JWT_ACTIVATION_EXPIRES_IN: 86400
+      # MCS
+      USERS_MS_URL: users-ms:3002
+      MAIL_MS_URL: mail-ms:3003
+    depends_on:
+      - auth-db
+      - users-ms
+      - mail-ms
+    ports:
+      - 3001:3001
+  auth-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      # copy the sql script to create tables
+      - ./apps/server/auth-ms/sql/create-tables.sql:/docker-entrypoint-initdb.d/create-tables.sql
+      # copy the sql script to fill tables
+      - ./apps/server/auth-ms/sql/fill-tables.sql:/docker-entrypoint-initdb.d/fill-tables.sql
+      # volume
+      - auth-db:/var/lib/postgresql/data
+
+  users-ms:
+    image: nx-mfe-users-ms
+    environment:
+      PORT: 3002
+      DB_TYPE: postgres
+      DB_HOST: users-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: users
+    depends_on:
+      - users-db
+    ports:
+      - 3002:3002
+  users-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5433:5432
+    volumes:
+      # copy the sql script to create tables
+      - ./apps/server/users-ms/sql/create-tables.sql:/docker-entrypoint-initdb.d/create-tables.sql
+      # copy the sql script to fill tables
+      - ./apps/server/users-ms/sql/fill-tables.sql:/docker-entrypoint-initdb.d/fill-tables.sql
+      # volume
+      - users-db:/var/lib/postgresql/data
+
+  mail-ms:
+    image: nx-mfe-mail-ms
+    environment:
+      PORT: 3003
+      # Email Settings
+      SMTP_HOST: smtp.elasticemail.com
+      SMTP_USER: smtp.mailer.testing.1@gmail.com
+      SMTP_PASSWORD: 861890E4C6177E4E8615F01D7E11AA4D3F14
+      SMTP_PORT: 2525
+      # Redis Settings
+      REDIS_HOST: mail-redis
+      REDIS_PORT: 6379
+    depends_on:
+      - mail-redis
+    ports:
+      - 3003:3003
+  mail-redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - mail-redis:/data
+
+  api-gateway:
+    image: nx-mfe-api-gateway
+    environment:
+      PORT: 3000
+      GLOBAL_PREFIX: api
+      # JWT Auth
+      JWT_ACCESS_SECRET: seCReT_kEy_#uBa!-98
+      JWT_REFRESH_EXPIRES_IN: 1209600
+      # TODO set correct url
+      CLIENT_URL: http://localhost:4200
+      SERVER_URI: api-gateway
+      # MCS
+      AUTH_MS_URL: auth-ms:3001
+      USERS_MS_URL: users-ms:3002
+    depends_on:
+      - auth-ms
+      - users-ms
+    ports:
+      - 3000:3000
+
+volumes:
+  auth-db:
+    driver: local
+  users-db:
+    driver: local
+  mail-redis:
+    driver: local
