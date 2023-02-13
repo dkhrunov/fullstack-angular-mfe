@@ -1,6 +1,40 @@
 version: '3'
 
 services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/server/api-gateway/Dockerfile
+      # Only will build development stage from our dockerfile
+      target: development
+    environment:
+      PORT: 3000
+      GLOBAL_PREFIX: api
+      # JWT Auth
+      JWT_ACCESS_SECRET: seCReT_kEy_#uBa!-98
+      JWT_REFRESH_EXPIRES_IN: 1209600
+      # TODO set correct url
+      CLIENT_URL: http://localhost:4200
+      SERVER_URI: api-gateway
+      # MCS
+      AUTH_MS_URL: auth-ms:3001
+      USERS_MS_URL: users-ms:3002
+    depends_on:
+      - auth-ms
+      - users-ms
+    ports:
+      - 3000:3000
+      # Debugger
+      - 9000:9229
+    volumes:
+      - ./dist/apps/server/api-gateway:/usr/src/app
+      # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
+      # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
+      # Anonymous volume for node_modules only
+      - /usr/src/app/node_modules
+      # Shared volume - This is for all containers to share the same node_modules volume
+      # - mono-node-modules:/usr/src/app/node_modules
+
   auth-ms:
     build:
       context: .
@@ -37,15 +71,13 @@ services:
       # Debugger
       - 9001:9229
     volumes:
-      - .:/usr/src/app
+      - ./dist/apps/server/auth-ms:/usr/src/app
       # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
       # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
       # Anonymous volume for node_modules only
       - /usr/src/app/node_modules
       # Shared volume - This is for all containers to share the same node_modules volume
       # - mono-node-modules:/usr/src/app/node_modules
-      # Run in dev Mode
-    command: npx nx serve server-auth-ms
   auth-db:
     image: postgres:14
     restart: always
@@ -84,15 +116,13 @@ services:
       # Debugger
       - 9002:9229
     volumes:
-      - .:/usr/src/app
+      - ./dist/apps/server/users-ms:/usr/src/app
       # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
       # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
       # Anonymous volume for node_modules only
       - /usr/src/app/node_modules
       # Shared volume - This is for all containers to share the same node_modules volume
       # - mono-node-modules:/usr/src/app/node_modules
-      # Run in dev Mode
-    command: npx nx serve server-users-ms
   users-db:
     image: postgres:14
     restart: always
@@ -133,15 +163,13 @@ services:
       # Debugger
       - 9003:9229
     volumes:
-      - .:/usr/src/app
+      - ./dist/apps/server/mail-ms:/usr/src/app
       # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
       # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
       # Anonymous volume for node_modules only
       - /usr/src/app/node_modules
       # Shared volume - This is for all containers to share the same node_modules volume
       # - mono-node-modules:/usr/src/app/node_modules
-      # Run in dev Mode
-    command: npx nx serve server-mail-ms
   mail-redis:
     image: redis
     restart: always
@@ -149,42 +177,6 @@ services:
       - 6379:6379
     volumes:
       - mail-redis:/data
-
-  api-gateway:
-    build:
-      context: .
-      dockerfile: ./apps/server/api-gateway/Dockerfile
-      # Only will build development stage from our dockerfile
-      target: development
-    environment:
-      PORT: 3000
-      GLOBAL_PREFIX: api
-      # JWT Auth
-      JWT_ACCESS_SECRET: seCReT_kEy_#uBa!-98
-      JWT_REFRESH_EXPIRES_IN: 1209600
-      # TODO set correct url
-      CLIENT_URL: http://localhost:4200
-      SERVER_URI: api-gateway
-      # MCS
-      AUTH_MS_URL: auth-ms:3001
-      USERS_MS_URL: users-ms:3002
-    depends_on:
-      - auth-ms
-      - users-ms
-    ports:
-      - 3000:3000
-      # Debugger
-      - 9000:9229
-    volumes:
-      - .:/usr/src/app
-      # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
-      # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
-      # Anonymous volume for node_modules only
-      - /usr/src/app/node_modules
-      # Shared volume - This is for all containers to share the same node_modules volume
-      # - mono-node-modules:/usr/src/app/node_modules
-      # Run in dev Mode
-    command: npx nx serve server-api-gateway
 
 volumes:
   # Shared volume - This is for all containers to share the same node_modules volume

@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "build-ms:watch": "nx serve-all-containers server-api-gateway",
+    "proto:watch": "nx compile-proto-watch server-grpc",
+    "deploy:affected": "nx affected --target=deploy --parallel=5",
     "lint:affected": "nx affected:lint --fix --parallel --maxParallel=5",
     "test:affected": "nx affected:test --parallel --maxParallel=5",
     "postinstall": "ngcc --properties es2020 browser module main"

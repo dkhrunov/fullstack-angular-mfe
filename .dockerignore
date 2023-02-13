@@ -10,7 +10,6 @@ docker-compose*.yml
 # Build dependencies
 /node_modules
 /.angular
-# dist
 
 # Environment (contains sensitive data)
 # **/.env

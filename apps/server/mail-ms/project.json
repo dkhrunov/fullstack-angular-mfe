@@ -8,7 +8,16 @@
       "options": {
         "commands": [
           "nx build server-mail-ms",
-          "docker build -f ./apps/server/mail-ms/Dockerfile . -t nx-mfe-mail-ms --target production-nx"
+          "docker build -f ./apps/server/mail-ms/Dockerfile . -t nx-mfe-mail-ms --target production"
+        ],
+        "parallel": false
+      }
+    },
+    "serve-container": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "npx nodemon -L --watch ./apps/server/mail-ms/src --watch ./libs/server --watch ./libs/shared -e '.ts,.js,.html,.css,.scss' --exec nx run server-mail-ms:build"
         ],
         "parallel": false
       }

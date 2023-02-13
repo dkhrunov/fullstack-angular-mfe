@@ -1,11 +1,28 @@
 version: '3'
 
 services:
+  api-gateway:
+    image: nx-mfe-api-gateway
+    environment:
+      PORT: 3000
+      GLOBAL_PREFIX: api
+      # JWT Auth
+      JWT_ACCESS_SECRET: seCReT_kEy_#uBa!-98
+      JWT_REFRESH_EXPIRES_IN: 1209600
+      # TODO set correct url
+      CLIENT_URL: http://localhost:4200
+      SERVER_URI: api-gateway
+      # MCS
+      AUTH_MS_URL: auth-ms:3001
+      USERS_MS_URL: users-ms:3002
+    depends_on:
+      - auth-ms
+      - users-ms
+    ports:
+      - 3000:3000
+
   auth-ms:
-    build:
-      context: .
-      dockerfile: ./apps/server/auth-ms/Dockerfile
-      target: production
+    image: nx-mfe-auth-ms
     environment:
       PORT: 3001
       DB_TYPE: postgres
@@ -51,10 +68,7 @@ services:
       - auth-db:/var/lib/postgresql/data
 
   users-ms:
-    build:
-      context: .
-      dockerfile: ./apps/server/users-ms/Dockerfile
-      target: production
+    image: nx-mfe-users-ms
     environment:
       PORT: 3002
       DB_TYPE: postgres
@@ -85,10 +99,7 @@ services:
       - users-db:/var/lib/postgresql/data
 
   mail-ms:
-    build:
-      context: .
-      dockerfile: ./apps/server/mail-ms/Dockerfile
-      target: production
+    image: nx-mfe-mail-ms
     environment:
       PORT: 3003
       # Email Settings
@@ -110,29 +121,6 @@ services:
       - 6379:6379
     volumes:
       - mail-redis:/data
-
-  api-gateway:
-    build:
-      context: .
-      dockerfile: ./apps/server/api-gateway/Dockerfile
-      target: production
-    environment:
-      PORT: 3000
-      GLOBAL_PREFIX: api
-      # JWT Auth
-      JWT_ACCESS_SECRET: seCReT_kEy_#uBa!-98
-      JWT_REFRESH_EXPIRES_IN: 1209600
-      # TODO set correct url
-      CLIENT_URL: http://localhost:4200
-      SERVER_URI: api-gateway
-      # MCS
-      AUTH_MS_URL: auth-ms:3001
-      USERS_MS_URL: users-ms:3002
-    depends_on:
-      - auth-ms
-      - users-ms
-    ports:
-      - 3000:3000
 
 volumes:
   auth-db:

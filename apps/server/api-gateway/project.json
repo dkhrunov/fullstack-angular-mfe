@@ -8,19 +8,31 @@
       "options": {
         "commands": [
           "nx build server-api-gateway",
-          "docker build -f ./apps/server/api-gateway/Dockerfile . -t nx-mfe-api-gateway --target production-nx"
+          "docker build -f ./apps/server/api-gateway/Dockerfile . -t nx-mfe-api-gateway --target production"
         ],
         "parallel": false
       }
     },
-    "serve-docker": {
+    "serve-container": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "npx nodemon -L --watch ./apps/server/api-gateway/src --watch ./libs/server --watch ./libs/shared -e '.ts,.js,.html,.css,.scss' --exec nx build server-api-gateway"
+          "npx nodemon -L --watch ./apps/server/api-gateway/src --watch ./libs/server --watch ./libs/shared -e '.ts,.js,.html,.css,.scss' --exec nx run server-api-gateway:build"
         ],
         "parallel": false
       }
+    },
+    "serve-all-containers": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx run server-mail-ms:serve-container",
+          "nx run server-auth-ms:serve-container",
+          "nx run server-users-ms:serve-container",
+          "nx run server-api-gateway:serve-container"
+        ]
+      },
+      "parallel": true
     },
     "build": {
       "executor": "@nrwl/node:webpack",

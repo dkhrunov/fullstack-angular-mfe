@@ -4,69 +4,37 @@
 
 FROM node:16-alpine As development
 
-# Create app directory
-WORKDIR /usr/src/app
+# Create node directory, where we will be store node_modules
+WORKDIR /usr/src/node
 
-# Copy application dependency manifests to the container image.
-# A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
-# Copying this first prevents re-running npm install on every code change.
-COPY package*.json ./
+# Install global nodemon for hot module replacement serve
+RUN npm install -g nodemon
 
-# Install app dependencies using the `npm install`
+# Copy package.json
+COPY dist/apps/server/users-ms/package*.json ./
+
+# Install deps
 RUN npm install
-
-# Bundle app source
-COPY . .
-
-###################
-# BUILD FOR PRODUCTION
-###################
-
-FROM node:16-alpine As build
-
-WORKDIR /usr/src/app
-
-# In order to run `npm run build` we need access to the Nx CLI.
-# The Nx CLI is a dev dependency,
-# In the previous development stage we ran `npm ci` which installed all dependencies.
-# So we can copy over the node_modules directory from the development image into this build image.
-COPY --from=development /usr/src/app/node_modules ./node_modules
-
-COPY . .
-
-# Set NODE_ENV environment variable
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-# Run the build command which creates the production bundle
-RUN npx nx build server-users-ms
-
-###################
-# PRODUCTION
-###################
-
-FROM node:16-alpine As production
-
-WORKDIR /usr/src/app
-
-ENV PORT=3002
-EXPOSE ${PORT}
-
-# Copy the bundled code from the build stage to the production image
-COPY --from=build /usr/src/app/dist/apps/server/users-ms .
-
-RUN npm install --production
 # Implicit deps
 RUN npm install pg
 
-# Start the server using the production build
-CMD node ./main.js
+# Change directory to app
+WORKDIR /usr/src/app
+
+# Set path where we store node_modules
+ENV NODE_PATH=../node/node_modules
+
+# Copy source files
+COPY dist/apps/server/users-ms ./
+
+# Start app via nodemon
+CMD nodemon -L ./main.js
 
 ###################
 # PRODUCTION FROM NX
 ###################
 
-FROM node:16-alpine As production-nx
+FROM node:16-alpine As production
 
 WORKDIR /usr/src/app
 
