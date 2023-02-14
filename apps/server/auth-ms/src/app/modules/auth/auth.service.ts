@@ -5,7 +5,11 @@ import { compareHashedPassword } from '@nx-mfe/server/common';
 import { ActivationTokenPayload, AuthTokenPayload, UserMetadata } from '@nx-mfe/server/domains';
 import { AuthMs, GrpcException, MailMs, UsersMs } from '@nx-mfe/server/grpc';
 import { VOID } from '@nx-mfe/shared/common';
-import { AuthTokensResponse, CredentialsRequest, RegisterRequest } from '@nx-mfe/shared/dto';
+import {
+  AuthTokensResponse,
+  CredentialsRequest,
+  RegisterRequest,
+} from '@nx-mfe/shared/data-access';
 import { catchError, firstValueFrom, mergeMap, Observable, throwError } from 'rxjs';
 
 import { IAuthService, ITokenService } from '../../abstractions';

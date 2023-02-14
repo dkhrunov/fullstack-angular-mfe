@@ -23,7 +23,7 @@ import {
   LoginRequest,
   RegisterRequest,
   ResendRegisterConfirmationRequest,
-} from '@nx-mfe/shared/dto';
+} from '@nx-mfe/shared/data-access';
 import { Request, Response } from 'express';
 import { lastValueFrom, Observable, tap } from 'rxjs';
 

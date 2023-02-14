@@ -10,7 +10,7 @@ import {
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Form, IfFormValid } from '@nx-mfe/client/forms';
 import { PasswordInputComponent } from '@nx-mfe/client/ui';
-import { LoginRequest } from '@nx-mfe/shared/dto';
+import { LoginRequest } from '@nx-mfe/shared/data-access';
 import { plainToInstance } from 'class-transformer';
 import { BehaviorSubject, Subject, takeUntil, timer } from 'rxjs';
 

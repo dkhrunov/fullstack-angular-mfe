@@ -1,6 +1,6 @@
 import { JwtVerifyOptions } from '@nestjs/jwt';
 import { ActivationTokenPayload, AuthTokenPayload, UserMetadata } from '@nx-mfe/server/domains';
-import { AuthTokensResponse } from '@nx-mfe/shared/dto';
+import { AuthTokensResponse } from '@nx-mfe/shared/data-access';
 
 // TODO мне не нравиться эта зависимость от БД сущности
 import { TokenEntity } from '../modules/token/token.entity';

@@ -31,7 +31,7 @@
       "@nx-mfe/server/domains": ["libs/server/domains/src/index.ts"],
       "@nx-mfe/server/grpc": ["libs/server/grpc/src/index.ts"],
       "@nx-mfe/shared/common": ["libs/shared/common/src/index.ts"],
-      "@nx-mfe/shared/dto": ["libs/shared/dto/src/index.ts"]
+      "@nx-mfe/shared/data-access": ["libs/shared/data-access/src/index.ts"]
     },
     "downlevelIteration": true,
     "noImplicitAny": true,

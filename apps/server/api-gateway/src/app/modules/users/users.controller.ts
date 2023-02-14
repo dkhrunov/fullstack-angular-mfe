@@ -2,7 +2,7 @@ import { Controller, Get, Inject, OnModuleInit, Param, UseGuards } from '@nestjs
 import { ClientGrpc } from '@nestjs/microservices';
 import { UsersMs } from '@nx-mfe/server/grpc';
 import { mapToInstance } from '@nx-mfe/shared/common';
-import { UserResponse } from '@nx-mfe/shared/dto';
+import { UserResponse } from '@nx-mfe/shared/data-access';
 import { Observable } from 'rxjs';
 
 import { AuthGuard } from '../auth/auth.guard';

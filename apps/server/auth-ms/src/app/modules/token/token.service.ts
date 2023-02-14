@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ActivationTokenPayload, AuthTokenPayload, UserMetadata } from '@nx-mfe/server/domains';
 import { GrpcException } from '@nx-mfe/server/grpc';
 import { isNil, isString } from '@nx-mfe/shared/common';
-import { AuthTokensResponse } from '@nx-mfe/shared/dto';
+import { AuthTokensResponse } from '@nx-mfe/shared/data-access';
 import { instanceToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
 

@@ -6,7 +6,7 @@ import {
   RegisterRequest,
   ResendRegisterConfirmationRequest,
   ServerErrorResponse,
-} from '@nx-mfe/shared/dto';
+} from '@nx-mfe/shared/data-access';
 import { ModalService } from 'carbon-components-angular/modal';
 import { plainToInstance } from 'class-transformer';
 import { BehaviorSubject, catchError, EMPTY, finalize, Subject, takeUntil, timer } from 'rxjs';

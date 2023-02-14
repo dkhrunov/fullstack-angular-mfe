@@ -6,9 +6,7 @@
     "compile-proto": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": [
-          "sh compile-proto.sh"
-        ],
+        "commands": ["sh compile-proto.sh"],
         "cwd": "libs/server/grpc/src/lib/proto",
         "parallel": false
       }
@@ -16,9 +14,7 @@
     "compile-proto-watch": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": [
-          "nodemon -L -e '.proto' --exec sh compile-proto.sh"
-        ],
+        "commands": ["nodemon -L -e '.proto' --exec sh compile-proto.sh"],
         "cwd": "libs/server/grpc/src/lib/proto",
         "parallel": false
       }

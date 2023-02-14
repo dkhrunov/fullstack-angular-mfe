@@ -7,7 +7,7 @@ import {
   LoginRequest,
   RegisterRequest,
   ResendRegisterConfirmationRequest,
-} from '@nx-mfe/shared/dto';
+} from '@nx-mfe/shared/data-access';
 import { Observable } from 'rxjs';
 
 @Injectable({

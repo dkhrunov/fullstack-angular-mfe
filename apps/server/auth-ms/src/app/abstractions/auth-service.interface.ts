@@ -1,5 +1,9 @@
 import { UserMetadata } from '@nx-mfe/server/domains';
-import { AuthTokensResponse, CredentialsRequest, RegisterRequest } from '@nx-mfe/shared/dto';
+import {
+  AuthTokensResponse,
+  CredentialsRequest,
+  RegisterRequest,
+} from '@nx-mfe/shared/data-access';
 
 export interface IAuthService {
   register(credentials: RegisterRequest): Promise<void>;

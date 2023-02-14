@@ -9,7 +9,7 @@ import {
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { PASSWORD_REGEXP } from '@nx-mfe/client/auth';
 import { Form, IfFormValid } from '@nx-mfe/client/forms';
-import { RegisterRequest } from '@nx-mfe/shared/dto';
+import { RegisterRequest } from '@nx-mfe/shared/data-access';
 import { plainToClass } from 'class-transformer';
 
 import { RegisterFacadeService } from './register-facade.service';

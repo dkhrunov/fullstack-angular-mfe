@@ -2,7 +2,11 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtAuthService } from '@dekh/ngx-jwt-auth';
 import { HttpError } from '@nx-mfe/client/common';
-import { DefaultHttpErrorResponse, LoginRequest, ServerErrorResponse } from '@nx-mfe/shared/dto';
+import {
+  DefaultHttpErrorResponse,
+  LoginRequest,
+  ServerErrorResponse,
+} from '@nx-mfe/shared/data-access';
 import { BehaviorSubject, catchError, EMPTY, finalize, Subject } from 'rxjs';
 
 @Injectable()

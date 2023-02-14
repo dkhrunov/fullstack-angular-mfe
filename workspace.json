@@ -29,7 +29,7 @@
     "server-mail-ms": "apps/server/mail-ms",
     "server-users-ms": "apps/server/users-ms",
     "shared-common": "libs/shared/common",
-    "shared-dto": "libs/shared/dto"
+    "shared-data-access": "libs/shared/data-access"
   },
   "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

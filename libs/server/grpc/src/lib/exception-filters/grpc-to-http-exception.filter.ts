@@ -7,7 +7,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { ServerErrorResponse } from '@nx-mfe/shared/dto';
+import { ServerErrorResponse } from '@nx-mfe/shared/data-access';
 
 import { IGrpcException } from '../exceptions';
 
