@@ -13,7 +13,7 @@
         "parallel": false
       }
     },
-    "serve-container": {
+    "build-watch": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [

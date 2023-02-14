@@ -71,13 +71,13 @@ Password: qwerty78!
 
 #### Development mode:
 
-`nx run-many --target=serve-container --projects=server-mail-ms,server-auth-ms,server-users-ms,server-api-gateway ...`
+`nx run-many --target=build-watch --projects=server-mail-ms,server-auth-ms,server-users-ms,server-api-gateway ...`
 
 `docker compose -f docker-compose.dev.yml up -d`
 
 OR
 
-`nx serve-all-containers server-api-gateway`
+`nx build-all-watch server-api-gateway`
 
 `docker compose -f docker-compose.dev.yml up -d`
 
@@ -99,7 +99,7 @@ OR
 
 #### Production OR CI/CD mode:
 
-`nx run-many --target=deploy --projects=server-mail-ms,server-auth-ms,server-users-ms,server-api-gateway ...`
+`nx run-many --target=deploy --all`
 
 `docker compose -f docker-compose.prod.yml up -d`
 

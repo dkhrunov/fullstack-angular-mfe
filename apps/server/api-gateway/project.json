@@ -13,7 +13,7 @@
         "parallel": false
       }
     },
-    "serve-container": {
+    "build-watch": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
@@ -22,14 +22,14 @@
         "parallel": false
       }
     },
-    "serve-all-containers": {
+    "build-all-watch": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx run server-mail-ms:serve-container",
-          "nx run server-auth-ms:serve-container",
-          "nx run server-users-ms:serve-container",
-          "nx run server-api-gateway:serve-container"
+          "nx run server-mail-ms:build-watch",
+          "nx run server-auth-ms:build-watch",
+          "nx run server-users-ms:build-watch",
+          "nx run server-api-gateway:build-watch"
         ]
       },
       "parallel": true
