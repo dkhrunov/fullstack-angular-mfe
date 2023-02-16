@@ -3,18 +3,8 @@ version: '3'
 services:
   api-gateway:
     image: nx-mfe-api-gateway
-    environment:
-      PORT: 3000
-      GLOBAL_PREFIX: api
-      # JWT Auth
-      JWT_ACCESS_SECRET: seCReT_kEy_#uBa!-98
-      JWT_REFRESH_EXPIRES_IN: 1209600
-      # TODO set correct url
-      CLIENT_URL: http://localhost:4200
-      SERVER_URI: api-gateway
-      # MCS
-      AUTH_MS_URL: auth-ms:3001
-      USERS_MS_URL: users-ms:3002
+    env_file:
+      - ./apps/server/api-gateway/.env
     depends_on:
       - auth-ms
       - users-ms
@@ -23,27 +13,8 @@ services:
 
   auth-ms:
     image: nx-mfe-auth-ms
-    environment:
-      PORT: 3001
-      DB_TYPE: postgres
-      DB_HOST: auth-db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: auth
-      # JWT Auth
-      JWT_ACCESS_SECRET: seCReT_kEy_#uBa!-98
-      JWT_REFRESH_SECRET: RefFreSH_seCReT_kEy_#uBa!-98
-      JWT_ACTIVATION_SECRET: AcTiVAtIOn_seCReT_kEy_#uBa!-98
-      # 30m
-      JWT_ACCESS_EXPIRES_IN: 1800
-      # 14d
-      JWT_REFRESH_EXPIRES_IN: 1209600
-      # 1d
-      JWT_ACTIVATION_EXPIRES_IN: 86400
-      # MCS
-      USERS_MS_URL: users-ms:3002
-      MAIL_MS_URL: mail-ms:3003
+    env_file:
+      - ./apps/server/auth-ms/.env
     depends_on:
       - auth-db
       - users-ms
@@ -69,14 +40,8 @@ services:
 
   users-ms:
     image: nx-mfe-users-ms
-    environment:
-      PORT: 3002
-      DB_TYPE: postgres
-      DB_HOST: users-db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: users
+    env_file:
+      - ./apps/server/users-ms/.env
     depends_on:
       - users-db
     ports:
@@ -100,16 +65,8 @@ services:
 
   mail-ms:
     image: nx-mfe-mail-ms
-    environment:
-      PORT: 3003
-      # Email Settings
-      SMTP_HOST: smtp.elasticemail.com
-      SMTP_USER: smtp.mailer.testing.1@gmail.com
-      SMTP_PASSWORD: 861890E4C6177E4E8615F01D7E11AA4D3F14
-      SMTP_PORT: 2525
-      # Redis Settings
-      REDIS_HOST: mail-redis
-      REDIS_PORT: 6379
+    env_file:
+      - ./apps/server/mail-ms/.env
     depends_on:
       - mail-redis
     ports:
