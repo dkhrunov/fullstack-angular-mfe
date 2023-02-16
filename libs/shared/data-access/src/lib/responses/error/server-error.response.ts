@@ -1,5 +1,7 @@
 export class ServerErrorResponse {
-	public readonly error: string;
-	public readonly message: string;
-	public readonly statusCode: number;
+  public readonly statusCode: number;
+  public readonly message: string;
+  public readonly error: string;
+  public readonly timestamp: string;
+  public readonly path: string;
 }

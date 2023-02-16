@@ -1,11 +1,18 @@
-export class AuthTokenPayload {
-	public id: number;
-	public email: string;
-	public readonly iat: number;
-	public readonly exp: number;
+import { Exclude, Expose } from 'class-transformer';
 
-	constructor(user: { id: number; email: string }) {
-		this.id = user.id;
-		this.email = user.email;
-	}
+@Exclude()
+export class AuthTokenPayload {
+  @Expose()
+  public readonly id: number;
+
+  @Expose()
+  public readonly email: string;
+
+  public readonly iat: number;
+
+  public readonly exp: number;
+
+  constructor(partial: Partial<AuthTokenPayload>) {
+    Object.assign(this, partial);
+  }
 }

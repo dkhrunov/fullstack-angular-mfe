@@ -1,0 +1,88 @@
+version: '3'
+
+services:
+  api-gateway:
+    image: nx-mfe-api-gateway
+    env_file:
+      - ./apps/server/api-gateway/.env
+    depends_on:
+      - auth-ms
+      - users-ms
+    ports:
+      - 3000:3000
+
+  auth-ms:
+    image: nx-mfe-auth-ms
+    env_file:
+      - ./apps/server/auth-ms/.env
+    depends_on:
+      - auth-db
+      - users-ms
+      - mail-ms
+    ports:
+      - 3001:3001
+  auth-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      # copy the sql script to create tables
+      - ./apps/server/auth-ms/sql/create-tables.sql:/docker-entrypoint-initdb.d/create-tables.sql
+      # copy the sql script to fill tables
+      - ./apps/server/auth-ms/sql/fill-tables.sql:/docker-entrypoint-initdb.d/fill-tables.sql
+      # volume
+      - auth-db:/var/lib/postgresql/data
+
+  users-ms:
+    image: nx-mfe-users-ms
+    env_file:
+      - ./apps/server/users-ms/.env
+    depends_on:
+      - users-db
+    ports:
+      - 3002:3002
+  users-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5433:5432
+    volumes:
+      # copy the sql script to create tables
+      - ./apps/server/users-ms/sql/create-tables.sql:/docker-entrypoint-initdb.d/create-tables.sql
+      # copy the sql script to fill tables
+      - ./apps/server/users-ms/sql/fill-tables.sql:/docker-entrypoint-initdb.d/fill-tables.sql
+      # volume
+      - users-db:/var/lib/postgresql/data
+
+  mail-ms:
+    image: nx-mfe-mail-ms
+    env_file:
+      - ./apps/server/mail-ms/.env
+    depends_on:
+      - mail-redis
+    ports:
+      - 3003:3003
+  mail-redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - mail-redis:/data
+
+volumes:
+  auth-db:
+    driver: local
+  users-db:
+    driver: local
+  mail-redis:
+    driver: local

@@ -1,0 +1,5 @@
+// Queues
+export const MAIL_QUEUE = 'MAIL_QUEUE';
+
+// Jobs
+export const CONFIRM_REGISTRATION_JOB = 'CONFIRM_REGISTRATION_JOB';

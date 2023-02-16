@@ -1,3 +1,5 @@
 import { InjectionToken } from '@angular/core';
 
-export const ENVIRONMENT = new InjectionToken<string>('@nx-mfe/client/core/ENVIRONMENT');
+import { IEnvironment } from '../interfaces';
+
+export const ENVIRONMENT = new InjectionToken<IEnvironment>('@nx-mfe/client/core/ENVIRONMENT');

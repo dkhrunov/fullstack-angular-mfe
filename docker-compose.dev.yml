@@ -1,0 +1,146 @@
+version: '3'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/server/api-gateway/Dockerfile
+      # Only will build development stage from our dockerfile
+      target: development
+    env_file:
+      - ./apps/server/api-gateway/.env
+    depends_on:
+      - auth-ms
+      - users-ms
+    ports:
+      - 3000:3000
+      # Debugger
+      - 9000:9229
+    volumes:
+      - ./dist/apps/server/api-gateway:/usr/src/app
+      # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
+      # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
+      # Anonymous volume for node_modules only
+      - /usr/src/app/node_modules
+      # Shared volume - This is for all containers to share the same node_modules volume
+      # - mono-node-modules:/usr/src/app/node_modules
+
+  auth-ms:
+    build:
+      context: .
+      dockerfile: ./apps/server/auth-ms/Dockerfile
+      # Only will build development stage from our dockerfile
+      target: development
+    env_file:
+      - ./apps/server/auth-ms/.env
+    depends_on:
+      - auth-db
+      - users-ms
+      - mail-ms
+    ports:
+      - 3001:3001
+      # Debugger
+      - 9001:9229
+    volumes:
+      - ./dist/apps/server/auth-ms:/usr/src/app
+      # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
+      # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
+      # Anonymous volume for node_modules only
+      - /usr/src/app/node_modules
+      # Shared volume - This is for all containers to share the same node_modules volume
+      # - mono-node-modules:/usr/src/app/node_modules
+  auth-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      # copy the sql script to create tables
+      - ./apps/server/auth-ms/sql/create-tables.sql:/docker-entrypoint-initdb.d/create-tables.sql
+      # copy the sql script to fill tables
+      - ./apps/server/auth-ms/sql/fill-tables.sql:/docker-entrypoint-initdb.d/fill-tables.sql
+      # volume
+      - auth-db:/var/lib/postgresql/data
+
+  users-ms:
+    build:
+      context: .
+      dockerfile: ./apps/server/users-ms/Dockerfile
+      # Only will build development stage from our dockerfile
+      target: development
+    env_file:
+      - ./apps/server/users-ms/.env
+    depends_on:
+      - users-db
+    ports:
+      - 3002:3002
+      # Debugger
+      - 9002:9229
+    volumes:
+      - ./dist/apps/server/users-ms:/usr/src/app
+      # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
+      # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
+      # Anonymous volume for node_modules only
+      - /usr/src/app/node_modules
+      # Shared volume - This is for all containers to share the same node_modules volume
+      # - mono-node-modules:/usr/src/app/node_modules
+  users-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5433:5432
+    volumes:
+      # copy the sql script to create tables
+      - ./apps/server/users-ms/sql/create-tables.sql:/docker-entrypoint-initdb.d/create-tables.sql
+      # copy the sql script to fill tables
+      - ./apps/server/users-ms/sql/fill-tables.sql:/docker-entrypoint-initdb.d/fill-tables.sql
+      # volume
+      - users-db:/var/lib/postgresql/data
+
+  mail-ms:
+    build:
+      context: .
+      dockerfile: ./apps/server/mail-ms/Dockerfile
+      # Only will build development stage from our dockerfile
+      target: development
+    env_file:
+      - ./apps/server/mail-ms/.env
+    depends_on:
+      - mail-redis
+    ports:
+      - 3003:3003
+      # Debugger
+      - 9003:9229
+    volumes:
+      - ./dist/apps/server/mail-ms:/usr/src/app
+      # Bug in bcrypt https://github.com/kelektiv/node.bcrypt.js/issues/824#issuecomment-1270195450
+      # Bcrypt compiled against different OS https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
+      # Anonymous volume for node_modules only
+      - /usr/src/app/node_modules
+      # Shared volume - This is for all containers to share the same node_modules volume
+      # - mono-node-modules:/usr/src/app/node_modules
+  mail-redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - mail-redis:/data
+
+volumes:
+  # Shared volume - This is for all containers to share the same node_modules volume
+  # mono-node-modules: null
+  auth-db:
+    driver: local
+  users-db:
+    driver: local
+  mail-redis:
+    driver: local

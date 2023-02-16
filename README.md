@@ -1,9 +1,3 @@
-# Testing account
-
-Email: test@test.com
-
-Password: qwerty78!
-
 # Fullstack Nest.js and Angular MFE application
 
 This project was generated using [Nx](https://nx.dev).
@@ -18,64 +12,20 @@ These capabilities include generating applications, libraries, etc as well as th
 
 Below are our core plugins:
 
--   [React](https://reactjs.org)
-    -   `npm install --save-dev @nrwl/react`
--   Web (no framework frontends)
-    -   `npm install --save-dev @nrwl/web`
--   [Angular](https://angular.io)
-    -   `npm install --save-dev @nrwl/angular`
--   [Nest](https://nestjs.com)
-    -   `npm install --save-dev @nrwl/nest`
--   [Express](https://expressjs.com)
-    -   `npm install --save-dev @nrwl/express`
--   [Node](https://nodejs.org)
-    -   `npm install --save-dev @nrwl/node`
+- [React](https://reactjs.org)
+  - `npm install --save-dev @nrwl/react`
+- Web (no framework frontends)
+  - `npm install --save-dev @nrwl/web`
+- [Angular](https://angular.io)
+  - `npm install --save-dev @nrwl/angular`
+- [Nest](https://nestjs.com)
+  - `npm install --save-dev @nrwl/nest`
+- [Express](https://expressjs.com)
+  - `npm install --save-dev @nrwl/express`
+- [Node](https://nodejs.org)
+  - `npm install --save-dev @nrwl/node`
 
 There are also many [community plugins](https://nx.dev/community) you could add.
-
-## Notice
-
-**In production build MFE will be don`t work correctly, because MfeOutletDirective create component dynamically.**
-
-The production build runs an optimizer that strips the needed information.
-You could turn off AOT (check the angular.json configuration) and in this case the module and components will be compiled and runtime.
-But still, when built for production, the names of the components will be minified.
-
-## Generate an MFE application
-
-**This project has custom nx generator to automate the creation of MFE applications.**
-
-Run `nx workspace-generator mfe my-mfe` to generate an MFE application.
-
-> You can select that type of MFE you want to create - host or remote
-
-## Generate an application
-
-Run `nx g @nrwl/angular:app my-app` to generate an application.
-
-> You can use any of the plugins above to generate applications as well.
-
-When using Nx, you can create multiple applications and libraries in the same workspace.
-
-## Generate a library
-
-Run `nx g @nrwl/angular:lib my-lib` to generate a library.
-
-> You can also use any of the plugins above to generate libraries as well.
-
-Libraries are shareable across libraries and applications. They can be imported from `@nx-mfe/my-lib`.
-
-## Development host app
-
-Run `nx serve client-shell-app` for a dev host app. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
-
-## Development MFE app
-
-Run `nx serve client-auth-mfe` for a dev MFE. Navigate to http://localhost and the port specified in workspace.json or angular.json. The app will automatically reload if you change any of the source files.
-
-## Development server
-
-Run `nx serve server` for a dev server. Navigate to http://localhost:3000/. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
@@ -104,3 +54,101 @@ Run `nx dep-graph` to see a diagram of the dependencies of your projects.
 ## Further help
 
 Visit the [Nx Documentation](https://nx.dev) to learn more.
+
+---
+
+## Backend
+
+### Testing account
+
+Email: test@test.com
+
+Password: qwerty78!
+
+### Variants of running microservices in Docker
+
+---
+
+#### Development mode:
+
+`nx run-many --target=build-watch --projects=server-mail-ms,server-auth-ms,server-users-ms,server-api-gateway ...`
+
+`docker compose -f docker-compose.dev.yml up -d`
+
+OR
+
+`nx build-all-watch server-api-gateway`
+
+`docker compose -f docker-compose.dev.yml up -d`
+
+OR
+
+`npm run build-ms:watch`
+
+`docker compose -f docker-compose.dev.yml up -d`
+
+AND optional start watch and compile grpc files:
+
+`nx compile-proto-watch server-grpc`
+
+OR
+
+`npm run proto:watch`
+
+---
+
+#### Production OR CI/CD mode:
+
+`nx run-many --target=deploy --all`
+
+`docker compose -f docker-compose.prod.yml up -d`
+
+OR
+
+`nx affected --target=deploy`
+
+`docker compose -f docker-compose.prod.yml up`
+
+---
+
+## Frontend
+
+### Notice
+
+**In production build MFE will be don`t work correctly, because MfeOutletDirective create component dynamically.**
+
+The production build runs an optimizer that strips the needed information.
+You could turn off AOT (check the angular.json configuration) and in this case the module and components will be compiled and runtime.
+But still, when built for production, the names of the components will be minified.
+
+### Generate an MFE application
+
+**This project has custom nx generator to automate the creation of MFE applications.**
+
+Run `nx workspace-generator mfe my-mfe` to generate an MFE application.
+
+> You can select that type of MFE you want to create - host or remote
+
+### Generate an application
+
+Run `nx g @nrwl/angular:app my-app` to generate an application.
+
+> You can use any of the plugins above to generate applications as well.
+
+When using Nx, you can create multiple applications and libraries in the same workspace.
+
+### Generate a library
+
+Run `nx g @nrwl/angular:lib my-lib` to generate a library.
+
+> You can also use any of the plugins above to generate libraries as well.
+
+Libraries are shareable across libraries and applications. They can be imported from `@nx-mfe/my-lib`.
+
+### Development host app
+
+Run `nx serve client-shell-app` for a dev host app. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+
+### Development MFE app
+
+Run `nx serve client-auth-mfe` for a dev MFE. Navigate to http://localhost and the port specified in workspace.json or angular.json. The app will automatically reload if you change any of the source files.

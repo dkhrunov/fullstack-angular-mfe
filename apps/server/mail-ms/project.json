@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/server/mail-ms/src",
+  "projectType": "application",
+  "targets": {
+    "deploy": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build server-mail-ms",
+          "docker build -f ./apps/server/mail-ms/Dockerfile . -t nx-mfe-mail-ms --target production"
+        ],
+        "parallel": false
+      }
+    },
+    "build-watch": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "npx nodemon -L --watch ./apps/server/mail-ms/src --watch ./libs/server --watch ./libs/shared -e '.ts,.js,.html,.css,.scss' --exec nx run server-mail-ms:build"
+        ],
+        "parallel": false
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/server/mail-ms",
+        "main": "apps/server/mail-ms/src/main.ts",
+        "tsConfig": "apps/server/mail-ms/tsconfig.app.json",
+        "assets": [
+          "apps/server/mail-ms/src/assets",
+          "apps/server/mail-ms/src/templates",
+          {
+            "glob": "*.proto",
+            "input": "libs/server/grpc/src/lib/proto/",
+            "output": "assets/proto/"
+          }
+        ],
+        "watchAssets": true,
+        "generatePackageJson": true
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/server/mail-ms/src/environments/environment.ts",
+              "with": "apps/server/mail-ms/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "server-mail-ms:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "server-mail-ms:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/server/mail-ms/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/server/mail-ms"],
+      "options": {
+        "jestConfig": "apps/server/mail-ms/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["scope:server"]
+}

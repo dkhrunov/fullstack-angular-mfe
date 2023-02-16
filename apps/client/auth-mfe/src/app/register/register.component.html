@@ -1,149 +1,136 @@
 <div ibmGrid>
-	<div ibmRow>
-		<div
-			ibmCol
-			[offsets]="{ sm: 0, md: 0, lg: 0 }"
-			[columnNumbers]="{ sm: 0, md: 0, lg: 7 }"
-			class="illustration"
-		></div>
-		<div
-			ibmCol
-			[offsets]="{ sm: 0, md: 0, lg: 1 }"
-			[columnNumbers]="{ sm: 4, md: 8, lg: 4 }"
-			class="sign-up"
-		>
-			<div class="illustration illustration--inline"></div>
-			<div class="sign-up__wrapper" [@slideLeft]="'in'">
-				<ui-card theme="light">
-					<ui-card-header>
-						<ui-card-title>Sign up</ui-card-title>
-						<ui-card-subtitle>
-							Already have an account?&nbsp;
-							<a ibmLink [routerLink]="['../login']"> Log in </a>
-						</ui-card-subtitle>
-					</ui-card-header>
-					<ui-card-content>
-						<ui-divider></ui-divider>
-						<form [formGroup]="form" (submit)="register()" (keyup.enter)="register()">
-							<ng-container *ngIf="emailControl as control">
-								<ibm-label
-									labelState="success"
-									labelInputID="email"
-									[invalid]="control.touched && control.invalid"
-									[invalidText]="invalidText"
-								>
-									Email address
-									<input
-										#emailInput
-										ibmText
-										id="email"
-										type="email"
-										formControlName="email"
-										placeholder="Input email"
-										[invalid]="control.touched && control.invalid"
-									/>
-									<ng-template #invalidText>
-										<ng-container
-											*ngIf="control.touched && control.hasError('required')"
-										>
-											Email is required
-										</ng-container>
-										<ng-container *ngIf="control.hasError('email')">
-											Enter a valid email address
-										</ng-container>
-									</ng-template>
-								</ibm-label>
-							</ng-container>
+  <div ibmRow>
+    <div
+      ibmCol
+      [offsets]="{ sm: 0, md: 0, lg: 0 }"
+      [columnNumbers]="{ sm: 0, md: 0, lg: 7 }"
+      class="illustration"
+    ></div>
+    <div
+      ibmCol
+      [offsets]="{ sm: 0, md: 0, lg: 1 }"
+      [columnNumbers]="{ sm: 4, md: 8, lg: 4 }"
+      class="sign-up"
+    >
+      <div class="illustration illustration--inline"></div>
+      <div class="sign-up__wrapper" [@slideLeft]="'in'">
+        <ui-card theme="light">
+          <ui-card-header>
+            <ui-card-title>Sign up</ui-card-title>
+            <ui-card-subtitle>
+              Already have an account?&nbsp;
+              <a ibmLink [routerLink]="['../login']"> Log in </a>
+            </ui-card-subtitle>
+          </ui-card-header>
+          <ui-card-content>
+            <ui-divider></ui-divider>
+            <form [formGroup]="form" (submit)="register()" (keyup.enter)="register()">
+              <ng-container *ngIf="emailControl as control">
+                <ibm-label
+                  labelState="success"
+                  labelInputID="email"
+                  [invalid]="control.touched && control.invalid"
+                  [invalidText]="invalidText"
+                >
+                  Email address
+                  <input
+                    #emailInput
+                    ibmText
+                    id="email"
+                    type="email"
+                    formControlName="email"
+                    placeholder="Input email"
+                    [invalid]="control.touched && control.invalid"
+                  />
+                  <ng-template #invalidText>
+                    <ng-container *ngIf="control.touched && control.hasError('required')">
+                      Email is required
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('email')">
+                      Enter a valid email address
+                    </ng-container>
+                  </ng-template>
+                </ibm-label>
+              </ng-container>
 
-							<ng-container *ngIf="passwordControl as control">
-								<ibm-label
-									labelInputID="password"
-									[invalid]="control.touched && control.invalid"
-									[invalidText]="invalidText"
-								>
-									Password
-									<div uiPasswordInputWrapper>
-										<ui-password-input
-											#passwordInput
-											id="password"
-											formControlName="password"
-											placeholder="Input password"
-											[invalid]="control.touched && control.invalid"
-											showStrength
-											[strengthTests]="passwordTests"
-											[strengthMinlength]="passwordMinlength"
-										>
-										</ui-password-input>
-									</div>
-									<ng-template #invalidText>
-										<ng-container
-											*ngIf="control.touched && control?.hasError('required')"
-										>
-											Password is required
-										</ng-container>
-										<ng-container
-											*ngIf="control.errors && control.hasError('minlength')"
-										>
-											Add
-											{{
-												control.errors['minlength'].requiredLength -
-													control.errors['minlength'].actualLength
-											}}
-											more characters!
-										</ng-container>
-										<ng-container
-											*ngIf="
-												control.hasError('pattern') &&
-												!control.hasError('minlength')
-											"
-										>
-											Password must contain letters, digits and character(s)
-											[@$!%*#?&]
-										</ng-container>
-									</ng-template>
-								</ibm-label>
-							</ng-container>
+              <ng-container *ngIf="passwordControl as control">
+                <ibm-label
+                  labelInputID="password"
+                  [invalid]="control.touched && control.invalid"
+                  [invalidText]="invalidText"
+                >
+                  Password
+                  <div uiPasswordInputWrapper>
+                    <ui-password-input
+                      id="password"
+                      formControlName="password"
+                      placeholder="Input password"
+                      [invalid]="control.touched && control.invalid"
+                      showStrength
+                      [strengthTests]="passwordTests"
+                      [strengthMinlength]="passwordMinlength"
+                    >
+                    </ui-password-input>
+                  </div>
+                  <ng-template #invalidText>
+                    <ng-container *ngIf="control.touched && control?.hasError('required')">
+                      Password is required
+                    </ng-container>
+                    <ng-container *ngIf="control.errors && control.hasError('minlength')">
+                      Add
+                      {{
+                        control.errors['minlength'].requiredLength -
+                          control.errors['minlength'].actualLength
+                      }}
+                      more characters!
+                    </ng-container>
+                    <ng-container
+                      *ngIf="control.hasError('pattern') && !control.hasError('minlength')"
+                    >
+                      Password must contain letters, digits and character(s) [@$!%*#?&]
+                    </ng-container>
+                  </ng-template>
+                </ibm-label>
+              </ng-container>
 
-							<ibm-notification
-								*ngIf="registerFacade.registerError$ | async as error"
-								[notificationObj]="{
-									type: 'error',
-									title: 'Error:',
-									message: error
-								}"
-								(close)="registerFacade.resetRegisterError()"
-							>
-							</ibm-notification>
-						</form>
-					</ui-card-content>
-					<ui-card-footer>
-						<button
-							ibmButton="primary"
-							[disabled]="registerFacade.isRegistering$ | async"
-							(click)="register()"
-						>
-							Create an account
-							<svg
-								*ngIf="!(registerFacade.isRegistering$ | async); else loading"
-								class="bx--btn__icon"
-								ibmIcon="arrow--right"
-								size="16"
-							></svg>
-							<ng-template #loading>
-								<ibm-loading class="bx--btn__icon" size="sm"></ibm-loading>
-							</ng-template>
-						</button>
-					</ui-card-footer>
-				</ui-card>
-				<p class="help">
-					Need help?
-					<a ibmLink href="mailto:therealpanda98@gmail.com?subject=I have problem">
-						Contant me
-					</a>
-				</p>
-			</div>
-		</div>
-	</div>
+              <ibm-notification
+                *ngIf="registerFacade.registerError$ | async as error"
+                [notificationObj]="{
+                  type: 'error',
+                  title: 'Error:',
+                  message: error
+                }"
+                (close)="registerFacade.resetRegisterError()"
+              >
+              </ibm-notification>
+            </form>
+          </ui-card-content>
+          <ui-card-footer>
+            <button
+              ibmButton="primary"
+              [disabled]="registerFacade.isRegistering$ | async"
+              (click)="register()"
+            >
+              Create an account
+              <svg
+                *ngIf="!(registerFacade.isRegistering$ | async); else loading"
+                class="bx--btn__icon"
+                ibmIcon="arrow--right"
+                size="16"
+              ></svg>
+              <ng-template #loading>
+                <ibm-loading class="bx--btn__icon" size="sm"></ibm-loading>
+              </ng-template>
+            </button>
+          </ui-card-footer>
+        </ui-card>
+        <p class="help">
+          Need help?
+          <a ibmLink href="mailto:therealpanda98@gmail.com?subject=I have problem"> Contant me </a>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <ibm-placeholder></ibm-placeholder>

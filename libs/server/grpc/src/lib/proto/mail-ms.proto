@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "utils.proto";
+
+package mail;
+
+service MailService {
+  rpc ConfirmRegistration(ConfirmRegistrationRequest) returns (utils.Empty);
+}
+
+message ConfirmRegistrationRequest {
+  string recipient = 1;
+  string token = 2;
+}
