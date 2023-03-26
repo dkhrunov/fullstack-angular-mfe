@@ -1,8 +1,9 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
 import { loadRemoteEntry } from '@angular-architects/module-federation';
+import { APP_INITIALIZER, ModuleWithProviders, NgModule, Provider } from '@angular/core';
+import { firstValueFrom, from, Observable, tap } from 'rxjs';
 
 import { MfeOutletDirective } from './directives';
-import { IMfeModuleOptions } from './interfaces';
+import { isMfeConfigAsync, MfeConfig, MfeForRootOptions } from './interfaces';
 import { MfeRegistry } from './registry';
 import { OPTIONS } from './tokens';
 
@@ -15,36 +16,53 @@ import { OPTIONS } from './tokens';
  * For feature modules provide MfeModule.
  */
 @NgModule({
-	declarations: [MfeOutletDirective],
-	exports: [MfeOutletDirective],
+  declarations: [MfeOutletDirective],
+  exports: [MfeOutletDirective],
 })
 export class MfeModule {
-	/**
-	 * Sets global configuration of Mfe lib.
-	 * @param options Object of options.
-	 */
-	public static forRoot(options: IMfeModuleOptions): ModuleWithProviders<MfeModule> {
-		const mfeRegistry = MfeRegistry.getInstance(options.mfeConfig);
-		const loadMfeBundle = loadMfeBundleWithMfeRegistry(mfeRegistry);
+  /**
+   * Sets global configuration of Mfe lib.
+   * @param options Object of options.
+   */
+  public static forRoot(options: MfeForRootOptions): ModuleWithProviders<MfeModule> {
+    const { preload, mfeConfig } = options;
+    const providers: Provider[] = [
+      {
+        provide: OPTIONS,
+        useValue: options,
+      },
+    ];
 
-		if (options.preload) {
-			options.preload.map((mfe) => loadMfeBundle(mfe));
-		}
+    if (isMfeConfigAsync(mfeConfig)) {
+      providers.push({
+        provide: APP_INITIALIZER,
+        useFactory: (): (() => Observable<MfeConfig>) => {
+          return () => {
+            return from(mfeConfig.useLoader(...(mfeConfig.deps ?? []))).pipe(
+              tap((config) => initializeMfeRegistry(config, preload))
+            );
+          };
+        },
+        multi: true,
+      });
+    } else {
+      initializeMfeRegistry(mfeConfig, preload);
+    }
 
-		return {
-			ngModule: MfeModule,
-			providers: [
-				{
-					provide: MfeRegistry,
-					useValue: mfeRegistry,
-				},
-				{
-					provide: OPTIONS,
-					useValue: options,
-				},
-			],
-		};
-	}
+    return { ngModule: MfeModule, providers };
+  }
+}
+
+function initializeMfeRegistry(config: MfeConfig, preload?: string[]): MfeRegistry {
+  const mfeRegistry = MfeRegistry.instance;
+  mfeRegistry.setMfeConfig(config);
+  const loadMfeBundle = loadMfeBundleWithMfeRegistry(mfeRegistry);
+
+  if (preload) {
+    preload.map((mfe) => loadMfeBundle(mfe));
+  }
+
+  return mfeRegistry;
 }
 
 /**
@@ -55,9 +73,9 @@ export class MfeModule {
  * @param mfeRegistry Registry of micro-frontends apps.
  */
 function loadMfeBundleWithMfeRegistry(mfeRegistry: MfeRegistry): (mfe: string) => Promise<void> {
-	return (mfe: string): Promise<void> => {
-		const remoteEntry = mfeRegistry.getMfeRemoteEntry(mfe);
+  return async (mfeString: string): Promise<void> => {
+    const remoteEntry = await firstValueFrom(mfeRegistry.getMfeRemoteEntry(mfeString));
 
-		return loadRemoteEntry({ type: 'module', remoteEntry });
-	};
+    return loadRemoteEntry({ type: 'module', remoteEntry });
+  };
 }

@@ -2,6 +2,7 @@
 INSERT INTO 
   public."user" (email, password, isConfirmed)
 VALUES
+  ('test@test.com', '$2b$10$ZQWhMolfHjNQGMDfcjjPN.pEjJDwbyEWvdseWEzFb/qYoPHES2/Iq', TRUE),
   ('den.uru@mail.ru', '$2b$10$ZQWhMolfHjNQGMDfcjjPN.pEjJDwbyEWvdseWEzFb/qYoPHES2/Iq', TRUE),
   ('therealpanda@mail.ru', '$2b$10$ZQWhMolfHjNQGMDfcjjPN.pEjJDwbyEWvdseWEzFb/qYoPHES2/Iq', FALSE);
 

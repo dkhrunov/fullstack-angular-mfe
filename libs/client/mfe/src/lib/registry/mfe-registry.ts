@@ -1,45 +1,50 @@
+import { map, Observable, ReplaySubject, take } from 'rxjs';
+
 import { MfeConfig } from '../interfaces';
 
 /**
  * Registry of micro-frontends apps.
  */
 export class MfeRegistry {
-	private static _instance: MfeRegistry;
-	private readonly _mfeConfig: MfeConfig;
+  private static _instance: MfeRegistry;
 
-	private constructor(mfeConfig: MfeConfig) {
-		this._mfeConfig = mfeConfig;
-	}
+  private readonly _mfeConfig$ = new ReplaySubject<MfeConfig>(1);
 
-	/**
-	 * Get instance of the MfeRegistry
-	 */
-	public static getInstance(mfeConfig?: MfeConfig): MfeRegistry {
-		if (!MfeRegistry._instance) {
-			if (!mfeConfig)
-				throw new Error(
-					'MfeConfig should be provided for first time used MfeRegistry.getInstance(mfeConfig)'
-				);
+  /**
+   * Get instance of the MfeRegistry
+   */
+  public static get instance(): MfeRegistry {
+    if (!MfeRegistry._instance) {
+      MfeRegistry._instance = new MfeRegistry();
+    }
 
-			MfeRegistry._instance = new MfeRegistry(mfeConfig);
-		}
+    return MfeRegistry._instance;
+  }
 
-		return MfeRegistry._instance;
-	}
+  private constructor() {}
 
-	/**
-	 * Get the remote entry URL the micro-frontend app
-	 * @param mfeApp Micro-frontend app name
-	 */
-	public getMfeRemoteEntry(mfeApp: string): string {
-		const remoteEntry = this._mfeConfig[mfeApp];
+  public setMfeConfig(config: MfeConfig): void {
+    this._mfeConfig$.next(config);
+  }
 
-		if (!remoteEntry) {
-			throw new Error(
-				`'${mfeApp}' micro-frontend is not registered in the MfeRegistery using MfeModule.forRoot({ mfeConfig })`
-			);
-		}
+  /**
+   * Get the remote entry URL the micro-frontend app
+   * @param mfeApp Micro-frontend app name
+   */
+  public getMfeRemoteEntry(mfeApp: string): Observable<string> {
+    return this._mfeConfig$.pipe(
+      take(1),
+      map((config) => {
+        const remoteEntry = config[mfeApp];
 
-		return remoteEntry;
-	}
+        if (!remoteEntry) {
+          throw new Error(
+            `'${mfeApp}' micro-frontend is not registered in the MfeRegistery using MfeModule.forRoot({ mfeConfig })`
+          );
+        }
+
+        return remoteEntry;
+      })
+    );
+  }
 }

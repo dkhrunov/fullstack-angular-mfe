@@ -1,5 +1,6 @@
-import { Type } from '@angular/core';
 import { loadRemoteModule, LoadRemoteModuleOptions } from '@angular-architects/module-federation';
+import { Type } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
 import { MfeRegistry } from '../registry';
 
@@ -7,14 +8,14 @@ import { MfeRegistry } from '../registry';
  *  Options for ```loadMfe``` function.
  */
 export type LoadMfeOptions = {
-	/**
-	 * Set custom exposed module name, by default module name = exposedItem + 'Module'.
-	 */
-	moduleName?: string;
-	/**
-	 * Type of loaded module as a ```script``` or as a ```module```.
-	 */
-	type?: LoadRemoteModuleOptions['type'];
+  /**
+   * Set custom exposed module name, by default module name = exposedItem + 'Module'.
+   */
+  moduleName?: string;
+  /**
+   * Type of loaded module as a ```script``` or as a ```module```.
+   */
+  type?: LoadRemoteModuleOptions['type'];
 };
 
 const loadMfeDefaultOptions: LoadMfeOptions = { type: 'module' };
@@ -27,19 +28,19 @@ const loadMfeDefaultOptions: LoadMfeOptions = { type: 'module' };
  * @param options (Optional) object of options.
  */
 export async function loadMfe<T = unknown>(
-	remoteApp: string,
-	exposedModule: string,
-	options: LoadMfeOptions = loadMfeDefaultOptions
+  remoteApp: string,
+  exposedModule: string,
+  options: LoadMfeOptions = loadMfeDefaultOptions
 ): Promise<Type<T>> {
-	const _options: LoadMfeOptions = { ...loadMfeDefaultOptions, ...options };
-	const remoteEntry = MfeRegistry.getInstance().getMfeRemoteEntry(remoteApp);
-	const loadRemoteModuleOptions: LoadRemoteModuleOptions =
-		_options.type === 'module'
-			? { type: _options.type, remoteEntry, exposedModule }
-			: { type: _options.type, remoteEntry, exposedModule, remoteName: remoteApp };
+  const _options: LoadMfeOptions = { ...loadMfeDefaultOptions, ...options };
+  const remoteEntry = await firstValueFrom(MfeRegistry.instance.getMfeRemoteEntry(remoteApp));
+  const loadRemoteModuleOptions: LoadRemoteModuleOptions =
+    _options.type === 'module'
+      ? { type: _options.type, remoteEntry, exposedModule }
+      : { type: _options.type, remoteEntry, exposedModule, remoteName: remoteApp };
 
-	const bundle = await loadRemoteModule(loadRemoteModuleOptions);
-	const moduleName = _options.moduleName ?? exposedModule;
+  const bundle = await loadRemoteModule(loadRemoteModuleOptions);
+  const moduleName = _options.moduleName ?? exposedModule;
 
-	return bundle[moduleName];
+  return bundle[moduleName];
 }
